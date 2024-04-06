@@ -66,6 +66,8 @@ extern ConVar replay_rendersetting_renderglow;
 #include "econ_item_description.h"
 #endif
 
+#include "luainterface/iluainterface.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -790,6 +792,9 @@ void ClientModeShared::StartMessageMode( int iMessageModeType )
 	}
 }
 
+ILuaState *g_pClientLuaState = 0;
+ILuaState *g_pSharedLuaState = 0;
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *newmap - 
@@ -821,6 +826,9 @@ void ClientModeShared::LevelInit( const char *newmap )
 	// Reset any player explosion/shock effects
 	CLocalPlayerFilter filter;
 	enginesound->SetPlayerDSP( filter, 0, true );
+
+	g_pClientLuaState = g_pLuaInterface->CreateState();
+	g_pSharedLuaState = g_pClientLuaState;
 }
 
 //-----------------------------------------------------------------------------
@@ -828,6 +836,10 @@ void ClientModeShared::LevelInit( const char *newmap )
 //-----------------------------------------------------------------------------
 void ClientModeShared::LevelShutdown( void )
 {
+	g_pLuaInterface->DestroyState(g_pClientLuaState);
+	g_pSharedLuaState = 0;
+	g_pClientLuaState = 0;
+
 	// Reset the third person camera so we don't crash
 	g_ThirdPersonManager.Init();
 

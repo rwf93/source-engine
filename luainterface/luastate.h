@@ -10,6 +10,8 @@ class CLuaState: public ILuaState
 public:
     CLuaState();
     ~CLuaState() override;
+
+    void RunString(const char*) override;
 private:
     lua_State *state;
 };

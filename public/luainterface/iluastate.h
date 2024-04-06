@@ -8,6 +8,7 @@ abstract_class ILuaState
 {
 public:
     virtual ~ILuaState() {}
+    virtual void RunString(const char*) = 0;
 };
 
 #endif

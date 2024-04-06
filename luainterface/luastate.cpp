@@ -7,6 +7,8 @@
 
 #include "tier0/memdbgon.h"
 
+#define GUARD_STATE if(!state) Error("Attempted to call " __FUNCTION__ " without a valid internal lua state being initalized!");
+
 static int PrintOverride(lua_State *L)
 {
     int nargs = lua_gettop(L);
@@ -44,4 +46,10 @@ CLuaState::CLuaState()
 CLuaState::~CLuaState() 
 {
     lua_close(state);
+}
+
+void CLuaState::RunString(const char* string) 
+{
+    GUARD_STATE;
+    if(luaL_dostring(state, string) != LUA_OK) { Warning("%s\n", lua_tostring(state, -1)); }
 }

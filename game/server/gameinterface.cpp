@@ -842,12 +842,17 @@ float CServerGameDLL::GetTickInterval( void ) const
 }
 
 ILuaState *g_pServerLuaState = 0;
+ILuaState *g_pSharedLuaState = 0;
+
 
 void lua_reload_sv_handler()
 {
 	if(!g_pServerLuaState) { Error("Tried to reload serversided lua without an existing state. HOW?\n"); return; }
 
 	g_pLuaInterface->DestroyState(g_pServerLuaState);
+	g_pServerLuaState = 0;
+	g_pSharedLuaState = 0;
+
 	g_pServerLuaState = g_pLuaInterface->CreateState();
 }
 
@@ -856,8 +861,6 @@ ConCommand lua_reload_sv( "lua_reload_sv",  lua_reload_sv_handler );
 // This is called when a new game is started. (restart, map)
 bool CServerGameDLL::GameInit( void )
 {
-	g_pServerLuaState = g_pLuaInterface->CreateState();
-	
 	ResetGlobalState();
 	engine->ServerCommand( "exec game.cfg\n" );
 	engine->ServerExecute( );
@@ -869,6 +872,9 @@ bool CServerGameDLL::GameInit( void )
 		gameeventmanager->FireEvent( event );
 	}
 
+	g_pServerLuaState = g_pLuaInterface->CreateState();
+	g_pSharedLuaState = g_pServerLuaState;
+	
 	return true;
 }
 
@@ -877,7 +883,9 @@ bool CServerGameDLL::GameInit( void )
 void CServerGameDLL::GameShutdown( void )
 {
 	g_pLuaInterface->DestroyState(g_pServerLuaState);
-	g_pServerLuaState = 0; // justincase.......
+	
+	g_pServerLuaState = 0;
+	g_pSharedLuaState = 0;
 
 	ResetGlobalState();
 }

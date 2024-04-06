@@ -35,6 +35,7 @@
 #include "filesystem.h"
 #include "steam/steam_api.h"
 #include "filesystem/IQueuedLoader.h"
+#include "luainterface/iluainterface.h"
 
 extern CTextConsoleWin32 console;
 extern bool g_bVGui;
@@ -265,6 +266,7 @@ bool CSys::LoadModules( CDedicatedAppSystemGroup *pAppSystemGroup )
 	AppSystemInfo_t appSystems[] = 
 	{
 		{ "engine.dll",				CVAR_QUERY_INTERFACE_VERSION },	// NOTE: This one must be first!!
+		{ "luainterface.dll", 		BASELUA_INTERFACE_VERSION },
 		{ "inputsystem.dll",		INPUTSYSTEM_INTERFACE_VERSION },
 		{ "materialsystem.dll",		MATERIAL_SYSTEM_INTERFACE_VERSION },
 		{ "studiorender.dll",		STUDIO_RENDER_INTERFACE_VERSION },
