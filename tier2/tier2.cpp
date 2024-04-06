@@ -17,6 +17,7 @@
 #include "p4lib/ip4.h"
 #include "mdllib/mdllib.h"
 #include "filesystem/IQueuedLoader.h"
+#include "iluainterface.h"
 
 
 //-----------------------------------------------------------------------------
@@ -37,6 +38,7 @@ IColorCorrectionSystem *colorcorrection = 0;
 IP4 *p4 = 0;
 IMdlLib *mdllib = 0;
 IQueuedLoader *g_pQueuedLoader = 0;
+ILuaInterface *g_pLuaInterface = 0;
 
 
 //-----------------------------------------------------------------------------
@@ -96,6 +98,10 @@ void ConnectTier2Libraries( CreateInterfaceFn *pFactoryList, int nFactoryCount )
 		{
 			g_pQueuedLoader = (IQueuedLoader *)pFactoryList[i]( QUEUEDLOADER_INTERFACE_VERSION, NULL );
 		}
+		if( !g_pLuaInterface )
+		{
+			g_pLuaInterface = ( ILuaInterface * )pFactoryList[i]( BASELUA_INTERFACE_VERSION, NULL );
+		}
 	}
 }
 
@@ -112,6 +118,7 @@ void DisconnectTier2Libraries()
 	p4 = 0;
 	mdllib = 0;
 	g_pQueuedLoader = 0;
+	g_pLuaInterface = 0;
 }
 
 

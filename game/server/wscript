@@ -23,7 +23,8 @@ games = {
 		'tf/tf_gcmessages_include.vpc',
 		'nav_mesh.vpc',
 		'server_tf.vpc'
-	]
+	],
+	'chungus': ['server_base.vpc', 'server_chungus.vpc']
 }
 
 def options(opt):

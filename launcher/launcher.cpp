@@ -56,6 +56,7 @@
 #include "reslistgenerator.h"
 #include "tier1/fmtstr.h"
 #include "sourcevr/isourcevirtualreality.h"
+#include "iluainterface.h"
 
 #define VERSION_SAFE_STEAM_API_INTERFACES
 #include "steam/steam_api.h"
@@ -668,6 +669,7 @@ bool CSourceAppSystemGroup::Create()
 	AppSystemInfo_t appSystems[] = 
 	{
 		{ "engine" DLL_EXT_STRING,			CVAR_QUERY_INTERFACE_VERSION },	// NOTE: This one must be first!!
+		{ "luainterface" DLL_EXT_STRING, 	BASELUA_INTERFACE_VERSION },
 		{ "inputsystem" DLL_EXT_STRING,		INPUTSYSTEM_INTERFACE_VERSION },
 		{ "materialsystem" DLL_EXT_STRING,	MATERIAL_SYSTEM_INTERFACE_VERSION },
 		{ "datacache" DLL_EXT_STRING,		DATACACHE_INTERFACE_VERSION },

@@ -14,6 +14,8 @@
 	#include "hl2mp_player.h"
 #endif
 
+#include "tier2/tier2.h"
+
 #include "weapon_hl2mpbasehlmpcombatweapon.h"
 
 #define	PISTOL_FASTEST_REFIRE_TIME		0.1f
@@ -25,6 +27,8 @@
 #ifdef CLIENT_DLL
 #define CWeaponPistol C_WeaponPistol
 #endif
+
+#include "iluainterface.h"
 
 //-----------------------------------------------------------------------------
 // CWeaponPistol

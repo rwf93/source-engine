@@ -29,7 +29,7 @@ class INetworkSystem;
 class IP4;
 class IMdlLib;
 class IQueuedLoader;
-
+class ILuaInterface;
 
 //-----------------------------------------------------------------------------
 // These tier2 libraries must be set by any users of this library.
@@ -49,6 +49,7 @@ extern IColorCorrectionSystem *colorcorrection;
 extern IP4 *p4;
 extern IMdlLib *mdllib;
 extern IQueuedLoader *g_pQueuedLoader;
+extern ILuaInterface *g_pLuaInterface;
 
 
 //-----------------------------------------------------------------------------

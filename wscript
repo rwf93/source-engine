@@ -58,6 +58,7 @@ projects={
 		'game/server',
 		'gameui',
 		'inputsystem',
+		'luainterface',
 		'ivp/havana',
 		'ivp/havana/havok/hk_base',
 		'ivp/havana/havok/hk_math',
@@ -428,6 +429,7 @@ def check_deps(conf):
 		conf.check(lib='d3d9', uselib_store='D3D9')
 		conf.check(lib='dsound', uselib_store='DSOUND')
 		conf.check(lib='dxguid', uselib_store='DXGUID')
+		conf.check(lib='lua51', uselib_store='LUAJIT')
 		if conf.options.OPUS:
 			conf.check(lib='opus', uselib_store='OPUS')
 
