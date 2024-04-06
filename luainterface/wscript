@@ -17,6 +17,8 @@ def configure(conf):
 def build(bld):
 	source = [
 		'luainterface.cpp',
+		'luastate.cpp',
+		'lualibrary.cpp',
 		'../public/tier0/memoverride.cpp'
 	]
 
@@ -26,7 +28,7 @@ def build(bld):
 		'../public/tier0',
 		'../public/tier1',
 		'../common',
-		'../thirdparty/luajit'
+		'../thirdparty/luajit',
 	]
 
 	defines = []

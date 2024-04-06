@@ -1,22 +1,11 @@
 #include "luainterface.h"
+#include "luastate.h"
 
 #include "tier1/interface.h"
 #include "tier0/memdbgon.h"
 
 static CLuaInterface g_LuaInterface;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CLuaInterface, ILuaInterface, BASELUA_INTERFACE_VERSION, g_LuaInterface );
-
-CLuaState::CLuaState() 
-{
-    state = lua_open();
-    Msg("Created new CLuaState (this, state) %p %p\n", this, state);
-}
-
-CLuaState::~CLuaState() 
-{
-    Msg("Deleting CLuaState (this, state), %p %p", this, state);
-    lua_close(state);
-}
 
 bool CLuaInterface::Connect( CreateInterfaceFn factory )
 {

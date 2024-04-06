@@ -90,6 +90,9 @@
 #include "serverbenchmark_base.h"
 #include "querycache.h"
 
+#include "luainterface/iluainterface.h"
+#include "luainterface/iluastate.h"
+
 
 #ifdef TF_DLL
 #include "gc_clientsystem.h"
@@ -838,9 +841,23 @@ float CServerGameDLL::GetTickInterval( void ) const
 	return tickinterval;
 }
 
+ILuaState *g_pServerLuaState = 0;
+
+void lua_reload_sv_handler()
+{
+	if(!g_pServerLuaState) { Error("Tried to reload serversided lua without an existing state. HOW?\n"); return; }
+
+	g_pLuaInterface->DestroyState(g_pServerLuaState);
+	g_pServerLuaState = g_pLuaInterface->CreateState();
+}
+
+ConCommand lua_reload_sv( "lua_reload_sv",  lua_reload_sv_handler );
+
 // This is called when a new game is started. (restart, map)
 bool CServerGameDLL::GameInit( void )
 {
+	g_pServerLuaState = g_pLuaInterface->CreateState();
+	
 	ResetGlobalState();
 	engine->ServerCommand( "exec game.cfg\n" );
 	engine->ServerExecute( );
@@ -859,6 +876,9 @@ bool CServerGameDLL::GameInit( void )
 // NOT on level transitions within a game
 void CServerGameDLL::GameShutdown( void )
 {
+	g_pLuaInterface->DestroyState(g_pServerLuaState);
+	g_pServerLuaState = 0; // justincase.......
+
 	ResetGlobalState();
 }
 

@@ -5,15 +5,11 @@
 #include "tier1/interface.h"
 #include "appframework/IAppSystem.h"
 
+class ILuaState;
+
 #include <limits.h>
 
 #define BASELUA_INTERFACE_VERSION		"VBaseLuaInterface01"
-
-abstract_class ILuaState 
-{
-public:
-    virtual ~ILuaState() {}
-};
 
 abstract_class ILuaInterface: public IAppSystem
 {
