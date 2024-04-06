@@ -17,7 +17,7 @@
 #include "p4lib/ip4.h"
 #include "mdllib/mdllib.h"
 #include "filesystem/IQueuedLoader.h"
-#include "iluainterface.h"
+#include "luainterface/iluainterface.h"
 
 
 //-----------------------------------------------------------------------------

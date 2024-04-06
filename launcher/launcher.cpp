@@ -56,7 +56,7 @@
 #include "reslistgenerator.h"
 #include "tier1/fmtstr.h"
 #include "sourcevr/isourcevirtualreality.h"
-#include "iluainterface.h"
+#include "luainterface/iluainterface.h"
 
 #define VERSION_SAFE_STEAM_API_INTERFACES
 #include "steam/steam_api.h"
