@@ -4,22 +4,28 @@
 #include "tier2/tier2.h"
 
 #include "luainterface/iluainterface.h"
-
 #include "filesystem.h"
+
+#include "Color.h"
+
+#include "tier0/dbg.h"
 
 #include "tier0/memdbgon.h"
 
 #define GUARD_STATE if(!m_pState) Error("Attempted to call " __FUNCTION__ " without a valid internal lua state being initalized!");
 
 static int PrintOverride(lua_State *L)
-{
+{   
     int nargs = lua_gettop(L);
     for (int i = 1; i <= nargs; ++i)
     {
         lua_getglobal(L, "tostring");
         lua_pushvalue(L, i);
         lua_call(L, 1, 1);
-        Msg("%s\t", lua_tostring(L, -1));
+
+        // I KNOW, IT LOOKS LIKE ASS!
+        ConColorMsg(((InternalLuaState*)L)->luastate->GetSide() == LuaStateSide::SERVER ? 
+            Color(71, 126, 255, 255) : Color(65, 242, 133, 255), "%s\t", lua_tostring(L, -1));
     }
 
     Msg("\n");
@@ -32,13 +38,18 @@ CLuaState::CLuaState(LuaStateSide side)
     m_pState = 0;
     m_pState = lua_open();
     ((InternalLuaState*)m_pState)->luastate = this;
-    
+    m_eSide = side;
+
     luaL_openlibs(m_pState);
 
     lua_pushcfunction(m_pState, PrintOverride);
     lua_setglobal(m_pState, "print");
 
-    m_eSide = side;
+    lua_pushinteger(m_pState, m_eSide == LuaStateSide::CLIENT);
+    lua_setglobal(m_pState, "CLIENT");
+
+    lua_pushinteger(m_pState, m_eSide == LuaStateSide::SERVER);
+    lua_setglobal(m_pState, "SERVER");
 
     // Register Sided Lua Libraries
     g_pLuaInterface->SetupLuaLibraries(m_eSide, this);

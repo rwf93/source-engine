@@ -13,6 +13,8 @@ public:
 
     void Start() OVERRIDE;
 
+    LuaStateSide GetSide() OVERRIDE { return m_eSide; }
+
     void DoString(const char*) OVERRIDE;
     void PushFunction(CLuaFunctionFn fn) OVERRIDE;
     void PushInteger(int) OVERRIDE;

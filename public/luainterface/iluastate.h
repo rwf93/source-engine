@@ -31,6 +31,8 @@ public:
 
     virtual void Start() = 0;
 
+    virtual LuaStateSide GetSide() = 0;
+
     virtual void DoString(const char*) = 0;
     virtual void PushFunction(CLuaFunctionFn state) = 0;
     virtual void PushInteger(int value) = 0;

@@ -1649,6 +1649,14 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 
 ILuaState *g_pClientLuaState = 0;
 
+void lua_reload_cl_f()
+{
+	if(!g_pClientLuaState) { Error("Tried to reload clientsided lua without an existing state. HOW?\n"); return; }
+	g_pClientLuaState->Start();
+}
+
+ConCommand lua_reload_cl( "lua_reload_cl",  lua_reload_cl_f );
+
 //-----------------------------------------------------------------------------
 // Purpose: Per level init
 //-----------------------------------------------------------------------------
@@ -1659,12 +1667,6 @@ void CHLClient::LevelInitPostEntity( )
 	internalCenterPrint->Clear();
 
 	g_pClientLuaState = g_pLuaInterface->CreateState(LuaStateSide::CLIENT);
-	
-	g_pClientLuaState->PushInteger(1);
-	g_pClientLuaState->SetGlobal("CLIENT");
-	g_pClientLuaState->PushInteger(1);
-	g_pClientLuaState->SetGlobal("SHARED");
-	
 	g_pClientLuaState->Start();
 }
 

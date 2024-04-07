@@ -857,13 +857,13 @@ float CServerGameDLL::GetTickInterval( void ) const
 
 ILuaState *g_pServerLuaState = 0;
 
-void lua_reload_sv_handler()
+void lua_reload_sv_f()
 {
 	if(!g_pServerLuaState) { Error("Tried to reload serversided lua without an existing state. HOW?\n"); return; }
 	g_pServerLuaState->Start();
 }
 
-ConCommand lua_reload_sv( "lua_reload_sv",  lua_reload_sv_handler );
+ConCommand lua_reload_sv( "lua_reload_sv",  lua_reload_sv_f );
 
 // This is called when a new game is started. (restart, map)
 bool CServerGameDLL::GameInit( void )
