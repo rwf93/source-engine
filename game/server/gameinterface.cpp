@@ -568,6 +568,18 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CServerGameDLL, IServerGameDLL, INTERFACEVERSI
 // When bumping the version to this interface, check that our assumption is still valid and expose the older version in the same way
 COMPILE_TIME_ASSERT( INTERFACEVERSION_SERVERGAMEDLL_INT == 10 );
 
+int test_lua_state_cancer(InternalLuaState *state) {
+	ILuaState *pState = reinterpret_cast<ILuaState*>(state->luastate);
+	pState->PushInteger(420);
+	return 1; 
+}
+
+void RegisterServerSideLibraries(ILuaState *state) 
+{
+	state->PushFunction(test_lua_state_cancer);
+	state->SetGlobal("TestCLuaFunc");
+}
+
 bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory, 
 		CreateInterfaceFn physicsFactory, CreateInterfaceFn fileSystemFactory, 
 		CGlobalVars *pGlobals)
@@ -575,6 +587,8 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 	ConnectTier1Libraries( &appSystemFactory, 1 );
 	ConnectTier2Libraries( &appSystemFactory, 1 );
 	ConnectTier3Libraries( &appSystemFactory, 1 );
+
+	g_pLuaInterface->RegisterLib(LuaStateSide::SERVER, RegisterServerSideLibraries);
 
 	// Connected in ConnectTier1Libraries
 	if ( cvar == NULL )
@@ -851,25 +865,6 @@ void lua_reload_sv_handler()
 
 ConCommand lua_reload_sv( "lua_reload_sv",  lua_reload_sv_handler );
 
-int test_lua_state_cancer(lua_StateUserdata *state) {
-	ILuaState *pState = reinterpret_cast<ILuaState*>(state->state_userdata);
-	pState->DoString("print('what the fuck am i doing')");
-	return 0; 
-}
-
-void RegisterServerSideLibraries(ILuaState *state) 
-{
-	Msg("LOL XD\n");
-	Msg("LOL XD\n");
-	Msg("LOL XD\n");
-	Msg("LOL XD\n");
-}
-
-void BruhLibs(ILuaState *state) 
-{
-	Msg("registered more libraries\n");
-}
-
 // This is called when a new game is started. (restart, map)
 bool CServerGameDLL::GameInit( void )
 {
@@ -883,9 +878,6 @@ bool CServerGameDLL::GameInit( void )
 	{
 		gameeventmanager->FireEvent( event );
 	}
-
-	g_pLuaInterface->RegisterLib(LuaStateSide::SERVER, RegisterServerSideLibraries);
-	g_pLuaInterface->RegisterLib(LuaStateSide::SERVER, BruhLibs);
 
 	g_pServerLuaState = g_pLuaInterface->CreateState(LuaStateSide::SERVER);
 	g_pServerLuaState->Start();

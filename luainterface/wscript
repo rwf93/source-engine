@@ -18,7 +18,6 @@ def build(bld):
 	source = [
 		'luainterface.cpp',
 		'luastate.cpp',
-		'lualibrary.cpp',
 		'../public/tier0/memoverride.cpp'
 	]
 

@@ -5,18 +5,18 @@
 #include "tier1/interface.h"
 
 // Extreme hack to use ILuaStates instead of rawdogging the lua_State
-struct lua_StateUserdata
+class ILuaState;
+struct InternalLuaState
 {
 #ifdef PLATFORM_64BITS
     char base[96]; // Generic LuaState Data
 #else
     char base[48]; // Generic LuaState Data
 #endif
-
-    void *state_userdata;
+    ILuaState *luastate;
 };
 
-typedef int(*CLuaFunctionFn)(lua_StateUserdata*);
+typedef int(*CLuaFunctionFn)(InternalLuaState*);
 
 enum LuaStateSide
 {

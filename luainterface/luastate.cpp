@@ -31,7 +31,8 @@ CLuaState::CLuaState(LuaStateSide side)
 {
     m_pState = 0;
     m_pState = lua_open();
-    ((lua_StateUserdata*)m_pState)->state_userdata = reinterpret_cast<void*>(this);
+    ((InternalLuaState*)m_pState)->luastate = this;
+    
     luaL_openlibs(m_pState);
 
     lua_pushcfunction(m_pState, PrintOverride);
