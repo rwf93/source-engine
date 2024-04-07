@@ -13,7 +13,7 @@ public:
 
     void Start() OVERRIDE;
 
-    void RunString(const char*) OVERRIDE;
+    void DoString(const char*) OVERRIDE;
     void PushFunction(CLuaFunctionFn fn) OVERRIDE;
     void PushInteger(int) OVERRIDE;
     

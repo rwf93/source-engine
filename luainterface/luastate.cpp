@@ -61,7 +61,7 @@ void CLuaState::Start()
     g_pFullFileSystem->Close(opened);
 }
 
-void CLuaState::RunString(const char* string) 
+void CLuaState::DoString(const char* string) 
 {
     GUARD_STATE;
     if(luaL_dostring(m_pState, string) != LUA_OK) { Warning("%s\n", lua_tostring(m_pState, -1)); }

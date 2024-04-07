@@ -31,7 +31,7 @@ public:
 
     virtual void Start() = 0;
 
-    virtual void RunString(const char*) = 0;
+    virtual void DoString(const char*) = 0;
     virtual void PushFunction(CLuaFunctionFn state) = 0;
     virtual void PushInteger(int value) = 0;
     virtual void SetGlobal(const char*) = 0;

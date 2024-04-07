@@ -853,7 +853,7 @@ ConCommand lua_reload_sv( "lua_reload_sv",  lua_reload_sv_handler );
 
 int test_lua_state_cancer(lua_StateUserdata *state) {
 	ILuaState *pState = reinterpret_cast<ILuaState*>(state->state_userdata);
-	pState->RunString("print('what the fuck am i doing')");
+	pState->DoString("print('what the fuck am i doing')");
 	return 0; 
 }
 
