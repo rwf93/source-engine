@@ -842,8 +842,6 @@ float CServerGameDLL::GetTickInterval( void ) const
 }
 
 ILuaState *g_pServerLuaState = 0;
-ILuaState *g_pSharedLuaState = 0;
-
 
 void lua_reload_sv_handler()
 {
@@ -851,7 +849,6 @@ void lua_reload_sv_handler()
 
 	g_pLuaInterface->DestroyState(g_pServerLuaState);
 	g_pServerLuaState = 0;
-	g_pSharedLuaState = 0;
 
 	g_pServerLuaState = g_pLuaInterface->CreateState();
 }
@@ -873,9 +870,13 @@ bool CServerGameDLL::GameInit( void )
 	}
 
 	g_pServerLuaState = g_pLuaInterface->CreateState();
-	g_pSharedLuaState = g_pServerLuaState;
 	
 	return true;
+}
+
+ILuaState *CServerGameDLL::GetLuaState() 
+{
+	return g_pServerLuaState;
 }
 
 // This is called when a game ends (server disconnect, death, restart, load)
@@ -883,9 +884,7 @@ bool CServerGameDLL::GameInit( void )
 void CServerGameDLL::GameShutdown( void )
 {
 	g_pLuaInterface->DestroyState(g_pServerLuaState);
-	
 	g_pServerLuaState = 0;
-	g_pSharedLuaState = 0;
 
 	ResetGlobalState();
 }

@@ -458,6 +458,7 @@ typedef IVEngineServer IVEngineServer022;
 #define INTERFACEVERSION_SERVERGAMEDLL_INT			10
 
 class IServerGCLobby;
+class ILuaState;
 
 //-----------------------------------------------------------------------------
 // Purpose: These are the interfaces that the game .dll exposes to the engine
@@ -477,6 +478,8 @@ public:
 
 	// This is called when a new game is started. (restart, map)
 	virtual bool			GameInit( void ) = 0;
+
+	virtual ILuaState		*GetLuaState( void ) = 0;
 
 	// Called any time a new level is started (after GameInit() also on level transitions within a game)
 	virtual bool			LevelInit( char const *pMapName, 

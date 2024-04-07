@@ -73,6 +73,7 @@
 #include "host_state.h"
 #include "voice.h"
 #include "cbenchmark.h"
+#include "luainterface/iluastate.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -2732,6 +2733,7 @@ bool CGameServer::SpawnServer( const char *szMapName, const char *szMapFile, con
 	COM_TimestampedLog( "SV_SpawnServer -- Finished" );
 
 	g_pFileSystem->EndMapAccess();
+
 	return true;
 }
 

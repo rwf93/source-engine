@@ -9,11 +9,12 @@ class CLuaState: public ILuaState
 {
 public:
     CLuaState();
-    ~CLuaState() override;
+    ~CLuaState() OVERRIDE;
 
-    void RunString(const char*) override;
+    void RunString(const char*) OVERRIDE;
+    void PushFunction(CLuaFunctionFn fn);
 private:
-    lua_State *state;
+    lua_State *m_pState;
 };
 
 

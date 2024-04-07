@@ -15,6 +15,7 @@
 #include "mapentities.h"
 
 class IReplayFactory;
+class ILuaState;
 
 extern INetworkStringTable *g_pStringTableInfoPanel;
 extern INetworkStringTable *g_pStringTableServerMapCycle;
@@ -59,7 +60,6 @@ public:
 	virtual void			ClientSpawned( edict_t *pPlayer ) OVERRIDE;
 };
 
-
 class CServerGameDLL : public IServerGameDLL
 {
 public:
@@ -70,6 +70,7 @@ public:
 	virtual bool			ReplayInit( CreateInterfaceFn fnReplayFactory ) OVERRIDE;
 	virtual float			GetTickInterval( void ) const OVERRIDE;
 	virtual bool			GameInit( void ) OVERRIDE;
+	virtual ILuaState 		*GetLuaState( void ) OVERRIDE;
 	virtual void			GameShutdown( void ) OVERRIDE;
 	virtual bool			LevelInit( const char *pMapName, char const *pMapEntities, char const *pOldLevel, char const *pLandmarkName, bool loadGame, bool background ) OVERRIDE;
 	virtual void			ServerActivate( edict_t *pEdictList, int edictCount, int clientMax ) OVERRIDE;

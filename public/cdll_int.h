@@ -577,6 +577,7 @@ public:
 	virtual int GetInstancesRunningCount( ) = 0;
 };
 
+class ILuaState;
 
 //-----------------------------------------------------------------------------
 // Purpose: Interface exposed from the client .dll back to the engine
@@ -602,6 +603,9 @@ public:
 	virtual void			LevelInitPreEntity( char const* pMapName ) = 0;
 	// Called at the start of a new level, after the entities have been received and created
 	virtual void			LevelInitPostEntity( ) = 0;
+
+	virtual ILuaState 		*GetLuaState() = 0;
+
 	// Called at the end of a level
 	virtual void			LevelShutdown( void ) = 0;
 

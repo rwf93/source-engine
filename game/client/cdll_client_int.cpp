@@ -171,6 +171,8 @@ extern vgui::IInputInternal *g_InputInternal;
 #include "sixense/in_sixense.h"
 #endif
 
+#include "luainterface/iluainterface.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -608,6 +610,7 @@ public:
 
 	virtual void					LevelInitPreEntity( const char *pMapName );
 	virtual void					LevelInitPostEntity();
+	virtual ILuaState				*GetLuaState();
 	virtual void					LevelShutdown( void );
 
 	virtual ClientClass				*GetAllClasses( void );
@@ -1642,6 +1645,7 @@ void CHLClient::LevelInitPreEntity( char const* pMapName )
 #endif
 }
 
+ILuaState *g_pClientLuaState = 0;
 
 //-----------------------------------------------------------------------------
 // Purpose: Per level init
@@ -1651,6 +1655,8 @@ void CHLClient::LevelInitPostEntity( )
 	IGameSystem::LevelInitPostEntityAllSystems();
 	C_PhysPropClientside::RecreateAll();
 	internalCenterPrint->Clear();
+
+	g_pClientLuaState = g_pLuaInterface->CreateState();
 }
 
 //-----------------------------------------------------------------------------
@@ -1672,6 +1678,11 @@ void CHLClient::ResetStringTablePointers()
 #endif
 }
 
+ILuaState *CHLClient::GetLuaState()
+{
+	return g_pClientLuaState;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Per level de-init
 //-----------------------------------------------------------------------------
@@ -1680,6 +1691,9 @@ void CHLClient::LevelShutdown( void )
 	// HACK: Bogus, but the logic is too complicated in the engine
 	if (!g_bLevelInitialized)
 		return;
+
+	g_pLuaInterface->DestroyState(g_pClientLuaState);
+	g_pClientLuaState = 0;
 
 	g_bLevelInitialized = false;
 
