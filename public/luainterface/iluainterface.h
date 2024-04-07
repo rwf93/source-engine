@@ -6,6 +6,9 @@
 #include "appframework/IAppSystem.h"
 
 class ILuaState;
+enum LuaStateSide;
+
+typedef void(*CLuaLibFn)(ILuaState*);
 
 #include <limits.h>
 
@@ -14,8 +17,10 @@ class ILuaState;
 abstract_class ILuaInterface: public IAppSystem
 {
 public:
-    virtual ILuaState *CreateState() = 0;
+    virtual ILuaState *CreateState(LuaStateSide side) = 0;
     virtual void DestroyState(ILuaState *state) = 0;
+    virtual void RegisterLib(LuaStateSide side, CLuaLibFn fn) = 0; // Internal, not recommended to use
+    virtual void SetupLuaLibraries(LuaStateSide side, ILuaState *state) = 0; // Internal, not recommended to use
 };
 
 #endif

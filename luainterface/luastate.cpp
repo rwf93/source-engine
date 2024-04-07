@@ -3,6 +3,8 @@
 #include "tier1/interface.h"
 #include "tier2/tier2.h"
 
+#include "luainterface/iluainterface.h"
+
 #include "filesystem.h"
 
 #include "tier0/memdbgon.h"
@@ -25,17 +27,30 @@ static int PrintOverride(lua_State *L)
     return 0;
 }
 
-CLuaState::CLuaState() 
+CLuaState::CLuaState(LuaStateSide side) 
 {
     m_pState = 0;
     m_pState = lua_open();
     ((lua_StateUserdata*)m_pState)->state_userdata = reinterpret_cast<void*>(this);
-
     luaL_openlibs(m_pState);
 
     lua_pushcfunction(m_pState, PrintOverride);
     lua_setglobal(m_pState, "print");
 
+    m_eSide = side;
+
+    // Register Sided Lua Libraries
+    g_pLuaInterface->SetupLuaLibraries(m_eSide, this);
+}
+
+CLuaState::~CLuaState() 
+{
+    lua_close(m_pState);
+    m_pState = 0;
+}
+
+void CLuaState::Start()
+{
     auto opened = g_pFullFileSystem->Open("lua/init.lua", "r", "GAME");
     
     CUtlBuffer buffer;
@@ -46,18 +61,26 @@ CLuaState::CLuaState()
     g_pFullFileSystem->Close(opened);
 }
 
-CLuaState::~CLuaState() 
-{
-    lua_close(m_pState);
-    m_pState = 0;
-}
-
 void CLuaState::RunString(const char* string) 
 {
     GUARD_STATE;
     if(luaL_dostring(m_pState, string) != LUA_OK) { Warning("%s\n", lua_tostring(m_pState, -1)); }
 }
 
+void CLuaState::PushInteger(int value)
+{
+    GUARD_STATE;
+    lua_pushinteger(m_pState, value);
+}
+
 void CLuaState::PushFunction(CLuaFunctionFn fn) 
 {
+    GUARD_STATE;
+    lua_pushcfunction(m_pState, (lua_CFunction)fn);
+}
+
+void CLuaState::SetGlobal(const char *global)
+{
+    GUARD_STATE;
+    lua_setglobal(m_pState, global);
 }

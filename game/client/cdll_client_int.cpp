@@ -149,6 +149,8 @@
 
 #include "touch.h"
 
+#include "luainterface/iluastate.h"
+
 extern vgui::IInputInternal *g_InputInternal;
 
 //=============================================================================
@@ -1656,7 +1658,14 @@ void CHLClient::LevelInitPostEntity( )
 	C_PhysPropClientside::RecreateAll();
 	internalCenterPrint->Clear();
 
-	g_pClientLuaState = g_pLuaInterface->CreateState();
+	g_pClientLuaState = g_pLuaInterface->CreateState(LuaStateSide::CLIENT);
+	
+	g_pClientLuaState->PushInteger(1);
+	g_pClientLuaState->SetGlobal("CLIENT");
+	g_pClientLuaState->PushInteger(1);
+	g_pClientLuaState->SetGlobal("SHARED");
+	
+	g_pClientLuaState->Start();
 }
 
 //-----------------------------------------------------------------------------

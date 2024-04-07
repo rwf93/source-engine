@@ -11,6 +11,12 @@
 
 #include <lua.hpp>
 
+struct CRegisteredLib
+{
+    LuaStateSide side;
+    CLuaLibFn fn;
+};
+
 class CLuaInterface: public CTier2AppSystem< ILuaInterface > 
 {
     typedef CTier2AppSystem< ILuaInterface > BaseClass;
@@ -20,8 +26,13 @@ public:
     InitReturnVal_t Init() OVERRIDE;
     void Shutdown() OVERRIDE;
 
-    ILuaState *CreateState() OVERRIDE;
+    ILuaState *CreateState(LuaStateSide side) OVERRIDE;
     void DestroyState(ILuaState *state) OVERRIDE;
+
+    void RegisterLib(LuaStateSide side, CLuaLibFn fn) OVERRIDE;
+    void SetupLuaLibraries(LuaStateSide side, ILuaState* state) OVERRIDE;
+private:
+    CUtlVector<CRegisteredLib> m_vRegistedLibs;
 };
 
 #endif

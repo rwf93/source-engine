@@ -8,13 +8,19 @@
 class CLuaState: public ILuaState 
 {
 public:
-    CLuaState();
+    CLuaState(LuaStateSide side);
     ~CLuaState() OVERRIDE;
 
+    void Start() OVERRIDE;
+
     void RunString(const char*) OVERRIDE;
-    void PushFunction(CLuaFunctionFn fn);
+    void PushFunction(CLuaFunctionFn fn) OVERRIDE;
+    void PushInteger(int) OVERRIDE;
+    
+    void SetGlobal(const char*) OVERRIDE;
 private:
     lua_State *m_pState;
+    LuaStateSide m_eSide;
 };
 
 

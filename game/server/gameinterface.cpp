@@ -846,14 +846,29 @@ ILuaState *g_pServerLuaState = 0;
 void lua_reload_sv_handler()
 {
 	if(!g_pServerLuaState) { Error("Tried to reload serversided lua without an existing state. HOW?\n"); return; }
-
-	g_pLuaInterface->DestroyState(g_pServerLuaState);
-	g_pServerLuaState = 0;
-
-	g_pServerLuaState = g_pLuaInterface->CreateState();
+	g_pServerLuaState->Start();
 }
 
 ConCommand lua_reload_sv( "lua_reload_sv",  lua_reload_sv_handler );
+
+int test_lua_state_cancer(lua_StateUserdata *state) {
+	ILuaState *pState = reinterpret_cast<ILuaState*>(state->state_userdata);
+	pState->RunString("print('what the fuck am i doing')");
+	return 0; 
+}
+
+void RegisterServerSideLibraries(ILuaState *state) 
+{
+	Msg("LOL XD\n");
+	Msg("LOL XD\n");
+	Msg("LOL XD\n");
+	Msg("LOL XD\n");
+}
+
+void BruhLibs(ILuaState *state) 
+{
+	Msg("registered more libraries\n");
+}
 
 // This is called when a new game is started. (restart, map)
 bool CServerGameDLL::GameInit( void )
@@ -869,8 +884,12 @@ bool CServerGameDLL::GameInit( void )
 		gameeventmanager->FireEvent( event );
 	}
 
-	g_pServerLuaState = g_pLuaInterface->CreateState();
-	
+	g_pLuaInterface->RegisterLib(LuaStateSide::SERVER, RegisterServerSideLibraries);
+	g_pLuaInterface->RegisterLib(LuaStateSide::SERVER, BruhLibs);
+
+	g_pServerLuaState = g_pLuaInterface->CreateState(LuaStateSide::SERVER);
+	g_pServerLuaState->Start();
+
 	return true;
 }
 

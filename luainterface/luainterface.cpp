@@ -29,12 +29,26 @@ void CLuaInterface::Shutdown()
     BaseClass::Shutdown();
 }
 
-ILuaState *CLuaInterface::CreateState()
+ILuaState *CLuaInterface::CreateState(LuaStateSide side)
 {
-    return (ILuaState*)new CLuaState();
+    return (ILuaState*)new CLuaState(side);
 }
 
 void CLuaInterface::DestroyState(ILuaState *state)
 {
     delete state;
+}
+
+void CLuaInterface::RegisterLib(LuaStateSide side, CLuaLibFn fn)
+{
+    m_vRegistedLibs.AddToTail({side, fn});
+}
+
+void CLuaInterface::SetupLuaLibraries(LuaStateSide side, ILuaState *state)
+{
+    for(auto &lib: m_vRegistedLibs) 
+    {
+        if(lib.side == side)
+            lib.fn(state);
+    }
 }
