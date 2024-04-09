@@ -5,6 +5,8 @@
 #include <lua.hpp>
 #include "luainterface/iluastate.h"
 
+class LuaCommon;
+
 class CLuaState: public ILuaState 
 {
 public:

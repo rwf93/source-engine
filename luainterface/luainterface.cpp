@@ -21,6 +21,8 @@ InitReturnVal_t CLuaInterface::Init()
 	if ( nRetVal != INIT_OK )
 		return nRetVal;
 
+    __internal_common_library_dont_touch.RegisterCommonLibraries();
+
     return INIT_OK;
 }
 

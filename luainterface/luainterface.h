@@ -11,6 +11,8 @@
 
 #include <lua.hpp>
 
+#include "luacommon.h"
+
 struct CRegisteredLib
 {
     LuaStateSide side;
@@ -33,6 +35,7 @@ public:
     void SetupLuaLibraries(LuaStateSide side, ILuaState* state) OVERRIDE;
 private:
     CUtlVector<CRegisteredLib> m_vRegistedLibs;
+    LuaCommon __internal_common_library_dont_touch;
 };
 
 #endif

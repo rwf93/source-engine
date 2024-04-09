@@ -1,4 +1,5 @@
 #include "luastate.h"
+#include "luacommon.h"
 
 #include "tier1/interface.h"
 #include "tier2/tier2.h"
@@ -6,32 +7,9 @@
 #include "luainterface/iluainterface.h"
 #include "filesystem.h"
 
-#include "Color.h"
-
-#include "tier0/dbg.h"
-
 #include "tier0/memdbgon.h"
 
 #define GUARD_STATE if(!m_pState) Error("Attempted to call " __FUNCTION__ " without a valid internal lua state being initalized!");
-
-LUA_FUNCTION_STATIC(PrintOverride) 
-{
-    int nargs = LUA->GetTop();
-
-    for(int i = 1; i <= nargs; i++) 
-    {
-        LUA->GetGlobal("tostring");
-        LUA->Push(i);
-        LUA->Call(1, 1);
-
-        ConColorMsg(LUA->GetSide() == LuaStateSide::SERVER ? 
-            Color(71, 126, 255, 255) : Color(65, 242, 133, 255), "%s\t", LUA->ToString(-1));
-    }
-
-    Msg("\n"); // Finally, add a newline.
-
-    return 0;
-}
 
 CLuaState::CLuaState(LuaStateSide side) 
 {
@@ -41,15 +19,6 @@ CLuaState::CLuaState(LuaStateSide side)
     m_eSide = side;
 
     luaL_openlibs(m_pState);
-
-    this->PushFunction(PrintOverride);
-    this->SetGlobal("print");
-
-    this->PushInteger(m_eSide == LuaStateSide::CLIENT);
-    this->SetGlobal("CLIENT");
-
-    this->PushInteger(m_eSide == LuaStateSide::SERVER);
-    this->SetGlobal("SERVER");
 
     // Register Sided Lua Libraries
     g_pLuaInterface->SetupLuaLibraries(m_eSide, this);
