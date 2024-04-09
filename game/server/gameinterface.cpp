@@ -568,16 +568,15 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CServerGameDLL, IServerGameDLL, INTERFACEVERSI
 // When bumping the version to this interface, check that our assumption is still valid and expose the older version in the same way
 COMPILE_TIME_ASSERT( INTERFACEVERSION_SERVERGAMEDLL_INT == 10 );
 
-int test_lua_state_cancer(InternalLuaState *state) {
-	ILuaState *pState = reinterpret_cast<ILuaState*>(state->luastate);
-	pState->PushInteger(420);
-	return 1; 
+LUA_FUNCTION(TestFunctionBleh) {
+	LUA->PushInteger(420);
+	return 1;
 }
 
 void RegisterServerSideLibraries(ILuaState *state) 
 {
-	state->PushFunction(test_lua_state_cancer);
-	state->SetGlobal("TestCLuaFunc");
+	state->PushFunction(TestFunctionBleh);
+	state->SetGlobal("TestFunctionBleh");
 }
 
 bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory, 

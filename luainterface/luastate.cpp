@@ -14,21 +14,21 @@
 
 #define GUARD_STATE if(!m_pState) Error("Attempted to call " __FUNCTION__ " without a valid internal lua state being initalized!");
 
-static int PrintOverride(lua_State *L)
-{   
-    int nargs = lua_gettop(L);
-    for (int i = 1; i <= nargs; ++i)
-    {
-        lua_getglobal(L, "tostring");
-        lua_pushvalue(L, i);
-        lua_call(L, 1, 1);
+LUA_FUNCTION_STATIC(PrintOverride) 
+{
+    int nargs = LUA->GetTop();
 
-        // I KNOW, IT LOOKS LIKE ASS!
-        ConColorMsg(((InternalLuaState*)L)->luastate->GetSide() == LuaStateSide::SERVER ? 
-            Color(71, 126, 255, 255) : Color(65, 242, 133, 255), "%s\t", lua_tostring(L, -1));
+    for(int i = 1; i <= nargs; i++) 
+    {
+        LUA->GetGlobal("tostring");
+        LUA->Push(i);
+        LUA->Call(1, 1);
+
+        ConColorMsg(LUA->GetSide() == LuaStateSide::SERVER ? 
+            Color(71, 126, 255, 255) : Color(65, 242, 133, 255), "%s\t", LUA->ToString(-1));
     }
 
-    Msg("\n");
+    Msg("\n"); // Finally, add a newline.
 
     return 0;
 }
@@ -37,19 +37,19 @@ CLuaState::CLuaState(LuaStateSide side)
 {
     m_pState = 0;
     m_pState = lua_open();
-    ((InternalLuaState*)m_pState)->luastate = this;
+    ((InternalLuaState*)m_pState)->LUA = this;
     m_eSide = side;
 
     luaL_openlibs(m_pState);
 
-    lua_pushcfunction(m_pState, PrintOverride);
-    lua_setglobal(m_pState, "print");
+    this->PushFunction(PrintOverride);
+    this->SetGlobal("print");
 
-    lua_pushinteger(m_pState, m_eSide == LuaStateSide::CLIENT);
-    lua_setglobal(m_pState, "CLIENT");
+    this->PushInteger(m_eSide == LuaStateSide::CLIENT);
+    this->SetGlobal("CLIENT");
 
-    lua_pushinteger(m_pState, m_eSide == LuaStateSide::SERVER);
-    lua_setglobal(m_pState, "SERVER");
+    this->PushInteger(m_eSide == LuaStateSide::SERVER);
+    this->SetGlobal("SERVER");
 
     // Register Sided Lua Libraries
     g_pLuaInterface->SetupLuaLibraries(m_eSide, this);
@@ -63,6 +63,8 @@ CLuaState::~CLuaState()
 
 void CLuaState::Start()
 {
+    if(!g_pFullFileSystem->FileExists("lua/init.lua", "GAME")) return;
+    
     auto opened = g_pFullFileSystem->Open("lua/init.lua", "r", "GAME");
     
     CUtlBuffer buffer;
@@ -77,6 +79,12 @@ void CLuaState::DoString(const char* string)
 {
     GUARD_STATE;
     if(luaL_dostring(m_pState, string) != LUA_OK) { Warning("%s\n", lua_tostring(m_pState, -1)); }
+}
+
+void CLuaState::Push(int index)
+{
+    GUARD_STATE;
+    lua_pushvalue(m_pState, index);
 }
 
 void CLuaState::PushInteger(int value)
@@ -95,4 +103,28 @@ void CLuaState::SetGlobal(const char *global)
 {
     GUARD_STATE;
     lua_setglobal(m_pState, global);
+}
+
+void CLuaState::GetGlobal(const char *global)
+{
+    GUARD_STATE;
+    lua_getglobal(m_pState, global);
+}
+
+void CLuaState::Call(int nargs, int nresults)
+{
+    GUARD_STATE;
+    lua_call(m_pState, nargs, nresults);
+}
+
+int CLuaState::GetTop()
+{
+    GUARD_STATE;
+    return lua_gettop(m_pState);
+}
+
+const char *CLuaState::ToString(int index)
+{
+    GUARD_STATE;
+    return lua_tostring(m_pState, index);
 }
