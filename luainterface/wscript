@@ -19,7 +19,6 @@ def build(bld):
 		'luainterface.cpp',
 		'luastate.cpp',
 		'luacommon.cpp',
-		#'../public/tier0/memoverride.cpp'
 	]
 	source = source + bld.path.ant_glob('libraries/*.cpp')
 	source.append('../public/tier0/memoverride.cpp')

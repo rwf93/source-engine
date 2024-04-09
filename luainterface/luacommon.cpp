@@ -11,8 +11,8 @@ ELUA_LIBRARY(FileSystem);
 
 void LuaCommon::RegisterCommonLibraries()
 {
-    g_pLuaInterface->RegisterLib(LuaStateSide::CLIENT, LuaLibrary_Common);
-    g_pLuaInterface->RegisterLib(LuaStateSide::SERVER, LuaLibrary_Common);
-    g_pLuaInterface->RegisterLib(LuaStateSide::CLIENT, LuaLibrary_FileSystem);
-    g_pLuaInterface->RegisterLib(LuaStateSide::SERVER, LuaLibrary_FileSystem);
+	g_pLuaInterface->RegisterLib(LuaStateSide::CLIENT, LuaLibrary_Common);
+	g_pLuaInterface->RegisterLib(LuaStateSide::SERVER, LuaLibrary_Common);
+	g_pLuaInterface->RegisterLib(LuaStateSide::CLIENT, LuaLibrary_FileSystem);
+	g_pLuaInterface->RegisterLib(LuaStateSide::SERVER, LuaLibrary_FileSystem);
 }

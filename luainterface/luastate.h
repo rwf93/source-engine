@@ -10,30 +10,37 @@ class LuaCommon;
 class CLuaState: public ILuaState 
 {
 public:
-    CLuaState(LuaStateSide side);
-    ~CLuaState()                            OVERRIDE;
+	CLuaState(LuaStateSide side);
+	~CLuaState()                            			OVERRIDE;
 
-    void Start()                            OVERRIDE;
+	void Start()                            			OVERRIDE;
+	LuaStateSide GetSide() OVERRIDE { return m_eSide; }
+	void DoString(const char*)              			OVERRIDE;
+	
+	void Push(int index)                    			OVERRIDE;
+	void PushInteger(int value)             			OVERRIDE;
+	void PushString(const char *string)     			OVERRIDE;
+	void PushBoolean(bool boolean)						OVERRIDE;
+	void PushFunction(CLuaFunctionFn state) 			OVERRIDE;
 
-    LuaStateSide GetSide() OVERRIDE { return m_eSide; }
+	void CreateTable()									OVERRIDE;
 
-    void DoString(const char*)              OVERRIDE;
-    
-    void Push(int index)                    OVERRIDE;
-    void PushInteger(int value)             OVERRIDE;
-    void PushFunction(CLuaFunctionFn state) OVERRIDE;
+	const char *CheckString(int index)      			OVERRIDE;
 
-    void SetGlobal(const char* global)      OVERRIDE;
-    void GetGlobal(const char* global)      OVERRIDE;
+	void SetField(int index, const char* name)      	OVERRIDE;
+	void GetField(int index, const char *name)      	OVERRIDE;
 
-    void Call(int nargs, int nresults)      OVERRIDE;
+	void SetGlobal(const char* global)      			OVERRIDE;
+	void GetGlobal(const char* global)      			OVERRIDE;
 
-    int GetTop()                            OVERRIDE;
+	void Call(int nargs, int nresults)      			OVERRIDE;
 
-    const char *ToString(int index)         OVERRIDE;
+	int GetTop()                            			OVERRIDE;
+
+	const char *ToString(int index)         			OVERRIDE;
 private:
-    lua_State *m_pState;
-    LuaStateSide m_eSide;
+	lua_State *m_pState;
+	LuaStateSide m_eSide;
 };
 
 

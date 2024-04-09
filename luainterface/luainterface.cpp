@@ -9,48 +9,48 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR( CLuaInterface, ILuaInterface, BASELUA_INTERFA
 
 bool CLuaInterface::Connect( CreateInterfaceFn factory )
 {
-    if(!BaseClass::Connect(factory))
-        return false;
+	if(!BaseClass::Connect(factory))
+		return false;
 
-    return true;
+	return true;
 }
 
 InitReturnVal_t CLuaInterface::Init()
 {
-    InitReturnVal_t nRetVal = BaseClass::Init();
+	InitReturnVal_t nRetVal = BaseClass::Init();
 	if ( nRetVal != INIT_OK )
 		return nRetVal;
 
-    __internal_common_library_dont_touch.RegisterCommonLibraries();
+	__internal_common_library_dont_touch.RegisterCommonLibraries();
 
-    return INIT_OK;
+	return INIT_OK;
 }
 
 void CLuaInterface::Shutdown()
 {
-    BaseClass::Shutdown();
+	BaseClass::Shutdown();
 }
 
 ILuaState *CLuaInterface::CreateState(LuaStateSide side)
 {
-    return (ILuaState*)new CLuaState(side);
+	return (ILuaState*)new CLuaState(side);
 }
 
 void CLuaInterface::DestroyState(ILuaState *state)
 {
-    delete state;
+	delete state;
 }
 
 void CLuaInterface::RegisterLib(LuaStateSide side, CLuaLibFn fn)
 {
-    m_vRegistedLibs.AddToTail({side, fn});
+	m_vRegistedLibs.AddToTail({side, fn});
 }
 
 void CLuaInterface::SetupLuaLibraries(LuaStateSide side, ILuaState *state)
 {
-    for(auto &lib: m_vRegistedLibs) 
-    {
-        if(lib.side == side)
-            lib.fn(state);
-    }
+	for(auto &lib: m_vRegistedLibs) 
+	{
+		if(lib.side == side)
+			lib.fn(state);
+	}
 }

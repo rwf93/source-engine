@@ -15,27 +15,27 @@
 
 struct CRegisteredLib
 {
-    LuaStateSide side;
-    CLuaLibFn fn;
+	LuaStateSide side;
+	CLuaLibFn fn;
 };
 
 class CLuaInterface: public CTier2AppSystem< ILuaInterface > 
 {
-    typedef CTier2AppSystem< ILuaInterface > BaseClass;
+	typedef CTier2AppSystem< ILuaInterface > BaseClass;
 public:
-    bool Connect( CreateInterfaceFn factory ) OVERRIDE;
+	bool Connect( CreateInterfaceFn factory ) OVERRIDE;
 
-    InitReturnVal_t Init() OVERRIDE;
-    void Shutdown() OVERRIDE;
+	InitReturnVal_t Init() OVERRIDE;
+	void Shutdown() OVERRIDE;
 
-    ILuaState *CreateState(LuaStateSide side) OVERRIDE;
-    void DestroyState(ILuaState *state) OVERRIDE;
+	ILuaState *CreateState(LuaStateSide side) OVERRIDE;
+	void DestroyState(ILuaState *state) OVERRIDE;
 
-    void RegisterLib(LuaStateSide side, CLuaLibFn fn) OVERRIDE;
-    void SetupLuaLibraries(LuaStateSide side, ILuaState* state) OVERRIDE;
+	void RegisterLib(LuaStateSide side, CLuaLibFn fn) OVERRIDE;
+	void SetupLuaLibraries(LuaStateSide side, ILuaState* state) OVERRIDE;
 private:
-    CUtlVector<CRegisteredLib> m_vRegistedLibs;
-    LuaCommon __internal_common_library_dont_touch;
+	CUtlVector<CRegisteredLib> m_vRegistedLibs;
+	LuaCommon __internal_common_library_dont_touch;
 };
 
 #endif

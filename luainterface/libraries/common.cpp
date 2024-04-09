@@ -8,25 +8,25 @@
 
 LUA_FUNCTION_STATIC(PrintOverride) 
 {
-    int nargs = LUA->GetTop();
+	int nargs = LUA->GetTop();
 
-    for(int i = 1; i <= nargs; i++) 
-    {
-        LUA->GetGlobal("tostring");
-        LUA->Push(i);
-        LUA->Call(1, 1);
+	for(int i = 1; i <= nargs; i++) 
+	{
+		LUA->GetGlobal("tostring");
+		LUA->Push(i);
+		LUA->Call(1, 1);
 
-        ConColorMsg(LUA->GetSide() == LuaStateSide::SERVER ? 
-            Color(71, 126, 255, 255) : Color(65, 242, 133, 255), "%s\t", LUA->ToString(-1));
-    }
+		ConColorMsg(LUA->GetSide() == LuaStateSide::SERVER ? 
+			Color(71, 126, 255, 255) : Color(65, 242, 133, 255), "%s\t", LUA->ToString(-1));
+	}
 
-    Msg("\n"); // Finally, add a newline.
+	Msg("\n"); // Finally, add a newline.
 
-    return 0;
+	return 0;
 }
 
 LUA_LIBRARY(Common)
 {
-    LUA->PushFunction(PrintOverride);
-    LUA->SetGlobal("print");
+	LUA->PushFunction(PrintOverride);
+	LUA->SetGlobal("print");
 }

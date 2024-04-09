@@ -17,10 +17,10 @@ typedef void(*CLuaLibFn)(ILuaState*);
 abstract_class ILuaInterface: public IAppSystem
 {
 public:
-    virtual ILuaState *CreateState(LuaStateSide side) = 0;
-    virtual void DestroyState(ILuaState *state) = 0;
-    virtual void RegisterLib(LuaStateSide side, CLuaLibFn fn) = 0; // Internal, not recommended to use
-    virtual void SetupLuaLibraries(LuaStateSide side, ILuaState *state) = 0; // Internal, not recommended to use
+	virtual ILuaState *CreateState(LuaStateSide side) = 0;
+	virtual void DestroyState(ILuaState *state) = 0;
+	virtual void RegisterLib(LuaStateSide side, CLuaLibFn fn) = 0; // Internal, not recommended to use
+	virtual void SetupLuaLibraries(LuaStateSide side, ILuaState *state) = 0; // Internal, not recommended to use
 };
 
 #endif
