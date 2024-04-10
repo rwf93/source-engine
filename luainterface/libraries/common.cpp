@@ -25,8 +25,23 @@ LUA_FUNCTION_STATIC(PrintOverride)
 	return 0;
 }
 
+LUA_FUNCTION(IsServer)
+{
+	LUA->PushBoolean(LUA->GetSide() == LuaStateSide::SERVER);
+	return 1;
+}
+
+LUA_FUNCTION(IsClient)
+{
+	LUA->PushBoolean(LUA->GetSide() == LuaStateSide::CLIENT);
+	return 1;
+}
+
 LUA_LIBRARY(Common)
 {
 	LUA->PushFunction(PrintOverride);
 	LUA->SetGlobal("print");
+
+	LUA_LIBRARY_GFUNCTION(IsServer);
+	LUA_LIBRARY_GFUNCTION(IsClient);
 }

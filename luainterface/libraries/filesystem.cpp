@@ -24,7 +24,7 @@ LUA_FUNCTION(ReadFile)
 LUA_FUNCTION(FileExists)
 {
 	const char *file = LUA->CheckString(1);
-	const char *pathid = LUA->CheckString(1);
+	const char *pathid = LUA->CheckString(2);
 	
 	LUA->PushBoolean(g_pFullFileSystem->FileExists(file, pathid));
 
