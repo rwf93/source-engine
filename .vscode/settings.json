@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "*.lua": "glua",
+        "iosfwd": "cpp",
+        "xlocbuf": "cpp",
+        "functional": "cpp",
+        "filesystem": "cpp",
+        "xstring": "cpp",
+        "iterator": "cpp",
+        "memory": "cpp",
+        "ranges": "cpp",
+        "xutility": "cpp"
+    }
+}
