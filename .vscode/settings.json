@@ -9,6 +9,7 @@
         "iterator": "cpp",
         "memory": "cpp",
         "ranges": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "type_traits": "cpp"
     }
 }

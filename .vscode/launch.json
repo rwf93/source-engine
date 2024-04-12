@@ -13,7 +13,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}/build/out",
             "environment": [],
-            "console": "externalTerminal"
+            "console": "internalConsole"
         },
         {
             "name": "(Windows) Launch Game",
@@ -24,7 +24,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}/build/out",
             "environment": [],
-            "console": "externalTerminal"
+            "console": "internalConsole"
         }
     ],
     
