@@ -471,6 +471,10 @@ public:
 	void SecondaryAttack(void);
 	void WeaponIdle(void);
 	void ItemPostFrame(void);
+
+	bool TraceObject(trace_t *trace, float maxForward = 4000);
+	bool TraceObject(trace_t *trace, CBaseEntity **entity, float maxForward = 4000);
+
 	virtual bool Holster(CBaseCombatWeapon *pSwitchingTo)
 	{
 		EffectDestroy();
@@ -690,30 +694,11 @@ void CWeaponGravityGun::EffectUpdate(void)
 
 	if (!m_active)
 	{
-		Vector forward;
-		pOwner->EyeVectors(&forward);
-
-		Vector start = pOwner->Weapon_ShootPosition();
-		Vector end = start + forward * 4096;
-
 		trace_t tr;
-		UTIL_TraceLine(start, end, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr);
-		if (tr.fraction == 1.0 || (tr.surface.flags & SURF_SKY))
-			return;
+		CBaseEntity *pHit = 0;
+		if(!TraceObject(&tr, &pHit)) return;
 
-		CBaseEntity *pHit = tr.m_pEnt;
-		if (pHit->entindex() == 0)
-		{
-			pHit = NULL;
-		}
-		else
-		{
-			// if the object has no physics object, or isn't a physprop or brush entity, then don't glue
-			if (!pHit->VPhysicsGetObject() || pHit->GetMoveType() != MOVETYPE_VPHYSICS)
-				return;
-		}
-
-		if (pHit)
+		if(pHit)
 			pHit->VPhysicsGetObject()->EnableMotion(true);
 	}
 
@@ -733,22 +718,7 @@ void CWeaponGravityGun::EffectUpdate(void)
 	UTIL_TraceLine(start, end, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr);
 	end = tr.endpos;
 	float distance = tr.fraction * 4096;
-	/*
-		CBaseEntity *pHit = tr.m_pEnt;
-		if ( pHit->entindex() == 0 )
-		{
-			pHit = NULL;
-		}
-		else
-		{
-			// if the object has no physics object, or isn't a physprop or brush entity, then don't glue
-			if ( !pHit->VPhysicsGetObject() || pHit->GetMoveType() != MOVETYPE_VPHYSICS )
-				return;
-		}
 
-		if(pHit && pHit->VPhysicsGetObject()->IsMotionEnabled())
-			pHit->VPhysicsGetObject()->EnableMotion(false);
-	*/
 	if (tr.fraction != 1)
 	{
 		// too close to the player, drop the object
@@ -1318,9 +1288,9 @@ void CWeaponGravityGun::PrimaryAttack(void)
 void CWeaponGravityGun::SecondaryAttack(void)
 {
 	m_flNextSecondaryAttack = gpGlobals->curtime + 0.1;
-	m_flNextPrimaryAttack = gpGlobals->curtime + 0.75;
 	if (m_active)
 	{
+		m_flNextPrimaryAttack = gpGlobals->curtime + 0.75;
 		EffectDestroy();
 		SoundDestroy();
 		//return;
@@ -1341,38 +1311,16 @@ void CWeaponGravityGun::SecondaryAttack(void)
 	// Make sure I've got a view model
 	CBaseViewModel *vm = pOwner->GetViewModel();
 	if (vm)
-	{
 		m_viewModelIndex = vm->entindex();
-	}
-
-	Vector forward;
-	pOwner->EyeVectors(&forward);
-
-	Vector start = pOwner->Weapon_ShootPosition();
-	Vector end = start + forward * 4096;
 
 	trace_t tr;
-	UTIL_TraceLine(start, end, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, &tr);
-	if (tr.fraction == 1.0 || (tr.surface.flags & SURF_SKY))
-		return;
-
-	CBaseEntity *pHit = tr.m_pEnt;
-
-	if (pHit->entindex() == 0)
-	{
-		pHit = NULL;
-	}
-	else
-	{
-		// if the object has no physics object, or isn't a physprop or brush entity, then don't glue
-		if (!pHit->VPhysicsGetObject() || pHit->GetMoveType() != MOVETYPE_VPHYSICS)
-			return;
-	}
+	CBaseEntity *pHit = 0;
+	if(!TraceObject(&tr, &pHit)) return;
 
 	QAngle angles;
 	WeaponSound(SINGLE);
 
-	if (pHit)
+	if(pHit)
 		pHit->VPhysicsGetObject()->EnableMotion(false);
 
 #if 0
@@ -1450,6 +1398,37 @@ void CWeaponGravityGun::ItemPostFrame(void)
 		WeaponIdle();
 		return;
 	}
+}
+
+bool CWeaponGravityGun::TraceObject(trace_t *trace, float maxForward)
+{
+	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
+
+	Vector forward;
+	pOwner->EyeVectors(&forward);
+
+	Vector start = pOwner->Weapon_ShootPosition();
+	Vector end = start + forward * maxForward;
+
+	UTIL_TraceLine(start, end, MASK_SHOT, pOwner, COLLISION_GROUP_NONE, trace);
+	if (trace->fraction == 1.0 || (trace->surface.flags & SURF_SKY))
+		return false;
+
+	return true;
+}
+
+bool CWeaponGravityGun::TraceObject(trace_t *trace, CBaseEntity **entity, float maxForward)
+{
+	// ALL THE CHECKS!!!! PAIN PAIN PAIN
+	if(!TraceObject(trace, maxForward)) 					return false;
+	if(!trace->m_pEnt) 										return false;
+	if(trace->m_pEnt->entindex() == 0)						return false;
+	if(!trace->m_pEnt->VPhysicsGetObject()) 			  	return false;
+	if(trace->m_pEnt->GetMoveType() != MOVETYPE_VPHYSICS)	return false;
+
+	*entity = trace->m_pEnt;
+
+	return true;
 }
 
 //-----------------------------------------------------------------------------
