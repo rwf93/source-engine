@@ -35,7 +35,7 @@ $Project "Client (HL2MP)"
 		$File	"$SRCDIR\game\shared\teamplay_round_timer.cpp"
 		$File	"$SRCDIR\game\shared\teamplay_round_timer.h"
 
-		$File	"hl2/c_weapon_gravitygun.cpp"
+		$File	"hl2/c_weapon_physgun.cpp"
 
 		$Folder	"HL2 DLL"
 		{

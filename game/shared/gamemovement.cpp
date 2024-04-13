@@ -2347,6 +2347,7 @@ void CGameMovement::PlaySwimSound()
 	MoveHelper()->StartSound( mv->GetAbsOrigin(), "Player.Swim" );
 }
 
+ConVar sv_enableaccelleratedbackhopping("sv_enableaccelleratedbackhopping", "0", FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -2466,7 +2467,7 @@ bool CGameMovement::CheckJumpButton( void )
 
 	// Add a little forward velocity based on your current forward velocity - if you are not sprinting.
 #if defined( HL2_DLL ) || defined( HL2_CLIENT_DLL )
-	if ( gpGlobals->maxClients == 1 )
+	if ( gpGlobals->maxClients == 1 || sv_enableaccelleratedbackhopping.GetBool() )
 	{
 		CHLMoveData *pMoveData = ( CHLMoveData* )mv;
 		Vector vecForward;

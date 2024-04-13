@@ -92,8 +92,7 @@ public:
 };
 
 BEGIN_SIMPLE_DATADESC(CGravControllerPoint)
-
-DEFINE_FIELD(m_localPosition, FIELD_VECTOR),
+	DEFINE_FIELD(m_localPosition, FIELD_VECTOR),
 	DEFINE_FIELD(m_targetPosition, FIELD_POSITION_VECTOR),
 	DEFINE_FIELD(m_worldPosition, FIELD_POSITION_VECTOR),
 	DEFINE_FIELD(m_localAlignNormal, FIELD_VECTOR),
@@ -108,13 +107,9 @@ DEFINE_FIELD(m_localPosition, FIELD_VECTOR),
 	DEFINE_FIELD(m_attachedEntity, FIELD_EHANDLE),
 	DEFINE_FIELD(m_targetRotation, FIELD_VECTOR),
 	DEFINE_FIELD(m_timeToArrive, FIELD_FLOAT),
+END_DATADESC()
 
-	// Physptrs can't be saved in embedded classes... this is to silence classcheck
-	// DEFINE_PHYSPTR( m_controller ),
-
-	END_DATADESC()
-
-		CGravControllerPoint::CGravControllerPoint(void)
+CGravControllerPoint::CGravControllerPoint(void)
 {
 	m_attachedEntity = NULL;
 }
@@ -437,18 +432,14 @@ private:
 };
 
 IMPLEMENT_SERVERCLASS_ST(CWeaponGravityGun, DT_WeaponGravityGun)
-SendPropVector(SENDINFO_NAME(m_gravCallback.m_targetPosition, m_targetPosition), -1, SPROP_COORD),
+	SendPropVector(SENDINFO_NAME(m_gravCallback.m_targetPosition, m_targetPosition), -1, SPROP_COORD),
 	SendPropVector(SENDINFO_NAME(m_gravCallback.m_worldPosition, m_worldPosition), -1, SPROP_COORD),
 	SendPropInt(SENDINFO(m_active), 1, SPROP_UNSIGNED),
 	SendPropModelIndex(SENDINFO(m_viewModelIndex)),
-	END_SEND_TABLE()
+END_SEND_TABLE()
 
-		LINK_ENTITY_TO_CLASS(weapon_physgun, CWeaponGravityGun);
+LINK_ENTITY_TO_CLASS(weapon_physgun, CWeaponGravityGun);
 PRECACHE_WEAPON_REGISTER(weapon_physgun);
-
-//---------------------------------------------------------
-// Save/Restore
-//---------------------------------------------------------
 
 BEGIN_DATADESC(CWeaponGravityGun)
 	DEFINE_FIELD(m_active, FIELD_INTEGER),
@@ -465,8 +456,12 @@ BEGIN_DATADESC(CWeaponGravityGun)
 	DEFINE_PHYSPTR(m_gravCallback.m_controller),
 END_DATADESC()
 
-		enum physgun_soundstate { SS_SCANNING,
-								  SS_LOCKEDON };
+enum physgun_soundstate
+{ 
+	SS_SCANNING,
+	SS_LOCKEDON 
+};
+
 enum physgun_soundIndex
 {
 	SI_LOCKEDON = 0,
@@ -542,8 +537,10 @@ void CWeaponGravityGun::EffectUpdate(void)
 		CBaseEntity *pHit = 0;
 		if(!TraceObject(&tr, &pHit)) return;
 
-		if(pHit)
+		if(pHit) {
+			pHit->VPhysicsGetObject()->Wake();
 			pHit->VPhysicsGetObject()->EnableMotion(true);
+		}
 	}
 
 	m_viewModelIndex = pOwner->entindex();
