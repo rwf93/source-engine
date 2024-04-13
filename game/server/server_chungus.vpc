@@ -62,10 +62,7 @@ $Project "Server (HL2MP)"
 		$File   "$SRCDIR\game\shared\teamplay_round_timer.h"
 
 		$File	"weapon_physgun.cpp"
-
-		$File	"vehicle_base.cpp"
-		$File	"vehicle_baseserver.cpp"
-		$File	"fourwheelvehiclephysics.cpp"
+		$File	"hl2/vehicle_jeep.cpp"
 
 		$Folder	"HL2 DLL"
 		{
