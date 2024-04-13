@@ -51,7 +51,6 @@ public:
 	Vector m_targetPosition;
 	Vector m_worldPosition;
 	int m_active;
-	int m_glueTouching;
 	int m_viewModelIndex;
 };
 
@@ -103,11 +102,10 @@ IMPLEMENT_CLIENTCLASS_DT(C_WeaponGravityGun, DT_WeaponGravityGun, CWeaponGravity
 RecvPropVector(RECVINFO_NAME(m_beam.m_targetPosition, m_targetPosition)),
 	RecvPropVector(RECVINFO_NAME(m_beam.m_worldPosition, m_worldPosition)),
 	RecvPropInt(RECVINFO_NAME(m_beam.m_active, m_active)),
-	RecvPropInt(RECVINFO_NAME(m_beam.m_glueTouching, m_glueTouching)),
 	RecvPropInt(RECVINFO_NAME(m_beam.m_viewModelIndex, m_viewModelIndex)),
 	END_RECV_TABLE()
 
-		C_BeamQuadratic::C_BeamQuadratic()
+C_BeamQuadratic::C_BeamQuadratic()
 {
 	m_pOwner = NULL;
 }
@@ -152,15 +150,7 @@ int C_BeamQuadratic::DrawModel(int)
 	points[2] = m_worldPosition;
 
 	IMaterial *pMat = materials->FindMaterial("sprites/physbeam", TEXTURE_GROUP_CLIENT_EFFECTS);
-	Vector color;
-	if (m_glueTouching)
-	{
-		color.Init(1, 0, 0);
-	}
-	else
-	{
-		color.Init(1, 1, 1);
-	}
+	Vector color(1, 1, 1);
 
 	float scrollOffset = gpGlobals->curtime - (int)gpGlobals->curtime;
 	materials->GetRenderContext()->Bind(pMat);
