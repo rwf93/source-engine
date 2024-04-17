@@ -429,6 +429,7 @@ private:
 	Vector m_originalObjectPosition;
 
 	CGravControllerPoint m_gravCallback;
+	CBeam *m_pBeam;
 };
 
 IMPLEMENT_SERVERCLASS_ST(CWeaponGravityGun, DT_WeaponGravityGun)
