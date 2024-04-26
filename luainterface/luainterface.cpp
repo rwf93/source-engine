@@ -48,7 +48,7 @@ void CLuaInterface::RegisterLib(LuaStateSide side, CLuaLibFn fn)
 
 void CLuaInterface::SetupLuaLibraries(LuaStateSide side, ILuaState *state)
 {
-	for(auto &lib: m_vRegistedLibs) 
+	for(auto &lib: m_vRegistedLibs)
 	{
 		if(lib.side == side)
 			lib.fn(state);

@@ -11,12 +11,13 @@
 
 #define GUARD_STATE if(!m_pState) Error("Attempted to call " __FUNCTION__ " without a valid internal lua state being initalized!");
 
-CLuaState::CLuaState(LuaStateSide side) 
+CLuaState::CLuaState(LuaStateSide side)
 {
 	m_pState = 0;
 	m_pState = lua_open();
-	((InternalLuaState*)m_pState)->LUA = this;
+	((InternalLuaState*)m_pState)->LUA = this; // pretty and ugly
 	m_eSide = side;
+	m_uIota = -1;
 
 	luaL_openlibs(m_pState);
 
@@ -24,7 +25,7 @@ CLuaState::CLuaState(LuaStateSide side)
 	g_pLuaInterface->SetupLuaLibraries(m_eSide, this);
 }
 
-CLuaState::~CLuaState() 
+CLuaState::~CLuaState()
 {
 	lua_close(m_pState);
 	m_pState = 0;
@@ -33,18 +34,18 @@ CLuaState::~CLuaState()
 void CLuaState::Start()
 {
 	if(!g_pFullFileSystem->FileExists("lua/init.lua", "GAME")) return;
-	
+
 	auto opened = g_pFullFileSystem->Open("lua/init.lua", "r", "GAME");
-	
+
 	CUtlBuffer buffer;
 	g_pFullFileSystem->ReadToBuffer(opened, buffer);
-	
+
 	if(luaL_dostring(m_pState, static_cast<const char*>(buffer.String())) != LUA_OK) { Warning("%s\n", lua_tostring(m_pState, -1)); }
 
 	g_pFullFileSystem->Close(opened);
 }
 
-void CLuaState::DoString(const char* string) 
+void CLuaState::DoString(const char* string)
 {
 	GUARD_STATE;
 	if(luaL_dostring(m_pState, string) != LUA_OK) { Warning("%s\n", lua_tostring(m_pState, -1)); }
@@ -74,7 +75,7 @@ void CLuaState::PushBoolean(bool boolean)
 	lua_pushboolean(m_pState, boolean);
 }
 
-void CLuaState::PushFunction(CLuaFunctionFn fn) 
+void CLuaState::PushFunction(CLuaFunctionFn fn)
 {
 	GUARD_STATE;
 	lua_pushcfunction(m_pState, (lua_CFunction)fn);
@@ -86,7 +87,7 @@ void CLuaState::CreateTable()
 	lua_newtable(m_pState);
 }
 
-const char *CLuaState::CheckString(int index) 
+const char *CLuaState::CheckString(int index)
 {
 	GUARD_STATE;
 	return luaL_checkstring(m_pState, index);
@@ -132,4 +133,13 @@ const char *CLuaState::ToString(int index)
 {
 	GUARD_STATE;
 	return lua_tostring(m_pState, index);
+}
+
+void CLuaState::CreateMetaTable(const char *name, UserDataID &id)
+{
+	GUARD_STATE;
+	luaL_newmetatable(m_pState, name);
+
+	if(!m_uMetaMap.HasElement(name)) m_uIota++;
+	id = m_uMetaMap[m_uMetaMap.Insert(name, m_uIota)];
 }

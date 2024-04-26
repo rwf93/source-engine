@@ -34,35 +34,45 @@ enum LuaStateSide
 	CLIENT
 };
 
-abstract_class ILuaState 
+typedef int UserDataID;
+struct UserdataStruct {
+    UserDataID id;
+    void *opaque;
+};
+
+abstract_class ILuaState
 {
 public:
 	virtual ~ILuaState() {}
 
-	virtual void Start() 								= 0;
-	virtual LuaStateSide GetSide()                  	= 0;
-	virtual void DoString(const char* code)         	= 0;
+	virtual void Start() 											= 0;
+	virtual LuaStateSide GetSide()                  				= 0;
+	virtual void DoString(const char* code)         				= 0;
 
-	virtual void Push(int index)                    	= 0;
-	virtual void PushInteger(int value)             	= 0;
-	virtual void PushString(const char *string)     	= 0;
-	virtual void PushBoolean(bool boolean)				= 0;
-	virtual void PushFunction(CLuaFunctionFn state) 	= 0;
-	
-	virtual const char *CheckString(int index)      	= 0;
-	virtual void CreateTable()							= 0;
-	
-	virtual void SetField(int index, const char* name) 	= 0;
-	virtual void GetField(int index, const char *name)	= 0;
-	
-	virtual void SetGlobal(const char *global)      	= 0;
-	virtual void GetGlobal(const char *global)      	= 0;
-	
-	virtual void Call(int nargs, int nresults)      	= 0;
+	virtual void Push(int index)                    				= 0;
+	virtual void PushInteger(int value)             				= 0;
+	virtual void PushString(const char *string)     				= 0;
+	virtual void PushBoolean(bool boolean)							= 0;
+	virtual void PushFunction(CLuaFunctionFn state) 				= 0;
 
-	virtual int GetTop() 								= 0;
+	virtual void Pop(int index)										= 0;
 
-	virtual const char *ToString(int index)         	= 0;
+	virtual const char *CheckString(int index)      				= 0;
+	virtual void CreateTable()										= 0;
+
+	virtual void SetField(int index, const char* name) 				= 0;
+	virtual void GetField(int index, const char *name)				= 0;
+
+	virtual void SetGlobal(const char *global)      				= 0;
+	virtual void GetGlobal(const char *global)      				= 0;
+
+	virtual void Call(int nargs, int nresults)      				= 0;
+
+	virtual int GetTop() 											= 0;
+
+	virtual const char *ToString(int index)         				= 0;
+
+	virtual void CreateMetaTable(const char *name, UserDataID &id)	= 0;
 };
 
 #endif
