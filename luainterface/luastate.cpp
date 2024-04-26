@@ -81,10 +81,41 @@ void CLuaState::PushFunction(CLuaFunctionFn fn)
 	lua_pushcfunction(m_pState, (lua_CFunction)fn);
 }
 
+void CLuaState::PushMetaTable(UserDataID id)
+{
+	GUARD_STATE;
+	if(!m_uMetaStringTable.HasElement(id)) { Error("Attempted to push invalid metatable typeid!"); return; }
+	lua_getfield(m_pState, LUA_REGISTRYINDEX, m_uMetaStringTable[m_uMetaStringTable.Find(id)]);
+}
+
+void CLuaState::PushMetaTable(const char *name)
+{
+	GUARD_STATE;
+	if(!m_uMetaIDTable.HasElement(name)) { Error("Attempted to push invalid metatable name!"); return; }
+	PushMetaTable(m_uMetaIDTable[m_uMetaIDTable.Find(name)]);
+}
+
+void CLuaState::Pop(int idx)
+{
+	GUARD_STATE;
+	lua_pop(m_pState, idx);
+}
+
 void CLuaState::CreateTable()
 {
 	GUARD_STATE;
 	lua_newtable(m_pState);
+}
+
+int CLuaState::CreateMetaTable(const char *name, UserDataID &id)
+{
+	GUARD_STATE;
+
+	if(!m_uMetaIDTable.HasElement(name)) m_uIota++;
+	id = m_uMetaIDTable[m_uMetaIDTable.Insert(name, m_uIota)];
+	m_uMetaStringTable.Insert(id, name);
+
+	return luaL_newmetatable(m_pState, name);
 }
 
 const char *CLuaState::CheckString(int index)
@@ -117,6 +148,24 @@ void CLuaState::GetGlobal(const char *global)
 	lua_getglobal(m_pState, global);
 }
 
+void CLuaState::SetMetaTable(int idx)
+{
+	GUARD_STATE;
+	lua_setmetatable(m_pState, idx);
+}
+
+int CLuaState::SetFEnv(int idx)
+{
+	GUARD_STATE;
+	return lua_setfenv(m_pState, idx);
+}
+
+void CLuaState::GetFEnv(int idx)
+{
+	GUARD_STATE;
+	lua_getfenv(m_pState, idx);
+}
+
 void CLuaState::Call(int nargs, int nresults)
 {
 	GUARD_STATE;
@@ -133,13 +182,4 @@ const char *CLuaState::ToString(int index)
 {
 	GUARD_STATE;
 	return lua_tostring(m_pState, index);
-}
-
-void CLuaState::CreateMetaTable(const char *name, UserDataID &id)
-{
-	GUARD_STATE;
-	luaL_newmetatable(m_pState, name);
-
-	if(!m_uMetaMap.HasElement(name)) m_uIota++;
-	id = m_uMetaMap[m_uMetaMap.Insert(name, m_uIota)];
 }

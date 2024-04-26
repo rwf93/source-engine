@@ -25,15 +25,23 @@ public:
 	void PushString(const char *string)     				OVERRIDE;
 	void PushBoolean(bool boolean)							OVERRIDE;
 	void PushFunction(CLuaFunctionFn state) 				OVERRIDE;
+	void PushMetaTable(UserDataID id)						OVERRIDE;
+	void PushMetaTable(const char *name)					OVERRIDE;
 
 	void Pop(int index)										OVERRIDE;
 
 	void CreateTable()										OVERRIDE;
+	int CreateMetaTable(const char *name, UserDataID &id)	OVERRIDE;
 
 	const char *CheckString(int index)      				OVERRIDE;
 
 	void SetField(int index, const char* name)      		OVERRIDE;
 	void GetField(int index, const char *name)      		OVERRIDE;
+
+	void SetMetaTable(int idx)								OVERRIDE;
+
+	int SetFEnv(int idx)									OVERRIDE;
+	void GetFEnv(int idx)									OVERRIDE;
 
 	void SetGlobal(const char* global)      				OVERRIDE;
 	void GetGlobal(const char* global)      				OVERRIDE;
@@ -44,13 +52,13 @@ public:
 
 	const char *ToString(int index)         				OVERRIDE;
 
-	void CreateMetaTable(const char *name, UserDataID &id)	OVERRIDE;
 private:
 	lua_State *m_pState;
 	LuaStateSide m_eSide;
 
 	UserDataID m_uIota; // autoincrementing typeid
-	CUtlHashtable<const char*, UserDataID> m_uMetaMap;
+	CUtlHashtable<const char*, UserDataID> m_uMetaIDTable;
+	CUtlHashtable<UserDataID, const char*> m_uMetaStringTable;
 };
 
 

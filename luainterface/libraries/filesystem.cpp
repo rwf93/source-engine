@@ -12,7 +12,7 @@ static UserDataID FileSystemUserdataID = 0;
 
 LUA_FUNCTION(OpenFile)
 {
-	return 1;
+	return 0;
 }
 
 LUA_FUNCTION(CloseFile)
@@ -56,10 +56,12 @@ LUA_LIBRARY(FileSystem)
 	LUA->SetGlobal("FileSystem");
 
 	LUA->CreateMetaTable(FileSystemUserdata, FileSystemUserdataID);
+	{
 		LUA->PushInteger(-1);
 		LUA->SetField(-2, "__index");
 
 		LUA->PushInteger(-1);
 		LUA->SetField(-2, "__newindex");
+	}
 	LUA->Pop(-1);
 }

@@ -54,14 +54,23 @@ public:
 	virtual void PushString(const char *string)     				= 0;
 	virtual void PushBoolean(bool boolean)							= 0;
 	virtual void PushFunction(CLuaFunctionFn state) 				= 0;
+	virtual void PushMetaTable(UserDataID id)						= 0;
+	virtual void PushMetaTable(const char* name)					= 0; // Internally calls PushMetaTable(UserDataID)
 
 	virtual void Pop(int index)										= 0;
 
 	virtual const char *CheckString(int index)      				= 0;
+
 	virtual void CreateTable()										= 0;
+	virtual int CreateMetaTable(const char *name, UserDataID &id)	= 0;
 
 	virtual void SetField(int index, const char* name) 				= 0;
 	virtual void GetField(int index, const char *name)				= 0;
+
+	virtual void SetMetaTable(int idx)								= 0;
+
+	virtual int SetFEnv(int idx)									= 0;
+	virtual void GetFEnv(int idx)									= 0;
 
 	virtual void SetGlobal(const char *global)      				= 0;
 	virtual void GetGlobal(const char *global)      				= 0;
@@ -72,7 +81,6 @@ public:
 
 	virtual const char *ToString(int index)         				= 0;
 
-	virtual void CreateMetaTable(const char *name, UserDataID &id)	= 0;
 };
 
 #endif
