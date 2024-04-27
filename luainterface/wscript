@@ -34,7 +34,7 @@ def build(bld):
 
 	defines = []
 
-	libs = ['tier0','vpklib','tier1','tier2','vstdlib','LUAJIT']
+	libs = ['tier0','tier1','tier2','vstdlib','LUAJIT']
 
 	install_path = bld.env.LIBDIR
 

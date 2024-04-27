@@ -10,17 +10,17 @@
 static const char *FileSystemUserdata = "FileHandle";
 static UserDataID FileSystemUserdataID = 0;
 
-LUA_FUNCTION(OpenFile)
+LUA_FUNCTION_STATIC(OpenFile)
 {
 	return 0;
 }
 
-LUA_FUNCTION(CloseFile)
+LUA_FUNCTION_STATIC(CloseFile)
 {
 	return 0;
 }
 
-LUA_FUNCTION(ReadFile)
+LUA_FUNCTION_STATIC(ReadFile)
 {
 	CUtlBuffer temp_buffer;
 
@@ -34,7 +34,7 @@ LUA_FUNCTION(ReadFile)
 	return 1;
 }
 
-LUA_FUNCTION(FileExists)
+LUA_FUNCTION_STATIC(FileExists)
 {
 	const char *file = LUA->CheckString(1);
 	const char *pathid = LUA->CheckString(2);
