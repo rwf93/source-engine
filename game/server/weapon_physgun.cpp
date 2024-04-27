@@ -458,9 +458,9 @@ BEGIN_DATADESC(CWeaponPhysGun)
 END_DATADESC()
 
 enum physgun_soundstate
-{ 
+{
 	SS_SCANNING,
-	SS_LOCKEDON 
+	SS_LOCKEDON
 };
 
 enum physgun_soundIndex
@@ -922,7 +922,7 @@ void CWeaponPhysGun::SecondaryAttack(void)
 	Assert(pOwner);
 
 	if( !pOwner )
-		return; 
+		return;
 
 	m_viewModelIndex = pOwner->entindex();
 	// Make sure I've got a view model
@@ -1058,7 +1058,7 @@ void CC_CollisionTest( const CCommand &args )
 			theta = fabs(fmod(theta, DEG2RAD(360)));
 			phi += NUM_COLLISION_TESTS * 1997.99;
 			phi = fabs(fmod(phi, DEG2RAD(180)));
-			
+
 			float st, ct, sp, cp;
 			SinCos( theta, &st, &ct );
 			SinCos( phi, &sp, &cp );
@@ -1066,7 +1066,7 @@ void CC_CollisionTest( const CCommand &args )
 			targets[i].x = radius * ct * sp;
 			targets[i].y = radius * st * sp;
 			targets[i].z = radius * cp;
-			
+
 			// make the trace 1024 units long
 			Vector dir = targets[i] - start;
 			VectorNormalize(dir);

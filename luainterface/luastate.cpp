@@ -35,14 +35,10 @@ void CLuaState::Start()
 {
 	if(!g_pFullFileSystem->FileExists("lua/init.lua", "GAME")) return;
 
-	auto opened = g_pFullFileSystem->Open("lua/init.lua", "r", "GAME");
+	char fullPath[MAX_PATH] = { 0 };
+	g_pFullFileSystem->RelativePathToFullPath( "lua/init.lua", "GAME", fullPath, MAX_PATH );
 
-	CUtlBuffer buffer;
-	g_pFullFileSystem->ReadToBuffer(opened, buffer);
-
-	if(luaL_dostring(m_pState, static_cast<const char*>(buffer.String())) != LUA_OK) { Warning("%s\n", lua_tostring(m_pState, -1)); }
-
-	g_pFullFileSystem->Close(opened);
+	if(luaL_dofile(m_pState, fullPath) != LUA_OK) { Warning("%s\n", lua_tostring(m_pState, -1)); }
 }
 
 void CLuaState::DoString(const char* string)

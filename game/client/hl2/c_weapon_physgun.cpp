@@ -94,7 +94,22 @@ private:
 	C_WeaponPhysGun(const C_WeaponPhysGun &);
 
 	C_BeamQuadratic m_beam;
+
+	DECLARE_ACTTABLE();
 };
+
+acttable_t	C_WeaponPhysGun::m_acttable[] = 
+{
+	{ ACT_HL2MP_IDLE,					ACT_HL2MP_IDLE_PHYSGUN,					false },
+	{ ACT_HL2MP_RUN,					ACT_HL2MP_RUN_PHYSGUN,					false },
+	{ ACT_HL2MP_IDLE_CROUCH,			ACT_HL2MP_IDLE_CROUCH_PHYSGUN,			false },
+	{ ACT_HL2MP_WALK_CROUCH,			ACT_HL2MP_WALK_CROUCH_PHYSGUN,			false },
+	{ ACT_HL2MP_GESTURE_RANGE_ATTACK,	ACT_HL2MP_GESTURE_RANGE_ATTACK_PHYSGUN,	false },
+	{ ACT_HL2MP_GESTURE_RELOAD,			ACT_HL2MP_GESTURE_RELOAD_PHYSGUN,		false },
+	{ ACT_HL2MP_JUMP,					ACT_HL2MP_JUMP_PHYSGUN,					false },
+};
+
+IMPLEMENT_ACTTABLE(C_WeaponPhysGun);
 
 STUB_WEAPON_CLASS_IMPLEMENT(weapon_physgun, C_WeaponPhysGun);
 
@@ -103,7 +118,7 @@ RecvPropVector(RECVINFO_NAME(m_beam.m_targetPosition, m_targetPosition)),
 	RecvPropVector(RECVINFO_NAME(m_beam.m_worldPosition, m_worldPosition)),
 	RecvPropInt(RECVINFO_NAME(m_beam.m_active, m_active)),
 	RecvPropInt(RECVINFO_NAME(m_beam.m_viewModelIndex, m_viewModelIndex)),
-	END_RECV_TABLE()
+END_RECV_TABLE()
 
 C_BeamQuadratic::C_BeamQuadratic()
 {
