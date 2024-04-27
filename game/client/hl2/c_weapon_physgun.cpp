@@ -15,7 +15,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-CLIENTEFFECT_REGISTER_BEGIN(PrecacheEffectGravityGun)
+CLIENTEFFECT_REGISTER_BEGIN(PrecacheEffectPhysGun)
 CLIENTEFFECT_MATERIAL("sprites/physbeam")
 CLIENTEFFECT_REGISTER_END()
 
@@ -54,12 +54,12 @@ public:
 	int m_viewModelIndex;
 };
 
-class C_WeaponGravityGun : public C_BaseCombatWeapon
+class C_WeaponPhysGun : public C_BaseCombatWeapon
 {
-	DECLARE_CLASS(C_WeaponGravityGun, C_BaseCombatWeapon);
+	DECLARE_CLASS(C_WeaponPhysGun, C_BaseCombatWeapon);
 
 public:
-	C_WeaponGravityGun() {}
+	C_WeaponPhysGun() {}
 
 	DECLARE_CLIENTCLASS();
 	DECLARE_PREDICTABLE();
@@ -91,14 +91,14 @@ public:
 	}
 
 private:
-	C_WeaponGravityGun(const C_WeaponGravityGun &);
+	C_WeaponPhysGun(const C_WeaponPhysGun &);
 
 	C_BeamQuadratic m_beam;
 };
 
-STUB_WEAPON_CLASS_IMPLEMENT(weapon_physgun, C_WeaponGravityGun);
+STUB_WEAPON_CLASS_IMPLEMENT(weapon_physgun, C_WeaponPhysGun);
 
-IMPLEMENT_CLIENTCLASS_DT(C_WeaponGravityGun, DT_WeaponGravityGun, CWeaponGravityGun)
+IMPLEMENT_CLIENTCLASS_DT(C_WeaponPhysGun, DT_WeaponPhysGun, CWeaponPhysGun)
 RecvPropVector(RECVINFO_NAME(m_beam.m_targetPosition, m_targetPosition)),
 	RecvPropVector(RECVINFO_NAME(m_beam.m_worldPosition, m_worldPosition)),
 	RecvPropInt(RECVINFO_NAME(m_beam.m_active, m_active)),

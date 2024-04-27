@@ -32,15 +32,15 @@ ConVar phys_guntorque("phys_guntorque", "100");
 static int g_physgunBeam;
 #define PHYSGUN_BEAM_SPRITE "sprites/physbeam.vmt"
 
-class CWeaponGravityGun;
+class CWeaponPhysGun;
 
-class CGravControllerPoint : public IMotionEvent
+class CPhysGunControllerPoint : public IMotionEvent
 {
 	DECLARE_SIMPLE_DATADESC();
 
 public:
-	CGravControllerPoint(void);
-	~CGravControllerPoint(void);
+	CPhysGunControllerPoint(void);
+	~CPhysGunControllerPoint(void);
 	void AttachEntity(CBaseEntity *pEntity, IPhysicsObject *pPhys, const Vector &position);
 	void DetachEntity(void);
 	void SetMaxVelocity(float maxVel)
@@ -91,7 +91,7 @@ public:
 	IPhysicsMotionController *m_controller;
 };
 
-BEGIN_SIMPLE_DATADESC(CGravControllerPoint)
+BEGIN_SIMPLE_DATADESC(CPhysGunControllerPoint)
 	DEFINE_FIELD(m_localPosition, FIELD_VECTOR),
 	DEFINE_FIELD(m_targetPosition, FIELD_POSITION_VECTOR),
 	DEFINE_FIELD(m_worldPosition, FIELD_POSITION_VECTOR),
@@ -109,17 +109,17 @@ BEGIN_SIMPLE_DATADESC(CGravControllerPoint)
 	DEFINE_FIELD(m_timeToArrive, FIELD_FLOAT),
 END_DATADESC()
 
-CGravControllerPoint::CGravControllerPoint(void)
+CPhysGunControllerPoint::CPhysGunControllerPoint(void)
 {
 	m_attachedEntity = NULL;
 }
 
-CGravControllerPoint::~CGravControllerPoint(void)
+CPhysGunControllerPoint::~CPhysGunControllerPoint(void)
 {
 	DetachEntity();
 }
 
-void CGravControllerPoint::AttachEntity(CBaseEntity *pEntity, IPhysicsObject *pPhys, const Vector &position)
+void CPhysGunControllerPoint::AttachEntity(CBaseEntity *pEntity, IPhysicsObject *pPhys, const Vector &position)
 {
 	m_attachedEntity = pEntity;
 	pPhys->WorldToLocal(&m_localPosition, position);
@@ -137,7 +137,7 @@ void CGravControllerPoint::AttachEntity(CBaseEntity *pEntity, IPhysicsObject *pP
 	m_maxAngularAcceleration = torque * pPhys->GetInvInertia();
 }
 
-void CGravControllerPoint::DetachEntity(void)
+void CPhysGunControllerPoint::DetachEntity(void)
 {
 	CBaseEntity *pEntity = m_attachedEntity;
 	if (pEntity)
@@ -167,7 +167,7 @@ void AxisAngleQAngle(const Vector &axis, float angle, QAngle &outAngles)
 	outAngles.y = axis.z * angle;
 }
 
-IMotionEvent::simresult_e CGravControllerPoint::Simulate(IPhysicsMotionController *pController, IPhysicsObject *pObject, float deltaTime, Vector &linear, AngularImpulse &angular)
+IMotionEvent::simresult_e CPhysGunControllerPoint::Simulate(IPhysicsMotionController *pController, IPhysicsObject *pObject, float deltaTime, Vector &linear, AngularImpulse &angular)
 {
 	Vector vel;
 	AngularImpulse angVel;
@@ -349,14 +349,14 @@ IMotionEvent::simresult_e CGravControllerPoint::Simulate(IPhysicsMotionControlle
 	return SIM_GLOBAL_ACCELERATION;
 }
 
-class CWeaponGravityGun : public CBaseCombatWeapon
+class CWeaponPhysGun : public CBaseCombatWeapon
 {
 	DECLARE_DATADESC();
 
 public:
-	DECLARE_CLASS(CWeaponGravityGun, CBaseCombatWeapon);
+	DECLARE_CLASS(CWeaponPhysGun, CBaseCombatWeapon);
 
-	CWeaponGravityGun();
+	CWeaponPhysGun();
 	void Spawn(void);
 	void OnRestore(void);
 	void Precache(void);
@@ -428,21 +428,21 @@ private:
 	CNetworkVar(int, m_viewModelIndex);
 	Vector m_originalObjectPosition;
 
-	CGravControllerPoint m_gravCallback;
+	CPhysGunControllerPoint m_gravCallback;
 	CBeam *m_pBeam;
 };
 
-IMPLEMENT_SERVERCLASS_ST(CWeaponGravityGun, DT_WeaponGravityGun)
+IMPLEMENT_SERVERCLASS_ST(CWeaponPhysGun, DT_WeaponPhysGun)
 	SendPropVector(SENDINFO_NAME(m_gravCallback.m_targetPosition, m_targetPosition), -1, SPROP_COORD),
 	SendPropVector(SENDINFO_NAME(m_gravCallback.m_worldPosition, m_worldPosition), -1, SPROP_COORD),
 	SendPropInt(SENDINFO(m_active), 1, SPROP_UNSIGNED),
 	SendPropModelIndex(SENDINFO(m_viewModelIndex)),
 END_SEND_TABLE()
 
-LINK_ENTITY_TO_CLASS(weapon_physgun, CWeaponGravityGun);
+LINK_ENTITY_TO_CLASS(weapon_physgun, CWeaponPhysGun);
 PRECACHE_WEAPON_REGISTER(weapon_physgun);
 
-BEGIN_DATADESC(CWeaponGravityGun)
+BEGIN_DATADESC(CWeaponPhysGun)
 	DEFINE_FIELD(m_active, FIELD_INTEGER),
 	DEFINE_FIELD(m_useDown, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_hObject, FIELD_EHANDLE),
@@ -476,7 +476,7 @@ enum physgun_soundIndex
 //=========================================================
 //=========================================================
 
-CWeaponGravityGun::CWeaponGravityGun()
+CWeaponPhysGun::CWeaponPhysGun()
 {
 	m_active = false;
 	m_bFiresUnderwater = true;
@@ -484,7 +484,7 @@ CWeaponGravityGun::CWeaponGravityGun()
 
 //=========================================================
 //=========================================================
-void CWeaponGravityGun::Spawn()
+void CWeaponPhysGun::Spawn()
 {
 	BaseClass::Spawn();
 	//	SetModel( GetWorldModel() );
@@ -492,7 +492,7 @@ void CWeaponGravityGun::Spawn()
 	FallInit();
 }
 
-void CWeaponGravityGun::OnRestore(void)
+void CWeaponPhysGun::OnRestore(void)
 {
 	BaseClass::OnRestore();
 
@@ -504,7 +504,7 @@ void CWeaponGravityGun::OnRestore(void)
 
 //=========================================================
 //=========================================================
-void CWeaponGravityGun::Precache(void)
+void CWeaponPhysGun::Precache(void)
 {
 	BaseClass::Precache();
 
@@ -517,13 +517,13 @@ void CWeaponGravityGun::Precache(void)
 	PrecacheScriptSound("Weapon_Physgun.HeavyObject");
 }
 
-void CWeaponGravityGun::EffectCreate(void)
+void CWeaponPhysGun::EffectCreate(void)
 {
 	EffectUpdate();
 	m_active = true;
 }
 
-void CWeaponGravityGun::EffectUpdate(void)
+void CWeaponPhysGun::EffectUpdate(void)
 {
 	Vector start, angles, forward, right;
 	trace_t tr;
@@ -672,18 +672,18 @@ void CWeaponGravityGun::EffectUpdate(void)
 	}
 }
 
-void CWeaponGravityGun::SoundCreate(void)
+void CWeaponPhysGun::SoundCreate(void)
 {
 	m_soundState = SS_SCANNING;
 	SoundStart();
 }
 
-void CWeaponGravityGun::SoundDestroy(void)
+void CWeaponPhysGun::SoundDestroy(void)
 {
 	SoundStop();
 }
 
-void CWeaponGravityGun::SoundStop(void)
+void CWeaponPhysGun::SoundStop(void)
 {
 	switch (m_soundState)
 	{
@@ -723,7 +723,7 @@ static float UTIL_LineFraction(float value, float low, float high, float scale)
 	return scale * (value - low) / delta;
 }
 
-void CWeaponGravityGun::SoundStart(void)
+void CWeaponPhysGun::SoundStart(void)
 {
 	CPASAttenuationFilter filter(GetOwner());
 	filter.MakeReliable();
@@ -749,7 +749,7 @@ void CWeaponGravityGun::SoundStart(void)
 	//   volume, att, flags, pitch
 }
 
-void CWeaponGravityGun::SoundUpdate(void)
+void CWeaponPhysGun::SoundUpdate(void)
 {
 	int newState = m_hObject ? SS_LOCKEDON : SS_SCANNING;
 
@@ -814,7 +814,7 @@ void CWeaponGravityGun::SoundUpdate(void)
 	}
 }
 
-CBaseEntity *CWeaponGravityGun::GetBeamEntity()
+CBaseEntity *CWeaponPhysGun::GetBeamEntity()
 {
 	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
 	if (!pOwner)
@@ -828,7 +828,7 @@ CBaseEntity *CWeaponGravityGun::GetBeamEntity()
 	return pOwner;
 }
 
-void CWeaponGravityGun::EffectDestroy(void)
+void CWeaponPhysGun::EffectDestroy(void)
 {
 	m_active = false;
 	SoundStop();
@@ -836,7 +836,7 @@ void CWeaponGravityGun::EffectDestroy(void)
 	DetachObject();
 }
 
-void CWeaponGravityGun::DetachObject(void)
+void CWeaponPhysGun::DetachObject(void)
 {
 	if (m_hObject)
 	{
@@ -848,7 +848,7 @@ void CWeaponGravityGun::DetachObject(void)
 	}
 }
 
-void CWeaponGravityGun::AttachObject(CBaseEntity *pObject, const Vector &start, const Vector &end, float distance)
+void CWeaponPhysGun::AttachObject(CBaseEntity *pObject, const Vector &start, const Vector &end, float distance)
 {
 	m_hObject = pObject;
 	m_useDown = false;
@@ -885,7 +885,7 @@ void CWeaponGravityGun::AttachObject(CBaseEntity *pObject, const Vector &start, 
 
 //=========================================================
 //=========================================================
-void CWeaponGravityGun::PrimaryAttack(void)
+void CWeaponPhysGun::PrimaryAttack(void)
 {
 	if( m_flNextPrimaryAttack > gpGlobals->curtime )
 	{
@@ -907,7 +907,7 @@ void CWeaponGravityGun::PrimaryAttack(void)
 	}
 }
 
-void CWeaponGravityGun::SecondaryAttack(void)
+void CWeaponPhysGun::SecondaryAttack(void)
 {
 	m_flNextSecondaryAttack = gpGlobals->curtime + 0.1;
 	if (m_active)
@@ -941,7 +941,7 @@ void CWeaponGravityGun::SecondaryAttack(void)
 		pHit->VPhysicsGetObject()->EnableMotion(false);
 }
 
-void CWeaponGravityGun::WeaponIdle(void)
+void CWeaponPhysGun::WeaponIdle(void)
 {
 	if (HasWeaponIdleTimeElapsed())
 	{
@@ -954,7 +954,7 @@ void CWeaponGravityGun::WeaponIdle(void)
 	}
 }
 
-void CWeaponGravityGun::ItemPostFrame(void)
+void CWeaponPhysGun::ItemPostFrame(void)
 {
 	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
 	if (!pOwner)
@@ -982,7 +982,7 @@ void CWeaponGravityGun::ItemPostFrame(void)
 	}
 }
 
-bool CWeaponGravityGun::TraceObject(trace_t *trace, float maxForward)
+bool CWeaponPhysGun::TraceObject(trace_t *trace, float maxForward)
 {
 	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
 
@@ -999,7 +999,7 @@ bool CWeaponGravityGun::TraceObject(trace_t *trace, float maxForward)
 	return true;
 }
 
-bool CWeaponGravityGun::TraceObject(trace_t *trace, CBaseEntity **entity, float maxForward)
+bool CWeaponPhysGun::TraceObject(trace_t *trace, CBaseEntity **entity, float maxForward)
 {
 	// ALL THE CHECKS!!!! PAIN PAIN PAIN
 	if(!TraceObject(trace, maxForward)) 					return false;
@@ -1017,7 +1017,7 @@ bool CWeaponGravityGun::TraceObject(trace_t *trace, CBaseEntity **entity, float 
 // Purpose:
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------
-bool CWeaponGravityGun::HasAnyAmmo(void)
+bool CWeaponPhysGun::HasAnyAmmo(void)
 {
 	// Always report that we have ammo
 	return true;
@@ -1025,7 +1025,7 @@ bool CWeaponGravityGun::HasAnyAmmo(void)
 
 //=========================================================
 //=========================================================
-bool CWeaponGravityGun::Reload(void)
+bool CWeaponPhysGun::Reload(void)
 {
 	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
 	return false;
