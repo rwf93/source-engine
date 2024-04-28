@@ -6,7 +6,7 @@
 
 #include "tier0/memdbgon.h"
 
-LUA_FUNCTION_STATIC(PrintOverride)
+LUA_FUNCTION_STATIC(print)
 {
 	int nargs = LUA->GetTop();
 
@@ -39,8 +39,7 @@ LUA_FUNCTION_STATIC(IsClient)
 
 LUA_LIBRARY(Common)
 {
-	LUA->PushFunction(PrintOverride);
-	LUA->SetGlobal("print");
+	LUA_LIBRARY_GFUNCTION(print);
 
 	LUA_LIBRARY_GFUNCTION(IsServer);
 	LUA_LIBRARY_GFUNCTION(IsClient);

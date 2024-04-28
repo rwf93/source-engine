@@ -26,14 +26,16 @@ public:
 	void PushBoolean(bool boolean)							OVERRIDE;
 	void PushFunction(CLuaFunctionFn state) 				OVERRIDE;
 	void PushMetaTable(UserDataID id)						OVERRIDE;
-	void PushMetaTable(const char *name)					OVERRIDE;
 
 	void Pop(int index)										OVERRIDE;
 
 	void CreateTable()										OVERRIDE;
 	int CreateMetaTable(const char *name, UserDataID &id)	OVERRIDE;
 
+	UserdataStruct *CreateUserData(UserDataID id)			OVERRIDE;
+
 	const char *CheckString(int index)      				OVERRIDE;
+	UserdataStruct *CheckUserData(int idx, UserDataID id)	OVERRIDE;
 
 	void SetField(int index, const char* name)      		OVERRIDE;
 	void GetField(int index, const char *name)      		OVERRIDE;

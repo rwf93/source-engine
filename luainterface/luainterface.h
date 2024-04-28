@@ -19,7 +19,7 @@ struct CRegisteredLib
 	CLuaLibFn fn;
 };
 
-class CLuaInterface: public CTier2AppSystem< ILuaInterface > 
+class CLuaInterface: public CTier2AppSystem< ILuaInterface >
 {
 	typedef CTier2AppSystem< ILuaInterface > BaseClass;
 public:

@@ -9,7 +9,11 @@
 
 #include "tier0/memdbgon.h"
 
-#define GUARD_STATE if(!m_pState) Error("Attempted to call " __FUNCTION__ " without a valid internal lua state being initalized!");
+#define GUARD_STATE 																									\
+	do { 																												\
+		Assert(m_pState); 																								\
+		if(!m_pState) Error("Attempted to call " __FUNCTION__ " without a valid internal lua state being initalized!"); \
+	} while(0);
 
 CLuaState::CLuaState(LuaStateSide side)
 {
@@ -84,11 +88,12 @@ void CLuaState::PushMetaTable(UserDataID id)
 	lua_getfield(m_pState, LUA_REGISTRYINDEX, m_uMetaStringTable[m_uMetaStringTable.Find(id)]);
 }
 
-void CLuaState::PushMetaTable(const char *name)
+UserdataStruct *CLuaState::CreateUserData(UserDataID id)
 {
-	GUARD_STATE;
-	if(!m_uMetaIDTable.HasElement(name)) { Error("Attempted to push invalid metatable name!"); return; }
-	PushMetaTable(m_uMetaIDTable[m_uMetaIDTable.Find(name)]);
+	UserdataStruct *udata = reinterpret_cast<UserdataStruct*>(lua_newuserdata(m_pState, sizeof(UserdataStruct)));
+	if(udata == nullptr) return nullptr;
+	udata->id = id;
+	return udata;
 }
 
 void CLuaState::Pop(int idx)
@@ -118,6 +123,17 @@ const char *CLuaState::CheckString(int index)
 {
 	GUARD_STATE;
 	return luaL_checkstring(m_pState, index);
+}
+
+UserdataStruct *CLuaState::CheckUserData(int idx, UserDataID id)
+{
+	GUARD_STATE;
+	if(!m_uMetaStringTable.HasElement(id)) { Error("Attempted to check invalid metatable typeid!"); return nullptr; }
+
+	auto udata = reinterpret_cast<UserdataStruct*>(luaL_checkudata(m_pState, idx, m_uMetaStringTable[m_uMetaStringTable.Find(id)]));
+	if(!udata || udata->id != id) return nullptr;
+
+	return udata;
 }
 
 void CLuaState::SetField(int index, const char *name)

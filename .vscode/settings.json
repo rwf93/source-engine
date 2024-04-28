@@ -11,5 +11,6 @@
         "ranges": "cpp",
         "xutility": "cpp",
         "type_traits": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "W:/source-engine/thirdparty/curl"
 }

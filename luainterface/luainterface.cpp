@@ -33,7 +33,10 @@ void CLuaInterface::Shutdown()
 
 ILuaState *CLuaInterface::CreateState(LuaStateSide side)
 {
-	return (ILuaState*)new CLuaState(side);
+	ILuaState *state = dynamic_cast<ILuaState*>(new CLuaState(side));
+	Assert(state);
+	if(!state) { Error("Could not create state!"); return nullptr; }
+	return state;
 }
 
 void CLuaInterface::DestroyState(ILuaState *state)
