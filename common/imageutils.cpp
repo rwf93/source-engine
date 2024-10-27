@@ -690,7 +690,7 @@ unsigned char *ImgUtl_ReadPNGAsRGBA( const char *pngPath, int &width, int &heigh
 #if UTILS
 	static char buf[8192];
 	FILE *readfile = NULL;
-	errno_t readfile = fopen_s(&readfile, pngPath, "rb");
+	errno_t err = fopen_s(&readfile, pngPath, "rb");
 	if( !readfile )
 	{
 		errcode = CE_CANT_OPEN_SOURCE_FILE;

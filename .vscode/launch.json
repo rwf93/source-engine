@@ -20,7 +20,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceRoot}/build/out/hl2_launcher.exe",
-            "args": ["-game", "chungus", "-windowed", "-width", "1200", "-height", "768", "-dxlevel", "95"],
+            "args": ["-game", "hl2", "-windowed", "-width", "1200", "-height", "768", "-dxlevel", "95"],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}/build/out",
             "environment": [],

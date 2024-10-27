@@ -63,7 +63,7 @@ inline bool IsPathTaskFailure( AI_TaskFailureCode_t code )
 }
 
 const char *TaskFailureToString( AI_TaskFailureCode_t code );
-inline int MakeFailCode( const char *pszGeneralError ) { return (int)pszGeneralError; }
+inline int MakeFailCode( const char *pszGeneralError ) { return (intp)pszGeneralError; }
 
 
 enum TaskStatus_e 

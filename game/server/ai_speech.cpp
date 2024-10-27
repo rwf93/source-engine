@@ -38,7 +38,10 @@ CAI_TimedSemaphore g_AIFoesTalkSemaphore;
 
 ConceptHistory_t::~ConceptHistory_t()
 {
-	delete response;
+	if ( response )
+	{
+		delete response;
+	}
 	response = NULL;
 }
 

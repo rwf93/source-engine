@@ -1109,21 +1109,63 @@ public:
 	void FunctionCheck( void *pFunction, const char *name );
 	ENTITYFUNCPTR TouchSet( ENTITYFUNCPTR func, char *name ) 
 	{ 
-		COMPILE_TIME_ASSERT( sizeof(func) == ENTITYFUNCPTR_SIZE );
+#ifdef _DEBUG
+#ifdef PLATFORM_64BITS
+#ifdef GNUC
+		COMPILE_TIME_ASSERT( sizeof(func) == 16 );
+#else
+		COMPILE_TIME_ASSERT( sizeof(func) == 8 );
+#endif
+#else
+#ifdef GNUC
+		COMPILE_TIME_ASSERT( sizeof(func) == 8 );
+#else
+		COMPILE_TIME_ASSERT( sizeof(func) == 4 );
+#endif
+#endif
+#endif
 		m_pfnTouch = func; 
 		FunctionCheck( *(reinterpret_cast<void **>(&m_pfnTouch)), name ); 
 		return func;
 	}
 	USEPTR	UseSet( USEPTR func, char *name ) 
 	{ 
-		COMPILE_TIME_ASSERT( sizeof(func) == ENTITYFUNCPTR_SIZE );
+#ifdef _DEBUG
+#ifdef PLATFORM_64BITS
+#ifdef GNUC
+		COMPILE_TIME_ASSERT( sizeof(func) == 16 );
+#else
+		COMPILE_TIME_ASSERT( sizeof(func) == 8 );
+#endif
+#else
+#ifdef GNUC
+		COMPILE_TIME_ASSERT( sizeof(func) == 8 );
+#else
+		COMPILE_TIME_ASSERT( sizeof(func) == 4 );
+#endif
+#endif
+#endif
 		m_pfnUse = func; 
 		FunctionCheck( *(reinterpret_cast<void **>(&m_pfnUse)), name ); 
 		return func;
 	}
 	ENTITYFUNCPTR	BlockedSet( ENTITYFUNCPTR func, char *name ) 
 	{ 
-		COMPILE_TIME_ASSERT( sizeof(func) == ENTITYFUNCPTR_SIZE );
+#ifdef _DEBUG
+#ifdef PLATFORM_64BITS
+#ifdef GNUC
+		COMPILE_TIME_ASSERT( sizeof(func) == 16 );
+#else
+		COMPILE_TIME_ASSERT( sizeof(func) == 8 );
+#endif
+#else
+#ifdef GNUC
+		COMPILE_TIME_ASSERT( sizeof(func) == 8 );
+#else
+		COMPILE_TIME_ASSERT( sizeof(func) == 4 );
+#endif
+#endif
+#endif
 		m_pfnBlocked = func; 
 		FunctionCheck( *(reinterpret_cast<void **>(&m_pfnBlocked)), name ); 
 		return func;

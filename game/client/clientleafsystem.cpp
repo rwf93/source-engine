@@ -1216,7 +1216,7 @@ void CClientLeafSystem::InsertIntoTree( ClientRenderHandle_t &handle )
 	Assert( absMins.IsValid() && absMaxs.IsValid() );
 
 	ISpatialQuery* pQuery = engine->GetBSPTreeQuery();
-	pQuery->EnumerateLeavesInBox( absMins, absMaxs, this, (int)&list );
+	pQuery->EnumerateLeavesInBox( absMins, absMaxs, this, (intp)&list );
 
 	if ( list.pHead )
 	{
