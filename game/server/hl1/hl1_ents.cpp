@@ -289,7 +289,7 @@ bool CMultiManager::KeyValue( const char *szKeyName, const char *szValue )
 		{
 			char tmp[128];
 
-			UTIL_StripToken( szKeyName, tmp );
+			UTIL_StripToken( szKeyName, tmp, Q_ARRAYSIZE( tmp ) );
 			m_iTargetName [ m_cTargets ] = AllocPooledString( tmp );
 			m_flTargetDelay [ m_cTargets ] = atof (szValue);
 			m_cTargets++;
@@ -1587,7 +1587,7 @@ void CHL1Gib::Spawn( const char *szGibModel )
 
 	SetNextThink( gpGlobals->curtime + 4 );
 
-	m_lifeTime = 250;
+	m_lifeTime = 25;
 
 	SetThink ( &CHL1Gib::WaitTillLand );
 	SetTouch ( &CHL1Gib::BounceGibTouch );

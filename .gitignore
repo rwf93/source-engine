@@ -1,3 +1,5 @@
+*.pb.cc
+*.pb.h
 *.mak
 *.mak.vpc_crc
 *.vpc_crc
@@ -36,3 +38,4 @@ build*/
 waf3*/
 .depproj/
 source-engine.sln
+

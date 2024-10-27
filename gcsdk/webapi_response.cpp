@@ -1,11 +1,11 @@
-//========= Copyright © 1996-2010, Valve LLC, All rights reserved. ============
+//========= Copyright ï¿½ 1996-2010, Valve LLC, All rights reserved. ============
 //
 // Purpose: Implementation for CWebAPIResponse objects
 //
 //=============================================================================
 
 #include "stdafx.h"
-#include "thirdparty/JSON_parser/JSON_parser.h"
+#include "JSON_parser.h"
 
 using namespace GCSDK;
 

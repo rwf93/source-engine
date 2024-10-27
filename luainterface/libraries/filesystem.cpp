@@ -5,6 +5,7 @@
 #include "filesystem.h"
 
 #include "tier1/utlbuffer.h"
+#include "tier1/utlhashtable.h"
 #include "tier0/memdbgon.h"
 
 static const char *FileHandleUserdata = "FileHandle";

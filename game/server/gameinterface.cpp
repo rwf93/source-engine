@@ -93,7 +93,6 @@
 #include "luainterface/iluainterface.h"
 #include "luainterface/iluastate.h"
 
-
 #ifdef TF_DLL
 #include "gc_clientsystem.h"
 #include "econ_item_inventory.h"
@@ -568,17 +567,6 @@ EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CServerGameDLL, IServerGameDLL, INTERFACEVERSI
 // When bumping the version to this interface, check that our assumption is still valid and expose the older version in the same way
 COMPILE_TIME_ASSERT( INTERFACEVERSION_SERVERGAMEDLL_INT == 10 );
 
-LUA_FUNCTION(TestFunctionBleh) {
-	LUA->PushInteger(420);
-	return 1;
-}
-
-void RegisterServerSideLibraries(ILuaState *state) 
-{
-	state->PushFunction(TestFunctionBleh);
-	state->SetGlobal("TestFunctionBleh");
-}
-
 bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory, 
 		CreateInterfaceFn physicsFactory, CreateInterfaceFn fileSystemFactory, 
 		CGlobalVars *pGlobals)
@@ -586,8 +574,6 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 	ConnectTier1Libraries( &appSystemFactory, 1 );
 	ConnectTier2Libraries( &appSystemFactory, 1 );
 	ConnectTier3Libraries( &appSystemFactory, 1 );
-
-	g_pLuaInterface->RegisterLib(LuaStateSide::SERVER, RegisterServerSideLibraries);
 
 	// Connected in ConnectTier1Libraries
 	if ( cvar == NULL )
@@ -843,6 +829,15 @@ float CServerGameDLL::GetTickInterval( void ) const
 {
 	float tickinterval = DEFAULT_TICK_INTERVAL;
 
+//=============================================================================
+// HPE_BEGIN:
+// [Forrest] For Counter-Strike, set default tick rate of 66 and removed -tickrate command line parameter.
+//=============================================================================
+// Ignoring this for now, server ops are abusing it
+#if !defined( TF_DLL ) && !defined( CSTRIKE_DLL ) && !defined( DOD_DLL )
+//=============================================================================
+// HPE_END
+//=============================================================================
 	// override if tick rate specified in command line
 	if ( CommandLine()->CheckParm( "-tickrate" ) )
 	{
@@ -850,6 +845,7 @@ float CServerGameDLL::GetTickInterval( void ) const
 		if ( tickrate > 10 )
 			tickinterval = 1.0f / tickrate;
 	}
+#endif
 
 	return tickinterval;
 }
@@ -884,7 +880,7 @@ bool CServerGameDLL::GameInit( void )
 	return true;
 }
 
-ILuaState *CServerGameDLL::GetLuaState() 
+ILuaState *CServerGameDLL::GetLuaState()
 {
 	return g_pServerLuaState;
 }
@@ -1958,10 +1954,10 @@ const char *CServerGameDLL::GetServerBrowserGameData()
 //-----------------------------------------------------------------------------
 void CServerGameDLL::Status( void (*print) (const char *fmt, ...) )
 {
-/*	if ( g_pGameRules )
+	if ( g_pGameRules )
 	{
 		g_pGameRules->Status( print );
-	}*/
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2002,12 +1998,11 @@ IServerGameDLL::eCanProvideLevelResult CServerGameDLL::CanProvideLevel( /* in/ou
 //-----------------------------------------------------------------------------
 bool CServerGameDLL::IsManualMapChangeOkay( const char **pszReason )
 {
-/*
 	if ( GameRules() )
 	{
 		return GameRules()->IsManualMapChangeOkay( pszReason );
 	}
-*/
+
 	return true;
 }
 

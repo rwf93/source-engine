@@ -14,8 +14,6 @@
 	#include "hl2mp_player.h"
 #endif
 
-#include "tier2/tier2.h"
-
 #include "weapon_hl2mpbasehlmpcombatweapon.h"
 
 #define	PISTOL_FASTEST_REFIRE_TIME		0.1f
@@ -27,8 +25,6 @@
 #ifdef CLIENT_DLL
 #define CWeaponPistol C_WeaponPistol
 #endif
-
-#include "luainterface/iluastate.h"
 
 //-----------------------------------------------------------------------------
 // CWeaponPistol
@@ -181,7 +177,7 @@ void CWeaponPistol::DryFire( void )
 {
 	WeaponSound( EMPTY );
 	SendWeaponAnim( ACT_VM_DRYFIRE );
-
+	
 	m_flSoonestPrimaryAttack	= gpGlobals->curtime + PISTOL_FASTEST_DRY_REFIRE_TIME;
 	m_flNextPrimaryAttack		= gpGlobals->curtime + SequenceDuration();
 }

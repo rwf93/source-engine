@@ -19,8 +19,10 @@ games = {
 	'dod': ['server_base.vpc', 'server_dod.vpc'],
 	'tf': [
 		'server_base.vpc',
+		'../shared/base_gcmessages_include.vpc',
+		'../shared/econ_gcmessages_include.vpc',
+		'../shared/tf/tf_gcmessages_include.vpc',
 		'server_econ_base.vpc',
-		'tf/tf_gcmessages_include.vpc',
 		'nav_mesh.vpc',
 		'server_tf.vpc'
 	],
@@ -51,12 +53,28 @@ def build(bld):
 		'../../common',
 		'../../public/tier0',
 		'../../public/tier1',
-		'../../public'
+		'../../public',
+		'../../gcsdk',
+		'../../thirdparty/protobuf-2.6.1/src'
 	]
 
 	defines = []
 
-	libs = ['tier0','particles','dmxloader','tier1','tier2','tier3','mathlib','vstdlib','choreoobjects','steam_api']
+	libs = [
+		'tier0',
+		'particles',
+		'dmxloader',
+		'tier1',
+		'tier2',
+		'tier3',
+		'mathlib',
+		'vstdlib',
+		'choreoobjects',
+		'steam_api',
+		'PROTOBUF',
+		'PNG',
+		'JPEG'
+	]
 	if bld.env.DEST_OS == 'win32':
 		libs += ['USER32']
 

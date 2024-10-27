@@ -40,7 +40,7 @@ public:
 		uint32 m_cubDefaultPoolSize;
 	};
 
-	CThreadSafeMultiMemoryPool( const MemPoolConfig_t *pnBlock, int cnMemPoolConfig, int nGrowMode = UTLMEMORYPOOL_GROW_FAST );
+	CThreadSafeMultiMemoryPool( const MemPoolConfig_t *pnBlock, int cnMemPoolConfig, int nGrowMode = CUtlMemoryPool::GROW_FAST );
 	~CThreadSafeMultiMemoryPool();
 
 	// Allocate a block of at least nAllocSize bytes

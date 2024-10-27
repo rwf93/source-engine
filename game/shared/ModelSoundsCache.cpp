@@ -33,6 +33,10 @@ void VerifySequenceIndex( CStudioHdr *pstudiohdr );
 
 extern ISoundEmitterSystemBase *soundemitterbase;
 
+CModelSoundsCache::CModelSoundsCache()
+{
+}
+
 CModelSoundsCache::CModelSoundsCache( const CModelSoundsCache& src )
 {
 	sounds = src.sounds;
@@ -64,7 +68,7 @@ void CModelSoundsCache::Restore( CUtlBuffer& buf  )
 	{
 		char soundname[ 512 ];
 
-		buf.GetString( soundname, sizeof( soundname ) );
+		buf.GetString( soundname );
 
 		int idx = soundemitterbase->GetSoundIndex( soundname );
 		if ( idx != -1 )

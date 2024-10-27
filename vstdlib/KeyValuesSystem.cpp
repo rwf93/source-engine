@@ -196,7 +196,7 @@ void *CKeyValuesSystem::AllocKeyValuesMemory(int size)
 	// allocate, if we don't have one yet
 	if (!m_pMemPool)
 	{
-		m_pMemPool = new CUtlMemoryPool(m_iMaxKeyValuesSize, 1024, UTLMEMORYPOOL_GROW_FAST, "CKeyValuesSystem::m_pMemPool" );
+		m_pMemPool = new CUtlMemoryPool(m_iMaxKeyValuesSize, 1024, GROW_FAST, "CKeyValuesSystem::m_pMemPool" );
 		m_pMemPool->SetErrorReportFunc( KVLeak );
 	}
 

@@ -54,6 +54,7 @@ projects={
 		'engine',
 		'engine/voice_codecs/minimp3',
 		'filesystem',
+		'gcsdk',
 		'game/client',
 		'game/server',
 		'gameui',
@@ -184,6 +185,14 @@ def define_platform(conf):
 	conf.env.GL = conf.options.GL and not conf.options.TESTS and not conf.options.DEDICATED
 	conf.env.OPUS = conf.options.OPUS
 
+	# Add default paths (check vpc_scripts/protobuf_builder)
+	conf.env.PROTOC_FLAGS = [
+		f'--proto_path={os.path.abspath(".")}/thirdparty/protobuf-2.6.1/src',
+		f'--proto_path={os.path.abspath(".")}/gcsdk',
+		f'--proto_path={os.path.abspath(".")}/game/shared',
+		#f'--cpp_out=.'
+	]
+
 	arch32 = conf.run_test(CPP_32BIT_CHECK, 'Testing 32bit support')
 	arch64 = conf.run_test(CPP_64BIT_CHECK, 'Testing 64bit support')
 
@@ -218,6 +227,7 @@ def define_platform(conf):
 		conf.define('PLATFORM_64BITS', 1)
 
 	if conf.env.DEST_OS == 'linux':
+		conf.env.PROTOC = 'gcsdk/bin/linux/protoc'
 		conf.define('_GLIBCXX_USE_CXX11_ABI',0)
 		conf.env.append_unique('DEFINES', [
 			'LINUX=1', '_LINUX=1',
@@ -237,8 +247,8 @@ def define_platform(conf):
 			'NO_HOOK_MALLOC',
 			'_DLL_EXT=.so'
 		])
-		
 	elif conf.env.DEST_OS == 'win32':
+		conf.env.PROTOC = 'gcsdk/bin/protoc.exe'
 		conf.env.append_unique('DEFINES', [
 			'WIN32=1', '_WIN32=1',
 			'_WINDOWS',
@@ -325,7 +335,7 @@ def options(opt):
 
 	opt.load('compiler_optimizations subproject')
 
-	opt.load('xcompile compiler_cxx compiler_c sdl2 clang_compilation_database strip_on_install_v2 waf_unit_test subproject')
+	opt.load('xcompile compiler_cxx compiler_c sdl2 clang_compilation_database strip_on_install_v2 waf_unit_test subproject protoc')
 	if sys.platform == 'win32':
 		opt.load('msvc msdev msvs')
 	opt.load('reconfigure')
@@ -430,6 +440,8 @@ def check_deps(conf):
 		conf.check(lib='dsound', uselib_store='DSOUND')
 		conf.check(lib='dxguid', uselib_store='DXGUID')
 		conf.check(lib='lua51', uselib_store='LUAJIT')
+		conf.check(lib='libprotobuf', uselib_store='PROTOBUF')
+		conf.check(lib='cryptlib', uselib_store='CRYPTLIB')
 		if conf.options.OPUS:
 			conf.check(lib='opus', uselib_store='OPUS')
 

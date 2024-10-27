@@ -201,9 +201,11 @@ public:
 
 	virtual void ModifySentChat( char *pBuf, int iBufSize ) { return; }
 
-	virtual bool ShouldWarnOfAbandonOnQuit() { return false; }
+	virtual bool ShouldConfirmOnDisconnect() { return false; }
 	
 #else
+
+	virtual void Status( void (*print) (const char *fmt, ...) ) {}
 
 	virtual void GetTaggedConVarList( KeyValues *pCvarTagList ) {}
 
@@ -415,6 +417,8 @@ public:
 	virtual void OnFileReceived( const char * fileName, unsigned int transferID ) { return; }
 
 	virtual bool IsHolidayActive( /*EHoliday*/ int eHoliday ) const { return false; }
+
+	virtual bool IsManualMapChangeOkay( const char **pszReason ){ return true; }
 
 #ifndef CLIENT_DLL
 private:

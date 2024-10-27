@@ -1,6 +1,8 @@
 //========= Copyright Valve Corporation, All rights reserved. ============//
 #include "cbase.h"
 
+#if 0
+
 #ifdef SIXENSE
 
 #include "in_sixense_gesture_bindings.h"
@@ -890,6 +892,6 @@ bool SixenseGestureBindings::ActionTokenToStr( sixenseUtils::IButtonStates::Acti
 
 	return true;
 }
-
+#endif
 
 #endif

@@ -91,8 +91,7 @@ void CFuncNavCost::Spawn( void )
 	// chop space-delimited string into individual tokens
 	if ( tags )
 	{
-		char *buffer = new char [ strlen( tags ) + 1 ];
-		Q_strcpy( buffer, tags );
+		char *buffer = V_strdup ( tags );
 
 		for( char *token = strtok( buffer, " " ); token; token = strtok( NULL, " " ) )
 		{
@@ -398,7 +397,10 @@ int CFuncNavBlocker::DrawDebugTextOverlays( void )
 			CNavArea *area = collector.m_area[i];
 			Extent areaExtent;
 			area->GetExtent( &areaExtent );
-			debugoverlay->AddBoxOverlay( vec3_origin, areaExtent.lo, areaExtent.hi, vec3_angle, 0, 255, 0, 10, NDEBUG_PERSIST_TILL_NEXT_SERVER );
+			if ( debugoverlay )
+			{
+				debugoverlay->AddBoxOverlay( vec3_origin, areaExtent.lo, areaExtent.hi, vec3_angle, 0, 255, 0, 10, NDEBUG_PERSIST_TILL_NEXT_SERVER );
+			}
 		}
 	}
 

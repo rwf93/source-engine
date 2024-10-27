@@ -10,7 +10,10 @@
         "memory": "cpp",
         "ranges": "cpp",
         "xutility": "cpp",
-        "type_traits": "cpp"
-    },
-    "cmake.sourceDirectory": "W:/source-engine/thirdparty/curl"
+        "type_traits": "cpp",
+        "format": "cpp",
+        "ios": "cpp",
+        "xiosbase": "cpp",
+        "typeinfo": "cpp"
+    }
 }
