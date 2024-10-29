@@ -9,7 +9,7 @@
 #include "stdafx.h"
 
 #ifdef WIN32
-#include "typeinfo.h"
+#include <typeinfo>
 #else
 #include <typeinfo>
 #endif
@@ -173,7 +173,7 @@ const char *CJob::GetPauseReasonDescription()  const
 		{
 			case k_EJobPauseReasonWaitingForLock:
 			{
-				Q_snprintf( srgchPauseReason, k_cSmallBuff, "WOL: 0x%x (%s)", (unsigned int)m_pWaitingOnLock, m_pWaitingOnLock ? m_pWaitingOnLock->GetName() : "null" );
+				Q_snprintf( srgchPauseReason, k_cSmallBuff, "WOL: 0x%x (%s)", (uintp)m_pWaitingOnLock, m_pWaitingOnLock ? m_pWaitingOnLock->GetName() : "null" );
 				return srgchPauseReason;
 			}
 

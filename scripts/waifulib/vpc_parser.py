@@ -163,6 +163,9 @@ def parse_vpcs( env ,vpcs, basedir ):
 					s = fix_dos_path(j.split('"')[1])
 					sources.append(s)
 
+		if not '$Configuration' in ret:
+			continue
+
 		for i in ret['$Configuration']:
 			if '$PreprocessorDefinitions' in i:
 				i = i.replace('$BASE', '')

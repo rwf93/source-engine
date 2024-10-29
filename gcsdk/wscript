@@ -1,0 +1,80 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+from waflib import Utils
+import os
+
+top = '.'
+PROJECT_NAME = 'gcsdk_game'
+
+def options(opt):
+	# stub
+	return
+
+def configure(conf):
+	return
+
+def build(bld):
+	source = [
+        'steammessages.proto',
+		'gcsdk_gcmessages.proto',
+		'gcsystemmsgs.proto',
+
+		'gcclient.cpp',
+        'gcconstants.cpp',
+        'gclogger.cpp',
+        'gcmsg.cpp',
+        'job.cpp',
+        'jobmgr.cpp',
+        'jobtime.cpp',
+        'messagelist.cpp',
+        'msgprotobuf.cpp',
+        'netpacket.cpp',
+        'netpacketpool.cpp',
+        'protobufsharedobject.cpp',
+        'sharedobject.cpp',
+        'sharedobjectcache.cpp',
+        'gcclient_sharedobjectcache.cpp',
+        'steamextra/misc.cpp',
+        'steamextra/rtime.cpp',
+        'steamextra/steamid.cpp',
+        'steamextra/tier1/hashglobals.cpp',
+        'steamextra/tier1/tsmempool.cpp',
+        'steamextra/tier1/tsmultimempool.cpp',
+        'workthreadpool.cpp',
+        'webapi_response.cpp',
+		'../thirdparty/JSON_parser/JSON_parser.c'
+	]
+
+	includes = [
+		'.',
+		'./steamextra',
+		'../common',
+		'../public',
+		'../public/gcsdk',
+		'../public/tier0',
+		'../public/tier1',
+		'../thirdparty/protobuf-2.6.1/src',
+		'../thirdparty/JSON_parser'
+	]
+
+	defines = []
+
+	libs = [
+		'tier0',
+		'tier1',
+		'PROTOBUF'
+	]
+
+	bld.stlib(
+		source   = source,
+		target   = PROJECT_NAME,
+		name     = PROJECT_NAME,
+		features = 'c cxx',
+		includes = includes,
+		defines  = defines,
+		use      = libs,
+		subsystem = bld.env.MSVC_SUBSYSTEM,
+		idx      = bld.get_taskgen_count()
+	)
+

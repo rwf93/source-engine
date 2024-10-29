@@ -5,10 +5,10 @@
 //
 //=======================================================================================//
 
-// @note Tom Bui: we need to use fopen below in the jpeg code, so we can't have this on...
+// @note Tom Bui: we need to use fopen_s below in the jpeg code, so we can't have this on...
 #ifdef PROTECTED_THINGS_ENABLE
 #if !defined( POSIX )
-#undef fopen
+//#undef fopen_s
 #endif // POSIX
 #endif
 
@@ -171,7 +171,8 @@ ConversionErrorType ImgUtl_ConvertJPEGToTGA( const char *jpegpath, const char *t
 	int image_width;
 
 	// open the jpeg image file.
-	FILE *infile = fopen(jpegpath, "rb");
+	FILE *infile = NULL;
+	errno_t err = fopen_s(&infile, jpegpath, "rb");
 	if (infile == NULL)
 	{
 		return CE_CANT_OPEN_SOURCE_FILE;
@@ -404,7 +405,8 @@ static void WriteTGAHeader(FILE *outfile, TGAHeader &header)
 // reads in a TGA file and converts it to 32 bit RGBA color values in a memory buffer.
 unsigned char * ImgUtl_ReadTGAAsRGBA(const char *tgaPath, int &width, int &height, ConversionErrorType &errcode, TGAHeader &tgaHeader )
 {
-	FILE *tgaFile = fopen(tgaPath, "rb");
+	FILE *tgaFile = NULL;
+	errno_t err = fopen_s(&tgaFile, tgaPath, "rb");
 	if (tgaFile == NULL)
 	{
 		errcode = CE_CANT_OPEN_SOURCE_FILE;
@@ -517,7 +519,8 @@ unsigned char *ImgUtl_ReadJPEGAsRGBA( const char *jpegPath, int &width, int &hei
 	int image_width;
 
 	// open the jpeg image file.
-	FILE *infile = fopen(jpegPath, "rb");
+	FILE *infile = NULL;
+	errno_t err = fopen_s(&infile, jpegPath, "rb");
 	if (infile == NULL)
 	{
 		errcode = CE_CANT_OPEN_SOURCE_FILE;
@@ -686,7 +689,8 @@ unsigned char *ImgUtl_ReadPNGAsRGBA( const char *pngPath, int &width, int &heigh
 
 #if UTILS
 	static char buf[8192];
-	FILE *readfile = fopen(pngPath, "rb");
+	FILE *readfile = NULL;
+	errno_t err = fopen_s(&readfile, pngPath, "rb");
 	if( !readfile )
 	{
 		errcode = CE_CANT_OPEN_SOURCE_FILE;
@@ -878,8 +882,9 @@ unsigned char *ImgUtl_ReadBMPAsRGBA( const char *bmpPath, int &width, int &heigh
 	if ( hBitmap == NULL)
 	{
 
+		FILE *fp = NULL;
 		// !KLUDGE! Try to detect what went wrong
-		FILE *fp = fopen( bmpPath, "rb" );
+		errno_t err = fopen_s(&fp, bmpPath, "rb" );
 		if (fp == NULL)
 		{
 			errcode = CE_CANT_OPEN_SOURCE_FILE;
@@ -1274,7 +1279,8 @@ ConversionErrorType ImgUtl_ConvertTGA(const char *tgaPath, int nMaxWidth/*=-1*/,
 	unsigned char *finalBuffer = (unsigned char *)malloc(paddedImageWidth * paddedImageHeight * 4);
 	ImgUtl_PadRGBAImage(resizeBuffer, finalWidth, finalHeight, finalBuffer, paddedImageWidth, paddedImageHeight);
 
-	FILE *outfile = fopen(tgaPath, "wb");
+	FILE *outfile = NULL;
+	errno_t err = fopen_s(&outfile, tgaPath, "wb");
 	if (outfile == NULL)
 	{
 		free(resizeBuffer);
@@ -1471,7 +1477,8 @@ ConversionErrorType ImgUtl_PadRGBAImage(const unsigned char *srcBuf, const int s
 // convert TGA file at the given location to a VTF file of the same root name at the same location.
 ConversionErrorType ImgUtl_ConvertTGAToVTF(const char *tgaPath, int nMaxWidth/*=-1*/, int nMaxHeight/*=-1*/ )
 {
-	FILE *infile = fopen(tgaPath, "rb");
+	FILE *infile = NULL;
+	errno_t err = fopen_s(&infile, tgaPath, "rb");
 	if (infile == NULL)
 	{
 		Msg( "Failed to open TGA: %s\n", tgaPath);
@@ -1560,8 +1567,8 @@ static void DoCopyFile( const char *source, const char *destination )
 	g_pEngine->CopyFile( source, destination );
 #elif UTILS
 	static char buf[16384];
-	FILE *readfile = fopen(source, "rb");
-	FILE *writefile = fopen(destination, "wb");
+	FILE *readfile = fopen_s(source, "rb");
+	FILE *writefile = fopen_s(destination, "wb");
 
 	size_t size = 0;
 	while( (size = fread(buf, sizeof(buf), 1, readfile)) != 0 )
@@ -1854,7 +1861,8 @@ ConversionErrorType ImgUtl_WriteGenericVMT( const char *vtfPath, const char *pMa
 	filename[i] = 0;
 
 	// create the vmt file.
-	FILE *vmtFile = fopen(vmtPath, "w");
+	FILE *vmtFile = NULL;
+	errno_t err = fopen_s(&vmtFile, vtfPath, "w");
 	if (vmtFile == NULL)
 	{
 		return CE_ERROR_WRITING_OUTPUT_FILE;
