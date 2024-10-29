@@ -385,7 +385,7 @@ void Templates_RemoveAll(void)
 		free(pTemplate->pszMapData);
 		if ( pTemplate->pszFixedMapData )
 		{
-			delete[] pTemplate->pszFixedMapData;
+			free(pTemplate->pszFixedMapData);
 		}
 
 		free(pTemplate);

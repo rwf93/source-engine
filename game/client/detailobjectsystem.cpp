@@ -464,7 +464,7 @@ private:
 	int SortSpritesBackToFront( int nLeaf, const Vector &viewOrigin, const Vector &viewForward, SortInfo_t *pSortInfo );
 
 	// For fast detail object insertion
-	IterationRetval_t EnumElement( int userId, intp context );
+	IterationRetval_t EnumElement( int userId, int context );
 
 	CUtlVector<DetailModelDict_t>			m_DetailObjectDict;
 	CUtlVector<CDetailModel>				m_DetailObjects;
@@ -1491,7 +1491,7 @@ void CDetailObjectSystem::LevelInitPreEntity()
 	}
 
 	int detailPropLightingLump;
-	if( g_pMaterialSystemHardwareConfig->GetHDREnabled() )
+	if( g_pMaterialSystemHardwareConfig->GetHDRType() != HDR_TYPE_NONE )
 	{
 		detailPropLightingLump = GAMELUMP_DETAIL_PROP_LIGHTING_HDR;
 	}
@@ -2339,8 +2339,7 @@ void CDetailObjectSystem::RenderFastSprites( const Vector &viewOrigin, const Vec
 						pDict = ((FastSpriteQuadBuildoutBufferNonSIMDView_t*)((intp)pquad-4))->m_pSpriteDefs[0];
 					else
 #endif
-						pDict = pquad->m_pSpriteDefs[0];
-
+					pDict = pquad->m_pSpriteDefs[0];
 
 					meshBuilder.Position3f( pquad->m_flX0[0], pquad->m_flY0[0], pquad->m_flZ0[0] );
 					meshBuilder.Color4ubv( color );
@@ -2554,7 +2553,6 @@ void CDetailObjectSystem::RenderFastTranslucentDetailObjectsInLeaf( const Vector
 		int nToDraw = MIN( nCount, nQuadsRemaining );
 		nCount -= nToDraw;
 		nQuadsRemaining -= nToDraw;
-
 		while( nToDraw-- )
 		{
 			// draw the sucker
@@ -2563,12 +2561,9 @@ void CDetailObjectSystem::RenderFastTranslucentDetailObjectsInLeaf( const Vector
 
 			FastSpriteQuadBuildoutBufferNonSIMDView_t const *pquad = pQuadBuffer+nSIMDIdx;
 
-
 			// voodoo - since everything is in 4s, offset structure pointer by a couple of floats to handle sub-index
 			pquad = (FastSpriteQuadBuildoutBufferNonSIMDView_t const *) ( ( (intp) ( pquad ) )+ ( nSubIdx << 2 ) );
-
 			uint8 const *pColorsCasted = reinterpret_cast<uint8 const *> ( pquad->m_Alpha );
-
 
 			uint8 color[4];
 			color[0] = pquad->m_RGBColor[0][0];
@@ -2584,7 +2579,7 @@ void CDetailObjectSystem::RenderFastTranslucentDetailObjectsInLeaf( const Vector
 				pDict = ((FastSpriteQuadBuildoutBufferNonSIMDView_t*)((intp)pquad-4))->m_pSpriteDefs[0];
 			else
 #endif
-				pDict = pquad->m_pSpriteDefs[0];
+			pDict = pquad->m_pSpriteDefs[0];
 
 			meshBuilder.Position3f( pquad->m_flX0[0], pquad->m_flY0[0], pquad->m_flZ0[0] );
 			meshBuilder.Color4ubv( color );

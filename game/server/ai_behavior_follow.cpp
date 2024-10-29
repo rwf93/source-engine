@@ -2569,8 +2569,9 @@ bool CAI_FollowManager::AddFollower( CBaseEntity *pTarget, CAI_BaseNPC *pFollowe
 		iterNode->pGroup		= pGroup;
 
 		pGroup->slotUsage.Set( slot );
+		
 		CalculateFieldsFromSlot( pSlot, &iterNode->navInfo );
-
+		
 		pHandle->m_hFollower = i;
 		pHandle->m_pGroup = pGroup;
 		return true;
@@ -2643,7 +2644,7 @@ bool CAI_FollowManager::RedistributeSlots( AI_FollowGroup_t *pGroup )
 		intp  h			= pGroup->followers.Head();
 		intp  hBest 		= pGroup->followers.InvalidIndex();
 		float 			   distSqBest = FLT_MAX;
-
+		
 		while ( h != pGroup->followers.InvalidIndex() )
 		{
 			AI_Follower_t *p = &pGroup->followers[h];

@@ -827,6 +827,15 @@ float CServerGameDLL::GetTickInterval( void ) const
 {
 	float tickinterval = DEFAULT_TICK_INTERVAL;
 
+//=============================================================================
+// HPE_BEGIN:
+// [Forrest] For Counter-Strike, set default tick rate of 66 and removed -tickrate command line parameter.
+//=============================================================================
+// Ignoring this for now, server ops are abusing it
+#if !defined( TF_DLL ) && !defined( CSTRIKE_DLL ) && !defined( DOD_DLL )
+//=============================================================================
+// HPE_END
+//=============================================================================
 	// override if tick rate specified in command line
 	if ( CommandLine()->CheckParm( "-tickrate" ) )
 	{
@@ -834,6 +843,7 @@ float CServerGameDLL::GetTickInterval( void ) const
 		if ( tickrate > 10 )
 			tickinterval = 1.0f / tickrate;
 	}
+#endif
 
 	return tickinterval;
 }
@@ -1921,10 +1931,10 @@ const char *CServerGameDLL::GetServerBrowserGameData()
 //-----------------------------------------------------------------------------
 void CServerGameDLL::Status( void (*print) (const char *fmt, ...) )
 {
-/*	if ( g_pGameRules )
+	if ( g_pGameRules )
 	{
 		g_pGameRules->Status( print );
-	}*/
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1965,12 +1975,11 @@ IServerGameDLL::eCanProvideLevelResult CServerGameDLL::CanProvideLevel( /* in/ou
 //-----------------------------------------------------------------------------
 bool CServerGameDLL::IsManualMapChangeOkay( const char **pszReason )
 {
-/*
 	if ( GameRules() )
 	{
 		return GameRules()->IsManualMapChangeOkay( pszReason );
 	}
-*/
+
 	return true;
 }
 

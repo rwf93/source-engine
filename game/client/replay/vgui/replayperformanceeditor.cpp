@@ -576,7 +576,7 @@ public:
 		BaseClass::PerformLayout();
 
 		int nWidth = XRES( 140 );
-		int nMargins[2] = { XRES( 5 ), YRES( 5 ) };
+		int nMargins[2] = { (int)XRES( 5 ), (int)YRES( 5 ) };
 		int nVBuf = YRES( 0 );
 		int nLastY = -1;
 		int nY = nMargins[1];

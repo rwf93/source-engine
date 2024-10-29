@@ -115,7 +115,7 @@ bool C_SceneEntity::GetHWMorphSceneFileName( const char *pFilename, char *pHWMFi
 
 	// Find the hardware morph scene name and pass that along as well.
 	char szScene[MAX_PATH];
-	V_strcpy( szScene, pFilename );
+	V_strcpy_safe( szScene, pFilename );
 
 	char szSceneHWM[MAX_PATH];
 	szSceneHWM[0] = '\0';
@@ -206,20 +206,20 @@ void C_SceneEntity::SetupClientOnlyScene( const char *pszFilename, C_BaseFlex *p
 
 	char szFilename[128];
 	Assert( V_strlen( pszFilename ) < 128 );
-	V_strcpy( szFilename, pszFilename );
+	V_strcpy_safe( szFilename, pszFilename );
 
 	char szSceneHWM[128];
 	if ( GetHWMorphSceneFileName( szFilename, szSceneHWM ) )
 	{
-		V_strcpy( szFilename, szSceneHWM );
+		V_strcpy_safe( szFilename, szSceneHWM );
 	}
 
-	Assert( szFilename && szFilename[ 0 ] );
-	if (  szFilename && szFilename[ 0 ] )
+	Assert(  szFilename[ 0 ] );
+	if ( szFilename[ 0 ] )
 	{
 		LoadSceneFromFile( szFilename );
-		
-		if (!CommandLine()->FindParm("-hushasserts"))
+
+		if ( !HushAsserts() )
 		{
 			Assert( m_pScene );
 		}
@@ -257,7 +257,7 @@ void C_SceneEntity::SetupClientOnlyScene( const char *pszFilename, C_BaseFlex *p
 
 	if ( m_hOwner.Get() )
 	{
-		if (!CommandLine()->FindParm("-hushasserts"))
+		if ( !HushAsserts() )
 		{
 			Assert( m_pScene );
 		}
@@ -320,7 +320,7 @@ void C_SceneEntity::PostDataUpdate( DataUpdateType_t updateType )
 	if ( str )
 	{
 		Assert( V_strlen( str ) < MAX_PATH );
-		V_strcpy( szFilename, str );
+		V_strcpy_safe( szFilename, str );
 	}
 	else
 	{
@@ -330,13 +330,13 @@ void C_SceneEntity::PostDataUpdate( DataUpdateType_t updateType )
 	char szSceneHWM[MAX_PATH];
 	if ( GetHWMorphSceneFileName( szFilename, szSceneHWM ) )
 	{
-		V_strcpy( szFilename, szSceneHWM );
+		V_strcpy_safe( szFilename, szSceneHWM );
 	}
 
 	if ( updateType == DATA_UPDATE_CREATED )
 	{
-		Assert( szFilename && szFilename[ 0 ] );
-		if (  szFilename && szFilename[ 0 ] )
+		Assert( szFilename[ 0 ] );
+		if ( szFilename[ 0 ] )
 		{
 			LoadSceneFromFile( szFilename );
 
@@ -373,6 +373,8 @@ void C_SceneEntity::PostDataUpdate( DataUpdateType_t updateType )
 
 			SetNextClientThink( CLIENT_THINK_ALWAYS );
 		}
+
+		m_bWasPlaying = !m_bIsPlayingBack; // force it to be "changed"
 	}
 
 	// Playback state changed...
@@ -1106,7 +1108,7 @@ void C_SceneEntity::SetCurrentTime( float t, bool forceClientSync )
 //-----------------------------------------------------------------------------
 void C_SceneEntity::PrefetchAnimBlocks( CChoreoScene *pScene )
 {
-	if (!CommandLine()->FindParm("-hushasserts"))
+	if ( !HushAsserts() )
 	{
 		Assert( pScene && m_bMultiplayer );
 	}
@@ -1160,11 +1162,11 @@ void C_SceneEntity::PrefetchAnimBlocks( CChoreoScene *pScene )
 							{
 								// Now look up the animblock
 								mstudioseqdesc_t &seqdesc = pStudioHdr->pSeqdesc( iSequence );
-								for ( int i = 0 ; i < seqdesc.groupsize[ 0 ] ; ++i )
+								for ( int iGroup = 0 ; iGroup < seqdesc.groupsize[ 0 ] ; ++iGroup )
 								{
 									for ( int j = 0; j < seqdesc.groupsize[ 1 ]; ++j )
 									{
-										int iAnimation = seqdesc.anim( i, j );
+										int iAnimation = seqdesc.anim( iGroup, j );
 										int iBaseAnimation = pStudioHdr->iRelativeAnim( iSequence, iAnimation );
 										mstudioanimdesc_t &animdesc = pStudioHdr->pAnimdesc( iBaseAnimation );
 
@@ -1183,14 +1185,14 @@ void C_SceneEntity::PrefetchAnimBlocks( CChoreoScene *pScene )
 											++nResident;
 											if ( nSpew > 1 )
 											{
-												Msg( "%s:%s[%i:%i] was resident\n", pStudioHdr->pszName(), animdesc.pszName(), i, j );
+												Msg( "%s:%s[%i:%i] was resident\n", pStudioHdr->pszName(), animdesc.pszName(), iGroup, j );
 											}
 										}
 										else
 										{
 											if ( nSpew != 0 )
 											{
-												Msg( "%s:%s[%i:%i] async load\n", pStudioHdr->pszName(), animdesc.pszName(), i, j );
+												Msg( "%s:%s[%i:%i] async load\n", pStudioHdr->pszName(), animdesc.pszName(), iGroup, j );
 											}
 										}
 									}

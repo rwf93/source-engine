@@ -241,7 +241,7 @@ void TE_PlayerDecal( IRecipientFilter& filter, float delay,
 	effects->PlayerDecalShoot( 
 		logo, 
 		(void *)(intp)player,
-		entity, 
+		entity,
 		ent->GetModel(), 
 		ent->GetAbsOrigin(), 
 		ent->GetAbsAngles(), 

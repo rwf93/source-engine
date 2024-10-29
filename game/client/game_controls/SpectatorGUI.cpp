@@ -837,7 +837,7 @@ CON_COMMAND_F( spec_player, "Spectate player by name", FCVAR_CLIENTCMD_CAN_EXECU
 		// we can only switch primary spectator targets is PVS isnt locked by auto-director
 		if ( !HLTVCamera()->IsPVSLocked() )
 		{
-			HLTVCamera()->SpecNamedPlayer( args[1] );
+			HLTVCamera()->SpecPlayerByPredicate( args[1] );
 		}
 	}
 	else
