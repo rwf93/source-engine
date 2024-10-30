@@ -61,7 +61,6 @@ def build(bld):
 
 	libs = [
 		'tier0',
-		'gcsdk_game',
 		'particles',
 		'dmxloader',
 		'tier1',
@@ -71,6 +70,7 @@ def build(bld):
 		'vstdlib',
 		'choreoobjects',
 		'steam_api',
+		'gcsdk_game',
 		'PROTOBUF',
 		'CRYPTLIB'
 	]
@@ -90,6 +90,10 @@ def build(bld):
 
 	includes += game["includes"]
 	defines = game["defines"]
+
+	if 'REPLAY_ENABLED' in defines:
+		libs += ['replay']
+		source += ['../shared/replay_gamestats_shared.cpp']
 
 	defines.remove('PROTECTED_THINGS_ENABLE')
 

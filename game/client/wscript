@@ -100,6 +100,21 @@ def build(bld):
 	includes += game["includes"]
 	defines = game["defines"]
 
+	if 'REPLAY_ENABLED' in defines:
+		libs += ['replay']
+		source += [
+			"replay/gamedefs.cpp",
+			"replay/replay_ragdoll.cpp",
+			"replay/replay_screenshot.cpp",
+			"replay/replayperformanceplaybackhandler.cpp",
+			"replay/replayrenderer.cpp",
+			"replay/replayvideo.cpp",
+			"replay/genericclassbased_replay.cpp",
+			"../shared/replay_gamestats_shared.cpp",
+			'../../common/movieobjects/timeutils.cpp',
+			'youtubeapi.cpp'
+		]
+
 	defines.remove('PROTECTED_THINGS_ENABLE')
 
 	bld.shlib(
