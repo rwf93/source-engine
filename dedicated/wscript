@@ -62,7 +62,7 @@ def build(bld):
 
 	defines = []
 
-	libs = ['tier0','vpklib','tier1','tier2','tier3','vstdlib','steam_api','appframework','mathlib', 'EDIT']
+	libs = ['tier0','vpklib','tier1','tier2','tier3','vstdlib','STEAM_API','appframework','mathlib', 'EDIT']
 
 	if bld.env.DEST_OS == 'win32':
 		libs += ['vgui_controls', 'USER32', 'SHELL32']

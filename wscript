@@ -78,7 +78,7 @@ projects={
 		'serverbrowser',
 		'soundemittersystem',
 		'studiorender',
-		'stub_steam',
+#		'stub_steam',
 		'tier0',
 		'tier1',
 		'tier2',
@@ -147,7 +147,7 @@ projects={
 		'vpklib',
 		'vstdlib',
 		'vtf',
-		'stub_steam'
+#		'stub_steam'
 	]
 }
 
@@ -439,9 +439,9 @@ def check_deps(conf):
 		conf.check(lib='d3d9', uselib_store='D3D9')
 		conf.check(lib='dsound', uselib_store='DSOUND')
 		conf.check(lib='dxguid', uselib_store='DXGUID')
-		conf.check(lib='lua51', uselib_store='LUAJIT')
 		conf.check(lib='libprotobuf', uselib_store='PROTOBUF')
 		conf.check(lib='cryptlib', uselib_store='CRYPTLIB')
+		conf.check(lib='steam_api', uselib_store='STEAM_API')
 		if conf.options.OPUS:
 			conf.check(lib='opus', uselib_store='OPUS')
 
@@ -645,6 +645,10 @@ def build(bld):
 		sdl_name = 'SDL2.dll' if bld.env.DEST_OS == 'win32' else 'libSDL2.so'
 		sdl_path = os.path.join('lib', bld.env.DEST_OS, bld.env.DEST_CPU, sdl_name)
 		bld.install_files(bld.env.LIBDIR, [sdl_path])
+
+		steam_api_name = 'steam_api.dll' if bld.env.DEST_OS == 'win32' else 'libsteam_api.so'
+		steam_api_path = os.path.join('lib', bld.env.DEST_OS, bld.env.DEST_CPU, steam_api_name)
+		bld.install_files(bld.env.LIBDIR, [steam_api_path])
 
 	if bld.env.DEST_OS == 'win32':
 		projects['game'] += ['utils/bzip2']
