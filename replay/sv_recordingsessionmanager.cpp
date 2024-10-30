@@ -16,6 +16,7 @@
 #include "vprof.h"
 #include "sv_fileservercleanup.h"
 #include "sv_sessionrecorder.h"
+#include "tier0/vcrmode.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"

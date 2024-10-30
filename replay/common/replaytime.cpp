@@ -5,6 +5,7 @@
 #include "replay/replaytime.h"
 #include "KeyValues.h"
 #include <time.h>
+#include "tier0/vcrmode.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"

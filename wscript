@@ -55,6 +55,7 @@ projects={
 		'engine/voice_codecs/minimp3',
 		'filesystem',
 		'gcsdk',
+		'replay',
 		'game/client',
 		'game/server',
 		'gameui',
