@@ -1055,7 +1055,7 @@ void CBaseHudChat::OnTick( void )
 	if ( line )
 	{
 		vgui::HFont font = line->GetFont();
-		m_iFontHeight = vgui::surface()->GetFontTall( font ) + 2;
+		m_iFontHeight = vgui::scheme()->GetProportionalScaledValue(vgui::surface()->GetFontTall( font )) + 2;
 
 		// Put input area at bottom
 
