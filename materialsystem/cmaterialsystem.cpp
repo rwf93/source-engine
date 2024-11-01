@@ -620,7 +620,11 @@ void CMaterialSystem::SetShaderAPI( char const *pShaderAPIDLL )
 		Error( "Cannot set the shader API twice!\n" );
 	}
 
-	if ( !pShaderAPIDLL )
+	if ( CommandLine()->ParmValue("-dxlevel", 90) >= 110 )
+	{
+		pShaderAPIDLL = "shaderapidx11";
+	}
+	else if(!pShaderAPIDLL)
 	{
 		pShaderAPIDLL = "shaderapidx9";
 	}
