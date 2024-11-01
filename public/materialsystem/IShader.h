@@ -100,6 +100,10 @@ public:
 
 	// FIXME: Remove GetParamName, etc. above
 //	virtual const ShaderParamInfo_t& GetParamInfo( int paramIndex ) const = 0;
+
+#if defined(SHADERAPI_DX11) || defined(SHADERLIB_DX11)
+	virtual void InitShader(IShaderDevice* pShaderDevice) = 0;
+#endif
 };
 
 #endif // ISHADER_H

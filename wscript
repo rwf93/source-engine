@@ -68,8 +68,11 @@ projects={
 		'materialsystem',
 #		'materialsystem/shaderapiempty',
 		'materialsystem/shaderapidx9',
+		'materialsystem/shaderapidx11',
 		'materialsystem/shaderlib',
+		'materialsystem/shaderlib_dx11',
 		'materialsystem/stdshaders',
+		'materialsystem/stdshaders_dx11',
 		'mathlib',
 		'particles',
 		'scenefilecache',
@@ -426,8 +429,11 @@ def check_deps(conf):
 		conf.check(lib='libpng', uselib_store='PNG', define_name='HAVE_PNG')
 		conf.check(lib='d3dx9', uselib_store='D3DX9')
 		conf.check(lib='d3d9', uselib_store='D3D9')
+		conf.check(lib='d3d11', uselib_store='D3D11')
 		conf.check(lib='dsound', uselib_store='DSOUND')
 		conf.check(lib='dxguid', uselib_store='DXGUID')
+		conf.check(lib='dxgi', uselib_store='DXGI')
+		conf.check(lib='D3DCompiler', uselib_store='D3DCOMPILER')
 		if conf.options.OPUS:
 			conf.check(lib='opus', uselib_store='OPUS')
 

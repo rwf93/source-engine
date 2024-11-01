@@ -119,6 +119,19 @@ public:
 	virtual bool NeedsFullFrameBufferTexture( IMaterialVar **params, bool bCheckSpecificToThisFrame = true ) const;
 	virtual bool IsTranslucent( IMaterialVar **params ) const;
 
+#if defined(SHADERLIB_DX11)
+	virtual void InitShader(IShaderDevice* pShaderDevice);
+	virtual void OnInitShader(IShaderDevice* pShaderDevice) {}
+	virtual void SetInternalVertexShaderConstantBuffers();
+	virtual void SetInternalVertexShaderConstantBuffersNoSkinning();
+	virtual void SetInternalPixelShaderConstantBuffers();
+	virtual void SetPixelShaderConstantBuffer(int slot, ConstantBufferHandle_t cbuffer);
+	virtual void SetVertexShaderConstantBuffer(int slot, ConstantBufferHandle_t cbuffer);
+	virtual void SetPixelShaderConstantBuffer(int slot, ShaderInternalConstantBuffer_t cbuffer);
+	virtual void SetVertexShaderConstantBuffer(int slot, ShaderInternalConstantBuffer_t cbuffer);
+	virtual void UpdateConstantBuffer(ConstantBufferHandle_t cbuffer, void* pNewData);
+#endif
+
 public:
 	// These functions must be implemented by the shader
 	virtual void OnInitShaderParams( IMaterialVar** ppParams, const char *pMaterialName ) {}

@@ -1,0 +1,70 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+from waflib import Utils
+import os
+
+top = '.'
+PROJECT_NAME = 'stdshader_dx11'
+
+def options(opt):
+	# stub
+	return
+
+def configure(conf):
+	conf.env.append_unique('DEFINES',[
+		'STDSHADER_DX9_DLL_EXPORT',
+		'FAST_MATERIALVAR_ACCESS'
+	])
+
+def build(bld):
+	source = [
+		'BaseVSShader.cpp' ,
+		'bik_dx11.cpp',
+		'modulate_dx11.cpp',
+		'occlusion_dx11.cpp',
+		'test_dx11.cpp',
+		'unlitgeneric_dx11.cpp',
+		'wireframe_dx11.cpp',
+		'writez_dx11.cpp',
+		'../shader_dll_verify.cpp'
+	]
+
+	includes = [
+		'.',
+		'../../public',
+		'../../public/tier0',
+		'../../public/tier1',
+		'fxctmp9',
+		'vshtmp9'
+	] + bld.env.INCLUDES_SDL2
+
+	defines = [
+		'SHADERLIB_DX11'
+	]
+
+	libs = [
+		'tier0',
+		'tier1',
+		'mathlib',
+		'shaderlib_dx11'
+	]
+
+	if bld.env.DEST_OS == 'android':
+		libs += ['ANDROID_SUPPORT']
+
+	install_path = bld.env.LIBDIR
+
+	bld.shlib(
+		source   = source,
+		target   = PROJECT_NAME,
+		name     = PROJECT_NAME,
+		features = 'c cxx',
+		includes = includes,
+		defines  = defines,
+		use      = libs,
+		install_path = install_path,
+		subsystem = bld.env.MSVC_SUBSYSTEM,
+		idx      = bld.get_taskgen_count()
+	)
+

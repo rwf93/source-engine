@@ -117,6 +117,7 @@ typedef void *HardwareShader_t;
 //-----------------------------------------------------------------------------
 typedef intp VertexShader_t;
 typedef intp PixelShader_t;
+typedef intp GeometryShader_t;
 
 //-----------------------------------------------------------------------------
 // Bitpattern for an invalid shader

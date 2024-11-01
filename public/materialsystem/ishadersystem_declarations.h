@@ -1,4 +1,4 @@
-//===== Copyright © Valve Corporation, All rights reserved. ======//
+//===== Copyright ï¿½ Valve Corporation, All rights reserved. ======//
 #ifndef ISHADER_DECLARATIONS_HDR
 #define ISHADER_DECLARATIONS_HDR
 
@@ -125,6 +125,7 @@ enum
 	// runtime flags
 	SHADER_IS_ASM = 0x1,
 	SHADER_FAILED_LOAD = 0x2,
+	SHADER_DYNAMIC_COMPILE_IS_HLSL = 0x4
 };
 
 
