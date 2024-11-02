@@ -144,10 +144,10 @@ void CVMPIFile_Memory::Flush()
 {
 }
 
-int CVMPIFile_Memory::Read( void* pOutput, int size ) 
+int CVMPIFile_Memory::Read( void* pOutput, intp size ) 
 { 
 	Assert( m_iCurPos >= 0 );
-	int nToRead = min( (int)(m_DataLen - m_iCurPos), size );
+	int nToRead = min( (intp)(m_DataLen - m_iCurPos), size );
 	
 	if ( m_chMode != 't' )
 	{
@@ -160,7 +160,7 @@ int CVMPIFile_Memory::Read( void* pOutput, int size )
 	{
 		int iRead = 0;
 		const char *pData = m_pData + m_iCurPos;
-		int len = m_DataLen - m_iCurPos;
+		intp len = m_DataLen - m_iCurPos;
 		
 		// Perform crlf translation
 		while ( const char *crlf = ( const char * ) memchr( pData, '\r', len ) )

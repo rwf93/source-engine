@@ -12,7 +12,7 @@
 #include "cmdsink.h"
 
 // Required to compile using D3DX* routines in the same process
-#include <d3dx9shader.h>
+#include "../../dx9sdk/include/d3dx9shader.h"
 #include "dx_proxy/dx_proxy.h"
 
 #include <tier0/icommandline.h>

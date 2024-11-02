@@ -268,10 +268,32 @@ BEGIN_BYTESWAP_DATADESC( dareaportal_t )
 	DEFINE_FIELD( planenum, FIELD_INTEGER ),
 END_BYTESWAP_DATADESC()
 
+BEGIN_BYTESWAP_DATADESC( dworldlight_version0_t )
+	DEFINE_FIELD( origin, FIELD_VECTOR ),
+	DEFINE_FIELD( intensity, FIELD_VECTOR ),
+	DEFINE_FIELD( normal, FIELD_VECTOR ),
+	DEFINE_FIELD( normal, FIELD_VECTOR ),
+	DEFINE_FIELD( cluster, FIELD_INTEGER ),
+	DEFINE_FIELD( type, FIELD_INTEGER ),	// enumeration
+	DEFINE_FIELD( style, FIELD_INTEGER ),
+	DEFINE_FIELD( stopdot, FIELD_FLOAT ),
+	DEFINE_FIELD( stopdot2, FIELD_FLOAT ),
+	DEFINE_FIELD( exponent, FIELD_FLOAT ),
+	DEFINE_FIELD( radius, FIELD_FLOAT ),
+	DEFINE_FIELD( constant_attn, FIELD_FLOAT ),
+	DEFINE_FIELD( linear_attn, FIELD_FLOAT ),
+	DEFINE_FIELD( quadratic_attn, FIELD_FLOAT ),
+	DEFINE_FIELD( flags, FIELD_INTEGER ),
+	DEFINE_FIELD( texinfo, FIELD_INTEGER ),
+	DEFINE_FIELD( owner, FIELD_INTEGER ),
+END_BYTESWAP_DATADESC()
+
 BEGIN_BYTESWAP_DATADESC( dworldlight_t )
 	DEFINE_FIELD( origin, FIELD_VECTOR ),
 	DEFINE_FIELD( intensity, FIELD_VECTOR ),
 	DEFINE_FIELD( normal, FIELD_VECTOR ),
+	DEFINE_FIELD( normal, FIELD_VECTOR ),
+	DEFINE_FIELD( shadow_cast_offset, FIELD_VECTOR ),
 	DEFINE_FIELD( cluster, FIELD_INTEGER ),
 	DEFINE_FIELD( type, FIELD_INTEGER ),	// enumeration
 	DEFINE_FIELD( style, FIELD_INTEGER ),
@@ -403,6 +425,126 @@ BEGIN_BYTESWAP_DATADESC( StaticPropLumpV5_t )
 	DEFINE_FIELD( m_FadeMaxDist, FIELD_FLOAT ),
 	DEFINE_FIELD( m_LightingOrigin, FIELD_VECTOR ),
 	DEFINE_FIELD( m_flForcedFadeScale, FIELD_FLOAT ),
+END_BYTESWAP_DATADESC()
+
+
+BEGIN_BYTESWAP_DATADESC(StaticPropLumpV6_t)
+	DEFINE_FIELD( m_Origin, FIELD_VECTOR ),
+	DEFINE_FIELD( m_Angles, FIELD_VECTOR ),	// QAngle
+	DEFINE_FIELD( m_PropType, FIELD_SHORT ),
+	DEFINE_FIELD( m_FirstLeaf, FIELD_SHORT ),
+	DEFINE_FIELD( m_LeafCount, FIELD_SHORT ),
+	DEFINE_FIELD( m_Solid, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_Flags, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_Skin, FIELD_INTEGER ),
+	DEFINE_FIELD( m_FadeMinDist, FIELD_FLOAT ),
+	DEFINE_FIELD( m_FadeMaxDist, FIELD_FLOAT ),
+	DEFINE_FIELD( m_LightingOrigin, FIELD_VECTOR ),
+	DEFINE_FIELD( m_flForcedFadeScale, FIELD_FLOAT ),
+	DEFINE_FIELD( m_nMinDXLevel, FIELD_SHORT ),
+	DEFINE_FIELD( m_nMaxDXLevel, FIELD_SHORT ),
+END_BYTESWAP_DATADESC()
+
+BEGIN_BYTESWAP_DATADESC(StaticPropLumpV7_t)
+	DEFINE_FIELD( m_Origin, FIELD_VECTOR ),
+	DEFINE_FIELD( m_Angles, FIELD_VECTOR ),	// QAngle
+	DEFINE_FIELD( m_PropType, FIELD_SHORT ),
+	DEFINE_FIELD( m_FirstLeaf, FIELD_SHORT ),
+	DEFINE_FIELD( m_LeafCount, FIELD_SHORT ),
+	DEFINE_FIELD( m_Solid, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_Flags, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_Skin, FIELD_INTEGER ),
+	DEFINE_FIELD( m_FadeMinDist, FIELD_FLOAT ),
+	DEFINE_FIELD( m_FadeMaxDist, FIELD_FLOAT ),
+	DEFINE_FIELD( m_LightingOrigin, FIELD_VECTOR ),
+	DEFINE_FIELD( m_flForcedFadeScale, FIELD_FLOAT ),
+	DEFINE_FIELD( m_nMinDXLevel, FIELD_SHORT ),
+	DEFINE_FIELD( m_nMaxDXLevel, FIELD_SHORT ),
+	DEFINE_FIELD( m_DiffuseModulation, FIELD_COLOR32 ),
+END_BYTESWAP_DATADESC()
+
+BEGIN_BYTESWAP_DATADESC(StaticPropLumpV8_t)
+	DEFINE_FIELD( m_Origin, FIELD_VECTOR ),
+	DEFINE_FIELD( m_Angles, FIELD_VECTOR ),	// QAngle
+	DEFINE_FIELD( m_PropType, FIELD_SHORT ),
+	DEFINE_FIELD( m_FirstLeaf, FIELD_SHORT ),
+	DEFINE_FIELD( m_LeafCount, FIELD_SHORT ),
+	DEFINE_FIELD( m_Solid, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_Flags, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_Skin, FIELD_INTEGER ),
+	DEFINE_FIELD( m_FadeMinDist, FIELD_FLOAT ),
+	DEFINE_FIELD( m_FadeMaxDist, FIELD_FLOAT ),
+	DEFINE_FIELD( m_LightingOrigin, FIELD_VECTOR ),
+	DEFINE_FIELD( m_flForcedFadeScale, FIELD_FLOAT ),
+	DEFINE_FIELD( m_nMinCPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_nMinCPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_nMinGPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_nMinGPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_DiffuseModulation, FIELD_COLOR32 ),
+END_BYTESWAP_DATADESC()
+
+BEGIN_BYTESWAP_DATADESC(StaticPropLumpV9_t)
+	DEFINE_FIELD(m_Origin, FIELD_VECTOR ),
+	DEFINE_FIELD(m_Angles, FIELD_VECTOR ),	// QAng le
+	DEFINE_FIELD(m_PropType, FIELD_SHORT ),
+	DEFINE_FIELD(m_FirstLeaf, FIELD_SHORT ),
+	DEFINE_FIELD(m_LeafCount, FIELD_SHORT ),
+	DEFINE_FIELD(m_Solid, FIELD_CHARACTER ),
+	DEFINE_FIELD(m_Flags, FIELD_CHARACTER ),
+	DEFINE_FIELD(m_Skin, FIELD_INTEGER ),
+	DEFINE_FIELD(m_FadeMinDist, FIELD_FLOAT ),
+	DEFINE_FIELD(m_FadeMaxDist, FIELD_FLOAT ),
+	DEFINE_FIELD(m_LightingOrigin, FIELD_VECTOR ),
+	DEFINE_FIELD(m_flForcedFadeScale, FIELD_FLOAT ),
+	DEFINE_FIELD(m_nMinCPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD(m_nMinCPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD(m_nMinGPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD(m_nMinGPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD(m_DiffuseModulation, FIELD_COLOR32 ),
+	DEFINE_FIELD(m_bDisableX360, FIELD_BOOLEAN ),
+END_BYTESWAP_DATADESC()
+
+BEGIN_BYTESWAP_DATADESC(StaticPropLumpV10_21_t)
+	DEFINE_FIELD( m_Origin, FIELD_VECTOR ),
+	DEFINE_FIELD( m_Angles, FIELD_VECTOR),	// QAngle
+	DEFINE_FIELD( m_PropType, FIELD_SHORT ),
+	DEFINE_FIELD( m_FirstLeaf, FIELD_SHORT ),
+	DEFINE_FIELD( m_LeafCount, FIELD_SHORT ),
+	DEFINE_FIELD( m_Solid, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_Flags, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_Skin, FIELD_INTEGER ),
+	DEFINE_FIELD( m_FadeMinDist, FIELD_FLOAT ),
+	DEFINE_FIELD( m_FadeMaxDist, FIELD_FLOAT ),
+	DEFINE_FIELD( m_LightingOrigin, FIELD_VECTOR ),
+	DEFINE_FIELD( m_flForcedFadeScale, FIELD_FLOAT ),
+	DEFINE_FIELD( m_nMinCPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_nMinCPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_nMinGPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_nMinGPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_DiffuseModulation, FIELD_COLOR32 ),
+	DEFINE_FIELD( m_bDisableX360, FIELD_BOOLEAN ),
+END_BYTESWAP_DATADESC()
+
+BEGIN_BYTESWAP_DATADESC(StaticPropLumpV11_t)
+	DEFINE_FIELD( m_Origin, FIELD_VECTOR ),
+	DEFINE_FIELD( m_Angles, FIELD_VECTOR ),	// QAngle
+	DEFINE_FIELD( m_PropType, FIELD_SHORT ),
+	DEFINE_FIELD( m_FirstLeaf, FIELD_SHORT ),
+	DEFINE_FIELD( m_LeafCount, FIELD_SHORT ),
+	DEFINE_FIELD( m_Solid, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_Flags, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_Skin, FIELD_INTEGER ),
+	DEFINE_FIELD( m_FadeMinDist, FIELD_FLOAT ),
+	DEFINE_FIELD( m_FadeMaxDist, FIELD_FLOAT ),
+	DEFINE_FIELD( m_LightingOrigin, FIELD_VECTOR ),
+	DEFINE_FIELD( m_flForcedFadeScale, FIELD_FLOAT ),
+	DEFINE_FIELD( m_nMinCPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_nMinCPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_nMinGPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_nMinGPULevel, FIELD_CHARACTER ),
+	DEFINE_FIELD( m_DiffuseModulation, FIELD_COLOR32 ),
+	DEFINE_FIELD( m_bDisableX360, FIELD_BOOLEAN ),
+	DEFINE_FIELD( m_flPropScale, FIELD_FLOAT ),
 END_BYTESWAP_DATADESC()
 
 BEGIN_BYTESWAP_DATADESC( StaticPropLeafLump_t )
@@ -1044,6 +1186,18 @@ void CGameLump::ComputeGameLumpSizeAndCount( int& size, int& clumpCount )
 	size += sizeof( dgamelumpheader_t ) + clumpCount * sizeof( dgamelump_t );
 }
 
+template<typename T> void SwapLump(byte *src, byte *dest, int &count)
+{
+	T lump;
+	for ( int i = 0; i < count; ++i )
+	{
+		Q_memcpy( &lump, src, sizeof(T) );
+		g_Swap.SwapFieldsToTargetEndian( &lump, &lump );
+		Q_memcpy( dest, &lump, sizeof(T) );
+		src += sizeof( T );
+		dest += sizeof( T );
+	}
+}
 
 void CGameLump::SwapGameLump( GameLumpId_t id, int version, byte *dest, byte *src, int length )
 {
@@ -1080,51 +1234,18 @@ void CGameLump::SwapGameLump( GameLumpId_t id, int version, byte *dest, byte *sr
 		src += sizeof(int);
 		dest += sizeof(int);
 
-		// The one-at-a-time swap is to compensate for these structures 
-		// possibly being misaligned, which crashes the Xbox 360.
-		if ( version == 4 )
-		{
-			StaticPropLumpV4_t lump;
-			for ( int i = 0; i < count; ++i )
-			{
-				Q_memcpy( &lump, src, sizeof(StaticPropLumpV4_t) );
-				g_Swap.SwapFieldsToTargetEndian( &lump, &lump );
-				Q_memcpy( dest, &lump, sizeof(StaticPropLumpV4_t) );
-				src += sizeof( StaticPropLumpV4_t );
-				dest += sizeof( StaticPropLumpV4_t );
-			}
-		}
-		else if ( version == 5 )
-		{
-			StaticPropLumpV5_t lump;
-			for ( int i = 0; i < count; ++i )
-			{
-				Q_memcpy( &lump, src, sizeof(StaticPropLumpV5_t) );
-				g_Swap.SwapFieldsToTargetEndian( &lump, &lump );
-				Q_memcpy( dest, &lump, sizeof(StaticPropLumpV5_t) );
-				src += sizeof( StaticPropLumpV5_t );
-				dest += sizeof( StaticPropLumpV5_t );
-			}
-		}
-		else
-		{
-			if ( version != 6 )
-			{
-				Error( "Unknown Static Prop Lump version %d didn't get swapped!\n", version );
-			}
-
-			StaticPropLump_t lump;
-			for ( int i = 0; i < count; ++i )
-			{
-				Q_memcpy( &lump, src, sizeof(StaticPropLump_t) );
-				g_Swap.SwapFieldsToTargetEndian( &lump, &lump );
-				Q_memcpy( dest, &lump, sizeof(StaticPropLump_t) );
-				src += sizeof( StaticPropLump_t );
-				dest += sizeof( StaticPropLump_t );
-			}
+		switch( version ) {
+		case 4: 	SwapLump<StaticPropLumpV4_t>(src, dest, count); 		break;
+		case 5: 	SwapLump<StaticPropLumpV5_t>(src, dest, count); 		break;
+		case 6: 	SwapLump<StaticPropLumpV6_t>(src, dest, count); 		break;
+		case 7: 	SwapLump<StaticPropLumpV7_t>(src, dest, count); 		break;
+		case 8: 	SwapLump<StaticPropLumpV8_t>(src, dest, count); 		break;
+		case 9: 	SwapLump<StaticPropLumpV9_t>(src, dest, count); 		break;
+		case 10: 	SwapLump<StaticPropLumpV10_21_t>(src, dest, count); 	break;
+		case 11:
+		default:	SwapLump<StaticPropLumpV11_t>(src, dest, count);		break;
 		}
 		break;
-
 	case GAMELUMP_DETAIL_PROPS:
 		// Swap the detail prop model dict
 		count = *(int*)src;
@@ -2163,6 +2284,54 @@ void LoadLeafAmbientLighting( int numLeafs )
 	}
 }
 
+int LoadWorldLights(int lump, dworldlight_t* pNewWorldLights) {
+	if(lump != LUMP_WORLDLIGHTS_HDR && lump != LUMP_WORLDLIGHTS) {
+		Error("Unexpected LUMP %i when processing world lights", lump);
+		return 0;
+	}
+
+	if(!HasLump(lump))
+		return 0;
+
+	int count = 0;
+	int version = LumpVersion(lump);
+
+	switch(version) {
+	case 0: {
+		dworldlight_version0_t* pOldWorldlights = (dworldlight_version0_t*)malloc(g_pBSPHeader->lumps[lump].filelen);
+		count = CopyLump(lump, pOldWorldlights);
+		for(int i = 0; i < count; i++) {
+			pNewWorldLights->origin            	= pOldWorldlights->origin;
+			pNewWorldLights->intensity        	= pOldWorldlights->intensity;
+			pNewWorldLights->normal            	= pOldWorldlights->normal;
+			pNewWorldLights->shadow_cast_offset.Init( 0.0f, 0.0f, 0.0f );
+			pNewWorldLights->cluster            = pOldWorldlights->cluster;
+			pNewWorldLights->type            	= pOldWorldlights->type;
+			pNewWorldLights->style            	= pOldWorldlights->style;
+			pNewWorldLights->stopdot            = pOldWorldlights->stopdot;
+			pNewWorldLights->stopdot2        	= pOldWorldlights->stopdot2;
+			pNewWorldLights->exponent        	= pOldWorldlights->exponent;
+			pNewWorldLights->radius            	= pOldWorldlights->radius;
+			pNewWorldLights->constant_attn    	= pOldWorldlights->constant_attn;
+			pNewWorldLights->linear_attn        = pOldWorldlights->linear_attn;
+			pNewWorldLights->quadratic_attn    	= pOldWorldlights->quadratic_attn;
+			pNewWorldLights->flags            	= pOldWorldlights->flags;
+			pNewWorldLights->texinfo            = pOldWorldlights->texinfo;
+			pNewWorldLights->owner            	= pOldWorldlights->owner;
+			pNewWorldLights++;
+			pOldWorldlights++;
+		}
+		free(pOldWorldlights);
+	}	break;
+	case LUMP_WORLDLIGHTS_VERSION:
+		CopyLump(lump, pNewWorldLights);
+		break;
+	default: Error("Unknown LUMP version %i", version); return 0;
+	}
+
+	return count;
+}
+
 void ValidateHeader( const char *filename, const dheader_t *pHeader )
 {
 	if ( pHeader->ident != IDBSPHEADER )
@@ -2255,9 +2424,10 @@ void LoadBSPFile( const char *filename )
 	LoadLeafAmbientLighting( numleafs );
 
 	CopyLump( FIELD_CHARACTER, LUMP_ENTITIES, dentdata );
-	numworldlightsLDR = CopyLump( LUMP_WORLDLIGHTS, dworldlightsLDR );
-	numworldlightsHDR = CopyLump( LUMP_WORLDLIGHTS_HDR, dworldlightsHDR );
-	
+
+	numworldlightsLDR = LoadWorldLights( LUMP_WORLDLIGHTS, dworldlightsLDR );
+	numworldlightsHDR = LoadWorldLights( LUMP_WORLDLIGHTS_HDR, dworldlightsHDR );
+
 	numleafwaterdata = CopyLump( LUMP_LEAFWATERDATA, dleafwaterdata );
 	g_PhysCollideSize = CopyVariableLump<byte>( FIELD_CHARACTER, LUMP_PHYSCOLLIDE, (void**)&g_pPhysCollide );
 	g_PhysDispSize = CopyVariableLump<byte>( FIELD_CHARACTER, LUMP_PHYSDISP, (void**)&g_pPhysDisp );
@@ -2467,6 +2637,7 @@ void LoadBSPFile_FileSystemOnly( const char *filename )
 	g_pBSPHeader = NULL;
 }
 
+
 void ExtractZipFileFromBSP( char *pBSPFileName, char *pZipFileName )
 {
 	Lumps_Init();
@@ -2551,7 +2722,7 @@ static void AddLumpInternal( int lumpnum, void *data, int len, int version )
 	SafeWrite( g_hBSPFile, data, len );
 
 	// pad out to the next dword
-	AlignFilePosition( g_hBSPFile, 4 );
+	AlignFilePosition( g_hBSPFile, LUMP_ALIGNMENT );
 }
 
 template< class T >
@@ -2720,6 +2891,8 @@ void WriteBSPFile( const char *filename, char *pUnused )
 	AddLump( LUMP_VERTNORMALINDICES, g_vertnormalindices, g_numvertnormalindices );
 
 	AddLump( LUMP_LEAFMINDISTTOWATER, g_LeafMinDistToWater, numleafs );
+	AddLump( LUMP_WORLDLIGHTS, dworldlightsLDR, numworldlightsLDR, LUMP_WORLDLIGHTS_VERSION );
+	AddLump( LUMP_WORLDLIGHTS_HDR, dworldlightsHDR, numworldlightsHDR, LUMP_WORLDLIGHTS_VERSION );
 
 	AddGameLumps();
 
@@ -4321,6 +4494,13 @@ void SwapGameLumpsToDisk( void )
 	AddGameLumps();
 }
 
+template<typename T>
+void ParseStaticPropLump(int &propType, byte *pGameLumpData)
+{
+	propType = ((T*)pGameLumpData)->m_PropType;
+	pGameLumpData += sizeof( T );
+}
+
 //-----------------------------------------------------------------------------
 // Generate a table of all static props, used for resolving static prop lighting
 // files back to their actual mdl.
@@ -4342,7 +4522,7 @@ void BuildStaticPropNameTable()
 			return;
 		}
 
-		if ( nVersion != 4 && nVersion != 5 && nVersion != 6 )
+		if ( nVersion < 4 || nVersion > GAMELUMP_STATIC_PROPS_VERSION )
 		{
 			Error( "Unknown Static Prop Lump version %d!\n", nVersion );
 		}
@@ -4371,20 +4551,16 @@ void BuildStaticPropNameTable()
 			for ( int i = 0; i < count; i++ )
 			{
 				int propType;
-				if ( nVersion == 4 )
-				{
-					propType = ((StaticPropLumpV4_t *)pGameLumpData)->m_PropType;
-					pGameLumpData += sizeof( StaticPropLumpV4_t );
-				}
-				else if ( nVersion == 5 )
-				{
-					propType = ((StaticPropLumpV5_t *)pGameLumpData)->m_PropType;
-					pGameLumpData += sizeof( StaticPropLumpV5_t );
-				}
-				else
-				{
-					propType = ((StaticPropLump_t *)pGameLumpData)->m_PropType;
-					pGameLumpData += sizeof( StaticPropLump_t );
+				switch( nVersion ) {
+				case 4: 	ParseStaticPropLump<StaticPropLumpV4_t>(propType, pGameLumpData); 		break;
+				case 5: 	ParseStaticPropLump<StaticPropLumpV5_t>(propType, pGameLumpData); 		break;
+				case 6: 	ParseStaticPropLump<StaticPropLumpV6_t>(propType, pGameLumpData); 		break;
+				case 7: 	ParseStaticPropLump<StaticPropLumpV7_t>(propType, pGameLumpData); 		break;
+				case 8: 	ParseStaticPropLump<StaticPropLumpV8_t>(propType, pGameLumpData); 		break;
+				case 9: 	ParseStaticPropLump<StaticPropLumpV9_t>(propType, pGameLumpData); 		break;
+				case 10: 	ParseStaticPropLump<StaticPropLumpV10_21_t>(propType, pGameLumpData); 	break;
+				case 11: 	ParseStaticPropLump<StaticPropLumpV11_t>(propType, pGameLumpData); 		break;
+				default:	ParseStaticPropLump<StaticPropLump_t>(propType, pGameLumpData);			break;
 				}
 				g_StaticPropInstances.AddToTail( propType );
 			}

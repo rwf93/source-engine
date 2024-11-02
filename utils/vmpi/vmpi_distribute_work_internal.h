@@ -228,7 +228,7 @@ public:
 	bool m_bMasterReady;	// Set to true when the master is ready to go.
 	bool m_bMasterFinished;
 	WUIndexType m_nWorkUnits;
-	char m_cPacketID;
+	unsigned char m_cPacketID;
 };
 
 

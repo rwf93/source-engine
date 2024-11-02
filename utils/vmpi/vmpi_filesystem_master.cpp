@@ -135,7 +135,7 @@ public:
 		m_pPassThru->Flush( m_fp );
 	}
 	
-	virtual int Read( void* pOutput, int size )
+	virtual int Read( void* pOutput, intp size )
 	{
 		return m_pPassThru->Read( pOutput, size, m_fp );
 	}

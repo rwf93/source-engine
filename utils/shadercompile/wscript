@@ -5,53 +5,57 @@ from waflib import Utils
 import os
 
 top = '.'
-PROJECT_NAME = 'stdshader_dx11'
+PROJECT_NAME = 'shadercompile_dll'
 
 def options(opt):
 	# stub
 	return
 
 def configure(conf):
-	conf.env.append_unique('DEFINES',[
-		'STDSHADER_DX9_DLL_EXPORT',
-		'FAST_MATERIALVAR_ACCESS'
-	])
+	# stub
+	return
 
 def build(bld):
 	source = [
-		'BaseVSShader.cpp' ,
-		'bik_dx11.cpp',
-		'modulate_dx11.cpp',
-		'occlusion_dx11.cpp',
-		'test_dx11.cpp',
-		'unlitgeneric_dx11.cpp',
-		'wireframe_dx11.cpp',
-		'writez_dx11.cpp',
-		'../shader_dll_verify.cpp',
+    	'../common/cmdlib.cpp',
+		'cmdsink.cpp',
+		'd3dxfxc.cpp',
+		'../../public/filesystem_helpers.cpp',
+		'../common/pacifier.cpp',
+		'shadercompile.cpp',
+		'subprocess.cpp',
+		'cfgprocessor.cpp',
+		'../common/threads.cpp',
+		'../common/vmpi_tools_shared.cpp',
+		'../common/tools_minidump.cpp',
 	]
 
 	includes = [
 		'.',
+		'../common',
+		'../vmpi',
 		'../../public',
 		'../../public/tier0',
 		'../../public/tier1',
-		'fxctmp9',
-		'vshtmp9'
-	] + bld.env.INCLUDES_SDL2
+		'../../common',
+	]
 
 	defines = [
-		'SHADERLIB_DX11'
-	]
+		'SHADERCOMPILE_EXPORTS',
+		'MPI'
+    ]
 
 	libs = [
-		'tier0',
-		'tier1',
 		'mathlib',
-		'shaderlib_dx11'
-	]
+		'tier1',
+		'tier2',
+		'vmpi',
+		'vstdlib',
+		'lzma'
+    ]
 
-	if bld.env.DEST_OS == 'android':
-		libs += ['ANDROID_SUPPORT']
+	if bld.env.DEST_OS == 'win32':
+		libs += ['USER32', 'WS2_32', 'GDI32', 'D3D9', 'D3D11', 'DXGI']
 
 	install_path = bld.env.LIBDIR
 

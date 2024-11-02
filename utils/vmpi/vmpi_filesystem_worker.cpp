@@ -632,7 +632,7 @@ public:
 	virtual bool HandleFileSystemPacket( MessageBuffer *pBuf, int iSource, int iPacketID );
 
 	virtual void CreateVirtualFile( const char *pFilename, const void *pData, int fileLength );
-	virtual long GetFileTime( const char *pFileName, const char *pathID );
+	virtual time_t GetFileTime( const char *pFileName, const char *pathID );
 	virtual bool IsFileWritable( const char *pFileName, const char *pPathID );
 	virtual bool SetFileWritable( char const *pFileName, bool writable, const char *pPathID );
 
@@ -734,7 +734,7 @@ void CWorkerVMPIFileSystem::CreateVirtualFile( const char *pFilename, const void
 }
 
 
-long CWorkerVMPIFileSystem::GetFileTime( const char *pFileName, const char *pathID )
+time_t CWorkerVMPIFileSystem::GetFileTime( const char *pFileName, const char *pathID )
 {
 	Error( "GetFileTime not supported in VMPI worker filesystem." );
 	return 0;

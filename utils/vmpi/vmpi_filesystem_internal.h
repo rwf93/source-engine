@@ -86,7 +86,7 @@ public:
 	virtual unsigned int Tell() = 0;
 	virtual unsigned int Size() = 0;
 	virtual void Flush() = 0;
-	virtual int Read( void* pOutput, int size ) = 0;
+	virtual int Read( void* pOutput, intp size ) = 0;
 	virtual int Write( void const* pInput, int size ) = 0;
 };
 
@@ -101,7 +101,7 @@ public:
 	virtual unsigned int Tell();
 	virtual unsigned int Size();
 	virtual void Flush();
-	virtual int Read( void* pOutput, int size ) ;
+	virtual int Read( void* pOutput, intp size ) ;
 	virtual int Write( void const* pInput, int size );
 
 private:

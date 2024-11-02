@@ -1,0 +1,66 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+from waflib import Utils
+import os
+
+top = '.'
+PROJECT_NAME = 'vmpi'
+
+def options(opt):
+	# stub
+	return
+
+def configure(conf):
+    # stub
+	return
+
+def build(bld):
+	source = [
+		'../../public/filesystem_init.cpp',
+		'../common/filesystem_tools.cpp',
+		'iphelpers.cpp',
+		'loopback_channel.cpp',
+		'messbuf.cpp',
+		'ThreadedTCPSocket.cpp',
+		'ThreadedTCPSocketEmu.cpp',
+		'threadhelpers.cpp',
+		'vmpi.cpp',
+		'vmpi_distribute_tracker.cpp',
+		'vmpi_distribute_work.cpp',
+		'vmpi_distribute_work_sdk.cpp',
+		'vmpi_distribute_work_default.cpp',
+		'vmpi_filesystem.cpp',
+		'vmpi_filesystem_master.cpp',
+		'vmpi_filesystem_worker.cpp',
+	]
+
+	includes = [
+		'.',
+		'../common',
+        '../../public',
+		'../../public/tier0',
+		'../../public/tier1',
+		'../../common',
+		'../../thirdparty/zlib'
+	]
+
+	defines = [
+    ]
+
+	libs = [
+		"ZLIB"
+    ]
+
+	bld.stlib(
+		source   = source,
+		target   = PROJECT_NAME,
+		name     = PROJECT_NAME,
+		features = 'c cxx',
+		includes = includes,
+		defines  = defines,
+		use      = libs,
+		subsystem = bld.env.MSVC_SUBSYSTEM,
+		idx      = bld.get_taskgen_count()
+	)
+

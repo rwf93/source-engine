@@ -25,7 +25,7 @@
 #include "checksum_md5.h"
 #include "tslist.h"
 #include "tier0/icommandline.h"
-
+#include "tier0/vcrmode.h"
 
 #define DEFAULT_MAX_WORKERS	32	// Unless they specify -mpi_MaxWorkers, it will stop accepting workers after it gets this many.
 int g_nMaxWorkerCount = DEFAULT_MAX_WORKERS;

@@ -692,7 +692,7 @@ static void FlushCombos( size_t *pnTotalFlushedSize, CUtlBuffer *pDynamicComboBu
 	size_t nCompressedSize;
 	uint8 *pCompressedShader = LZMA_OpportunisticCompress( reinterpret_cast<uint8 *> ( pDynamicComboBuffer->Base() ),
 	                                                       pDynamicComboBuffer->TellPut(),
-	                                                       &nCompressedSize );
+	                                                       &(unsigned int)nCompressedSize );
 	// high 2 bits of length =
 	// 00 = bzip2 compressed
 	// 10 = uncompressed
@@ -1350,7 +1350,7 @@ protected:
 	struct SubProcess
 	{
 		DWORD dwIndex;
-		DWORD dwSvcThreadId;
+		ThreadId_t dwSvcThreadId;
 		uint64 iRunningCommand;
 		PROCESS_INFORMATION pi;
 		SubProcessKernelObjects *pCommObjs;
