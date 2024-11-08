@@ -393,11 +393,11 @@ private:
 		ShaderIndex_t						m_nStaticIndex;
 		ShaderStaticCombos_t	m_ShaderStaticCombos;
 		DWORD					m_Flags;
-		int						m_nRefCount;
-		unsigned int			m_hShaderFileCache;
+		intp					m_nRefCount;
+		uintp			m_hShaderFileCache;
 
 		// for queued loading, bias an aligned optimal buffer forward to correct location
-		int						m_nDataOffset;
+		intp						m_nDataOffset;
 
 		// diff version, valid during load only
 		ShaderDictionaryEntry_t	*m_pComboDictionary;
@@ -1772,7 +1772,7 @@ bool CShaderManager::LoadAndCreateShaders( ShaderLookupDx11_t &lookup, bool bVer
 	ShaderFileCache_t fileCacheLookup;
 	fileCacheLookup.m_Name = lookup.m_Name;
 	fileCacheLookup.m_bVertexShader = bVertexShader;
-	int fileCacheIndex = m_ShaderFileCache.Find( fileCacheLookup );
+	intp fileCacheIndex = m_ShaderFileCache.Find( fileCacheLookup );
 	if ( fileCacheIndex == m_ShaderFileCache.InvalidIndex() )
 	{
 		// not found, create a new entry
