@@ -1,9 +1,11 @@
 # This code is really stinky at times. You are warned.
 
 import re
-from waflib.Node import Node
+import os
+
 from waflib.Task import Task
 from waflib.TaskGen import extension
+from waflib.Configure import conf
 
 re_ps2x = re.compile(r'_ps2x')
 re_vsxx = re.compile(r'_vsxx')
@@ -158,17 +160,25 @@ def emit_cpp_code(parser: ShaderParser, name: str):
 
     return source
 
-class fxc(Task):
-    before = ['c', 'cxx']
+COMPILER_MAPPING = {
+    '.fxc': os.path.abspath('./dx9sdk/utilities/fxc.exe'),
+    '.vsh': 'vsa.exe',
+    '.psh': 'psa.exe'
+}
 
-    def run(self):
-        parser = ShaderParser(self.inputs[0], self.shader_model, 'PC')
+SHADER_TYPE = {
+    'vs11': 'vs_1_1',
+    'vs14': 'vs_1_4',
+    'vs20': 'vs_2_0',
+    'vs20b': 'vs_2_0',
+    'vs30': 'vs_3_0',
 
-        for output in self.outputs:
-            output.write(emit_cpp_code(parser, output.name.rsplit('.', maxsplit=1)[0]))
-
-    color = 'GREEN'
-    ext_out = ['.inc']
+    'ps11': 'ps_1_1',
+    'ps14': 'ps_1_4',
+    'ps20': 'ps_2_0',
+    'ps20b': 'ps_2_b',
+    'ps30': 'ps_3_0',
+}
 
 MODEL_MAPPING = {
     # Fuck you valve.
@@ -206,6 +216,51 @@ def get_models_from_name(filename, override: int):
 
     return {}
 
+def calculate_combo_count(combo_list: list[ShaderDefine]):
+    count = 1
+    for define in combo_list:
+        count *= define.max_value - define.min_value + 1
+
+    return count
+
+class fxc(Task):
+    before = ['c', 'cxx']
+
+    def run(self):
+        parser = ShaderParser(self.inputs[0], self.shader_model, 'PC')
+        self.outputs[0].write(emit_cpp_code(parser, self.outputs[0].name.rsplit('.', maxsplit=1)[0])) # Write .inc
+
+        executable = COMPILER_MAPPING[self.inputs[0].suffix()]
+        if self.inputs[0].suffix() == '.fxc':
+            arguments = []
+            for static in parser.static_define_map:
+                arguments.append(f'/D{static.name}')
+
+            for dynamic in parser.dynamic_define_map:
+                arguments.append(f'/D{dynamic.name}')
+
+            #arguments += [
+            #    f'/DTOTALSHADERCOMBOS={calculate_combo_count(parser.dynamic_define_map) + calculate_combo_count(parser.static_define_map)}', 
+            #    f'/DCENTROIDMASK=0',
+            #    f'/DNUMDYNAMICCOMBOS={calculate_combo_count(parser.dynamic_define_map)}',
+            #    f'/DFLAGS=0x0',
+            #    f'/Dmain=main',
+            #    f'/Emain',
+            #    f'/T{SHADER_TYPE[self.shader_model]}',
+            #    f'/DSHADER_MODEL_{SHADER_TYPE[self.shader_model].upper()}=1',
+            #    f'/nologo',
+            #    f'/Fo{self.outputs[1]}',
+            #    f'{self.inputs[0]}'
+            #]
+            #self.exec_command(f'{executable} {" ".join(arguments)}')
+        else:
+            pass
+
+        self.outputs[1].write('TODO') # Write .inc
+
+    color = 'GREEN'
+    ext_out = ['.inc', '.vsc']
+
 @extension('.fxc')
 def process_fxc(self, node):
     fxctmp9_node = node.parent.make_node('fxctmp9').make_node(node.name)
@@ -213,29 +268,40 @@ def process_fxc(self, node):
     override = None
     try:
         # TODO(rwf93): Make this be setable through BuildContext
-        if self.FORCE_30:
-            override = 30
+        if self.FORCE_MODEL:
+            override = self.FORCE_MODEL
     except:
         pass
 
     for key, models in get_models_from_name(fxctmp9_node.name, override).items():
         for model in models:
-            build_node = fxctmp9_node.parent.make_node(node.name.replace(key, model)).change_ext('.inc')
-            self.create_task('fxc', node, [build_node]).shader_model = model
+            inc_node = fxctmp9_node.parent.make_node(node.name.replace(key, model)).change_ext('.inc')
+            vsc_node = fxctmp9_node.parent.make_node(node.name.replace(key, model)).change_ext('.vsc')
+            self.create_task('fxc', node, [inc_node, vsc_node]).shader_model = model
 
 @extension('.vsh')
 def process_vsh(self, node):
+    vshtmp9_node = node.parent.make_node('vshtmp9').make_node(node.name)
+
     shader_model = ''
     if re_shader.search(node.name):
         shader_model = re_shader.search(node.name).group(1)
-    self.create_task('fxc', node, [node.parent.make_node('vshtmp9').make_node(node.name).change_ext('.inc')]).shader_model = shader_model
+
+    inc_node = vshtmp9_node.change_ext('.inc')
+    vsc_node = vshtmp9_node.change_ext('.vsc')
+    self.create_task('fxc', node, [inc_node, vsc_node]).shader_model = shader_model
 
 @extension('.psh')
 def process_psh(self, node):
+    pshtmp9_node = node.parent.make_node('pshtmp9').make_node(node.name)
+
     shader_model = ''
     if re_shader.search(node.name):
         shader_model = re_shader.search(node.name).group(1)
-    self.create_task('fxc', node, [node.parent.make_node('pshtmp9').make_node(node.name).change_ext('.inc')]).shader_model = shader_model
+
+    inc_node = pshtmp9_node.change_ext('.inc')
+    vsc_node = pshtmp9_node.change_ext('.vsc')
+    self.create_task('fxc', node, [inc_node, vsc_node]).shader_model = shader_model
 
 def configure(conf):
     return
