@@ -28,6 +28,7 @@ def build(bld):
 		'../common/threads.cpp',
 		'../common/vmpi_tools_shared.cpp',
 		'../common/tools_minidump.cpp',
+		'../../public/tier0/memoverride.cpp'
 	]
 
 	includes = [
