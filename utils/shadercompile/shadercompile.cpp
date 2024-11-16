@@ -1479,9 +1479,12 @@ void CWorkerAccumState < TMutexType > ::PrepareSubProcess( SubProcess **ppSp, Su
 		m_lpSubProcessInfo.Set( pSp );
 
 		pSp->dwSvcThreadId = ThreadGetCurrentId();
-
-		char chBaseNameBuffer[0x30];
-		sprintf( chBaseNameBuffer, "SHCMPL_SUB_%08X_%08llX_%08X", pSp->dwSvcThreadId, (long long)time( NULL ), GetCurrentProcessId() );
+		char chBaseNameBuffer[0x256];
+#if defined(PLATFORM_64BITS)
+		snprintf(chBaseNameBuffer, sizeof(chBaseNameBuffer), "SHCMPL_SUB_%016llX_%016llX_%08X", pSp->dwSvcThreadId, (long long)time(NULL), GetCurrentProcessId());
+#else
+		snprintf(chBaseNameBuffer, sizeof(chBaseNameBuffer), "SHCMPL_SUB_%08X_%08llX_%08", pSp->dwSvcThreadId, (long long)time(NULL), GetCurrentProcessId());
+#endif
 		pCommObjs = pSp->pCommObjs = new SubProcessKernelObjects_Create( chBaseNameBuffer );
 
 		ZeroMemory( &pSp->pi, sizeof( pSp->pi ) );
@@ -1490,7 +1493,7 @@ void CWorkerAccumState < TMutexType > ::PrepareSubProcess( SubProcess **ppSp, Su
 		ZeroMemory( &si, sizeof( si ) );
 		si.cb = sizeof( si );
 
-		char chCommandLine[0x100];
+		char chCommandLine[0x512];
 		sprintf( chCommandLine, "\"%s\\shadercompile.exe\" -subprocess %s", g_WorkerTempPath, chBaseNameBuffer );
 #ifdef _DEBUG
 		V_strncat( chCommandLine, " -allowdebug", sizeof( chCommandLine ) );
@@ -2070,7 +2073,7 @@ void Worker_GetLocalCopyOfShaders( void )
 	while( char *pszLineToCopy = bffr.InplaceGetLinePtr() )
 	{
 		V_MakeAbsolutePath( filename, sizeof( filename ), pszLineToCopy, g_pShaderPath );
-		
+
 		if ( g_bVerbose )
 			printf( "getting local copy of shader: \"%s\" (\"%s\")\n", pszLineToCopy, filename );
 
@@ -2092,7 +2095,11 @@ void Worker_GetLocalCopyOfShaders( void )
 		sprintf( filename, "%s%s", g_WorkerTempPath, justFilename );
 		if ( g_bVerbose )
 			printf( "creating \"%s\"\n", filename );
-		
+
+		// Strip newlines and spaces, why Valve.
+		if(filename[strlen(filename) - 1] == '\n' || filename[strlen(filename) - 1] == 32)
+			filename[strlen(filename) - 1] = '\0';
+
 		FILE *fp3 = fopen( filename, "wb" );
 		if ( !fp3 )
 		{
@@ -2161,7 +2168,7 @@ void Worker_GetLocalCopyOfBinary( const char *pFilename )
 
 void Worker_GetLocalCopyOfBinaries( void )
 {
-	Worker_GetLocalCopyOfBinary( "mysql_wrapper.dll" ); // This is necessary so VMPI doesn't run in SDK mode.
+	//Worker_GetLocalCopyOfBinary( "mysql_wrapper.dll" ); // This is necessary so VMPI doesn't run in SDK mode.
 	Worker_GetLocalCopyOfBinary( "vstdlib.dll" );
 	Worker_GetLocalCopyOfBinary( "tier0.dll" );
 }

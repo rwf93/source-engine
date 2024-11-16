@@ -1690,10 +1690,12 @@ void VMPI_CheckSDKMode( int argc, char **argv )
 			g_bVMPISDKMode = true;
 	}
 
+#if 0
 	if ( g_bVMPISDKMode )
 	{
 		VerifyValidSDKMode();
 	}
+#endif
 
 	if ( g_bVMPISDKMode )
 	{	
