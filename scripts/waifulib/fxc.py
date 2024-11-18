@@ -11,8 +11,8 @@ re_shader = re.compile(r'_(ps11|ps14|ps2x|ps20b|ps20|ps30|ps40|vs11|vs14|vsxx|vs
 re_static_match = re.compile(r'\s*STATIC\s*\:\s*\"(.*)\"\s+\"(\d+)\.\.(\d+)\"')
 re_dynamic_match = re.compile(r'\s*DYNAMIC\s*\:\s*\"(.*)\"\s+\"(\d+)\.\.(\d+)\"')
 re_model_match = re.compile(r'\[([ps11|ps20b|ps20|ps30|ps40|vs11|vs20|vs20b|vs30|vs40]+)\]')
-re_assignment_match = re.compile(r'\[\=(.*?)\]')
-re_platform_match = re.compile(r'\[(XBOX|PC)\]')
+re_assignment_match = re.compile(r'\[\s*?\=(.*?)\]')
+re_platform_match = re.compile(r'\[(XBOX|PC|CONSOLE|SONYPS3)\]')
 
 class ShaderDefine:
     def __init__(self, name: str, min_value: int, max_value: int, assignment: str | None):
