@@ -30,6 +30,8 @@ public:
 	
 protected:
 
+	virtual void UpdateLightProjection( FlashlightState_t &state );
+
 	void LightOff();
 	void LightOffOld();
 	void LightOffNew();
@@ -49,7 +51,9 @@ protected:
 	CTextureReference m_FlashlightTexture;
 };
 
-class CHeadlightEffect : public CFlashlightEffect
+#include "deferred/flashlighteffect_deferred.h"
+
+class CHeadlightEffect : public CFlashlightEffectDeferred
 {
 public:
 	

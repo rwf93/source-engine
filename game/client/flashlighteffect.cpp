@@ -14,6 +14,7 @@
 #include "tier0/vprof.h"
 #include "tier1/KeyValues.h"
 #include "toolframework_client.h"
+#include "deferred/cdeferred_manager_client.h"
 
 #ifdef HL2_CLIENT_DLL
 #include "c_basehlplayer.h"
@@ -337,15 +338,22 @@ void CFlashlightEffect::UpdateLightNew(const Vector &vecPos, const Vector &vecFo
 	state.m_flShadowSlopeScaleDepthBias = mat_slopescaledepthbias_shadowmap.GetFloat();
 	state.m_flShadowDepthBias = mat_depthbias_shadowmap.GetFloat();
 
-	if( m_FlashlightHandle == CLIENTSHADOW_INVALID_HANDLE )
+	if(GetDeferredManager()->IsDeferredRenderingEnabled()) 
 	{
-		m_FlashlightHandle = g_pClientShadowMgr->CreateFlashlight( state );
+		UpdateLightProjection( state );
 	}
 	else
 	{
-		if( !r_flashlightlockposition.GetBool() )
+		if( m_FlashlightHandle == CLIENTSHADOW_INVALID_HANDLE )
 		{
-			g_pClientShadowMgr->UpdateFlashlightState( m_FlashlightHandle, state );
+			m_FlashlightHandle = g_pClientShadowMgr->CreateFlashlight( state );
+		}
+		else
+		{
+			if( !r_flashlightlockposition.GetBool() )
+			{
+				g_pClientShadowMgr->UpdateFlashlightState( m_FlashlightHandle, state );
+			}
 		}
 	}
 	
@@ -425,14 +433,8 @@ void CFlashlightEffect::UpdateLight(const Vector &vecPos, const Vector &vecDir, 
 	{
 		return;
 	}
-	if( r_newflashlight.GetBool() )
-	{
-		UpdateLightNew( vecPos, vecDir, vecRight, vecUp );
-	}
-	else
-	{
-		UpdateLightOld( vecPos, vecDir, nDistance );
-	}
+
+	UpdateLightNew( vecPos, vecDir, vecRight, vecUp );
 }
 
 
@@ -460,6 +462,23 @@ void CFlashlightEffect::LightOffNew()
 		g_pClientShadowMgr->DestroyFlashlight( m_FlashlightHandle );
 		m_FlashlightHandle = CLIENTSHADOW_INVALID_HANDLE;
 	}
+}
+
+void CFlashlightEffect::UpdateLightProjection( FlashlightState_t& state )
+{
+	if( m_FlashlightHandle == CLIENTSHADOW_INVALID_HANDLE )
+	{
+		m_FlashlightHandle = g_pClientShadowMgr->CreateFlashlight( state );
+	}
+	else
+	{
+		if( !r_flashlightlockposition.GetBool() )
+		{
+			g_pClientShadowMgr->UpdateFlashlightState( m_FlashlightHandle, state );
+		}
+	}
+
+	g_pClientShadowMgr->UpdateProjectedTexture( m_FlashlightHandle, true );
 }
 
 //-----------------------------------------------------------------------------
@@ -526,15 +545,22 @@ void CHeadlightEffect::UpdateLight( const Vector &vecPos, const Vector &vecDir, 
 	state.m_pSpotlightTexture = m_FlashlightTexture;
 	state.m_nSpotlightTextureFrame = 0;
 	
-	if( GetFlashlightHandle() == CLIENTSHADOW_INVALID_HANDLE )
+	if (GetDeferredManager()->IsDeferredRenderingEnabled())
 	{
-		SetFlashlightHandle( g_pClientShadowMgr->CreateFlashlight( state ) );
+		UpdateLightProjection( state );
 	}
 	else
 	{
-		g_pClientShadowMgr->UpdateFlashlightState( GetFlashlightHandle(), state );
+		if( GetFlashlightHandle() == CLIENTSHADOW_INVALID_HANDLE )
+		{
+			SetFlashlightHandle( g_pClientShadowMgr->CreateFlashlight( state ) );
+		}
+		else
+		{
+			g_pClientShadowMgr->UpdateFlashlightState( GetFlashlightHandle(), state );
+		}
 	}
-	
+
 	g_pClientShadowMgr->UpdateProjectedTexture( GetFlashlightHandle(), true );
 }
 

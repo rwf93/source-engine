@@ -200,6 +200,8 @@ public:
 	Vector	operator-(const Vector& v) const;	
 	Vector	operator*(const Vector& v) const;	
 	Vector	operator/(const Vector& v) const;	
+	Vector	operator+(float fl) const;
+	Vector	operator-(float fl) const;
 	Vector	operator*(float fl) const;
 	Vector	operator/(float fl) const;			
 	
@@ -1397,6 +1399,16 @@ inline Vector Vector::operator*(const Vector& v) const
 	Vector res;
 	VectorMultiply( *this, v, res );
 	return res;	
+}
+
+inline Vector Vector::operator+(float fl) const
+{
+	return Vector(x + fl, y + fl, z + fl);
+}
+
+inline Vector Vector::operator-(float fl) const
+{
+	return Vector(x - fl, y - fl, z - fl);
 }
 
 inline Vector Vector::operator/(float fl) const	

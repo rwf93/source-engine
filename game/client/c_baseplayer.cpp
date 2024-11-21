@@ -1209,7 +1209,7 @@ void C_BasePlayer::UpdateFlashlight()
 		if (!m_pFlashlight)
 		{
 			// Turned on the headlight; create it.
-			m_pFlashlight = new CFlashlightEffect(index);
+			m_pFlashlight = new CFlashlightEffectDeferred(entindex());
 
 			if (!m_pFlashlight)
 				return;
@@ -1240,11 +1240,13 @@ void C_BasePlayer::Flashlight( void )
 	UpdateFlashlight();
 
 	// Check for muzzle flash and apply to view model
+	/*
 	C_BaseAnimating *ve = this;
 	if ( GetObserverMode() == OBS_MODE_IN_EYE )
 	{
 		ve = dynamic_cast< C_BaseAnimating* >( GetObserverTarget() );
 	}
+	*/
 }
 
 

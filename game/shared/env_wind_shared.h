@@ -12,6 +12,9 @@
 #include "vstdlib/random.h"
 #include "tier0/dbg.h"
 #include "mathlib/vector.h"
+#include "renderparm.h"
+#include "sharedInterface.h"
+
 #include <float.h>
 
 
@@ -166,9 +169,14 @@ public:
 	CNetworkVar( float, m_flGustDuration );	// max time between gusts
 
 	CNetworkVar( int, m_iGustDirChange );	// max number of degrees wind dir changes on gusts.
+
 	int m_iszGustSound;		// name of the wind sound to play for gusts.
 	int m_iWindDir;			// wind direction (yaw)
 	float m_flWindSpeed;	// the wind speed
+
+	Vector m_currentWindVector;	// For all the talk of proper prediction, we ended up just storing and returning through a static vector.  Now we can have multiple env_wind, so we need this in here.
+	Vector m_CurrentSwayVector;
+	Vector m_PrevSwayVector;
 
 	CNetworkVar( int, m_iInitialWindDir );
 	CNetworkVar( float, m_flInitialWindSpeed );
@@ -192,11 +200,13 @@ private:
 	};
 
 	void ComputeWindVariation( float flTime );
+	void UpdateTreeSway( float flTime );
 
 	// Updates the wind sound
 	void UpdateWindSound( float flTotalWindSpeed );
 
 	float	m_flVariationTime;
+	float	m_flSwayTime;
 	float	m_flSimTime;		// What's the time I last simulated up to?
 	float	m_flSwitchTime;		// when do I actually switch from gust to not gust
 	float	m_flAveWindSpeed;	// the average wind speed

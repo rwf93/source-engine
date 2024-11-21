@@ -149,6 +149,8 @@
 
 #include "touch.h"
 
+#include "deferred/deferred_shared_common.h"
+
 extern vgui::IInputInternal *g_InputInternal;
 
 //=============================================================================
@@ -1666,6 +1668,8 @@ void CHLClient::ResetStringTablePointers()
 	g_pStringTableClientSideChoreoScenes = NULL;
 	g_pStringTableServerMapCycle = NULL;
 
+	g_pStringTable_LightCookies = NULL;
+
 #ifdef TF_CLIENT_DLL
 	g_pStringTableServerPopFiles = NULL;
 	g_pStringTableServerMapCycleMvM = NULL;
@@ -1895,6 +1899,12 @@ void CHLClient::InstallStringTableCallback( const char *tableName )
 	else if ( !Q_strcasecmp( tableName, "ServerMapCycle" ) )
 	{
 		g_pStringTableServerMapCycle = networkstringtable->FindTable( tableName );
+	}
+	else if ( !Q_strcasecmp( tableName, COOKIE_STRINGTBL_NAME ) )
+	{
+		g_pStringTable_LightCookies = networkstringtable->FindTable( tableName );
+
+		g_pStringTable_LightCookies->SetStringChangedCallback( NULL, OnCookieTableChanged );
 	}
 #ifdef TF_CLIENT_DLL
 	else if ( !Q_strcasecmp( tableName, "ServerPopFiles" ) )

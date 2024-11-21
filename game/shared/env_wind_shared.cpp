@@ -74,6 +74,23 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+#ifdef CLIENT_DLL
+// Test concommand for wind/tree sway. Couldn't think of a better way to put it.
+// Will move it out of this file when we figure out how the weather control will be implemented.
+CON_COMMAND_F( cl_tree_sway_dir, "sets tree sway wind direction and strength", FCVAR_CHEAT )
+{
+	CMatRenderContextPtr pRenderContext( g_pMaterialSystem );
+	if ( args.ArgC() == 3 )
+	{
+		Vector windDir;
+		windDir.x = V_atof( args.Arg( 1 ) );
+		windDir.y = V_atof( args.Arg( 2 ) );
+		windDir.z = 0;
+		pRenderContext->SetVectorRenderingParameter( VECTOR_RENDERPARM_WIND_DIRECTION, windDir );
+	}
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // globals
 //-----------------------------------------------------------------------------
@@ -139,7 +156,30 @@ void CEnvWindShared::ComputeWindVariation( float flTime )
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Updates the wind speed
+//-----------------------------------------------------------------------------
+#define TREE_SWAY_UPDATE_TIME 2.0f
 
+void CEnvWindShared::UpdateTreeSway( float flTime )
+{
+#ifdef CLIENT_DLL
+	while( flTime >= m_flSwayTime )
+	{
+		// Since the wind is constantly changing, but we need smooth values, we cache them off here.
+		m_PrevSwayVector = m_CurrentSwayVector;
+		m_CurrentSwayVector = m_currentWindVector;
+		m_flSwayTime += TREE_SWAY_UPDATE_TIME;
+	}
+
+	// Update vertex shader
+	const float flPercentage = ( 1 - ( ( m_flSwayTime - flTime ) / TREE_SWAY_UPDATE_TIME ) );
+	CMatRenderContextPtr pRenderContext( g_pMaterialSystem );
+	// Dividing by 2 helps the numbers the shader is expecting stay in line with other expected game values.
+	const Vector& vecWind = Lerp( flPercentage, m_PrevSwayVector, m_CurrentSwayVector ) / 25.f;
+	pRenderContext->SetVectorRenderingParameter( VECTOR_RENDERPARM_WIND_DIRECTION, vecWind );
+#endif
+}
 
 //-----------------------------------------------------------------------------
 // Updates the wind sound
@@ -178,6 +218,7 @@ float CEnvWindShared::WindThink( float flTime )
 	// frequency of calls to this function we produce the same wind speeds...
 
 	ComputeWindVariation( flTime );
+	UpdateTreeSway( flTime );
 
 	while (true)
 	{
