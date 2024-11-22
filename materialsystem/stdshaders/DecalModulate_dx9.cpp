@@ -18,6 +18,8 @@
 #include "decalmodulate_ps30.inc"
 #endif
 
+#include "icommandline.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -33,6 +35,9 @@ BEGIN_VS_SHADER( DecalModulate_dx9,
 	
 	SHADER_FALLBACK
 	{
+		if( CommandLine() && !CommandLine()->CheckParm("-nodeferred"))
+			return "DEFERRED_DECALMODULATE";
+
 		if (g_pHardwareConfig->GetDXSupportLevel() < 90)
 			return "DecalModulate_DX6";
 		return 0;

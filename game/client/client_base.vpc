@@ -210,8 +210,6 @@ $Project
 	$File	"deferred\flashlighteffect_deferred.h"
 	$File	"deferred\IDefCookie.h"
 	$File	"deferred\ideferredextclient.cpp"
-	$File	"deferred\materialsystem_passthru.cpp"
-	$File	"deferred\materialsystem_passthru.h"
 	$File	"deferred\viewrender_deferred.cpp"
 	$File	"deferred\viewrender_deferred.h"
 	$File	"$SRCDIR\public\deferred\deferred_light_lump.cpp"

@@ -134,6 +134,7 @@ void CDeferredManagerServer::LevelInitPreEntity()
 	if (CommandLine() && CommandLine()->FindParm( "-nodeferred" ) != 0)
 		return;
 
+
 	const char* entStr = engine->GetMapEntitiesString();
 
 	if ( V_stristr( entStr, "light_deferred_global" ) )

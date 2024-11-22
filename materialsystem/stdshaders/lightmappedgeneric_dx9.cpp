@@ -10,6 +10,8 @@
 #include "convar.h"
 #include "lightmappedgeneric_dx9_helper.h"
 
+#include "icommandline.h"
+
 static LightmappedGeneric_DX9_Vars_t s_info;
 
 BEGIN_VS_SHADER( LightmappedGeneric,
@@ -137,6 +139,9 @@ END_SHADER_PARAMS
 
 	SHADER_FALLBACK
 	{
+		if( CommandLine() && !CommandLine()->CheckParm("-nodeferred") )
+			return "DEFERRED_BRUSH";
+
 		if( g_pHardwareConfig->GetDXSupportLevel() < 90 )
 			return "LightmappedGeneric_DX8";
 

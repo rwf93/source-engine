@@ -13,6 +13,7 @@
 #include "flesh_interior_blended_pass_helper.h"
 #include "weapon_sheen_pass_helper.h"
 
+#include "icommandline.h"
 
 BEGIN_VS_SHADER( VertexLitGeneric, "Help for VertexLitGeneric" )
 	BEGIN_SHADER_PARAMS
@@ -370,6 +371,9 @@ BEGIN_VS_SHADER( VertexLitGeneric, "Help for VertexLitGeneric" )
 
 	SHADER_FALLBACK
 	{
+		if( CommandLine() && !CommandLine()->CheckParm("-nodeferred") )
+			return "DEFERRED_MODEL";
+
 		if (g_pHardwareConfig->GetDXSupportLevel() < 70)
 			return "VertexLitGeneric_DX6";
 
