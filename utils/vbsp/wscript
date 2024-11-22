@@ -1,0 +1,120 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+from waflib import Utils
+import os
+
+top = '.'
+PROJECT_NAME = 'vbsp'
+
+def options(opt):
+    # stub
+    return
+
+def configure(conf):
+    return
+
+def build(bld):
+    if bld.env.DEST_OS == 'android':
+        return
+
+    source = [
+        'disp_ivp.cpp',
+        'ivp.cpp',
+        'boundbox.cpp',
+		'brushbsp.cpp',
+		'../../public/CollisionUtils.cpp',
+		'csg.cpp',
+		'cubemap.cpp',
+		'detail.cpp',
+		'detailObjects.cpp',
+		'../../public/disp_common.cpp',
+		'../../public/disp_powerinfo.cpp',
+		'disp_vbsp.cpp',
+		'faces.cpp',
+		'glfile.cpp',
+		'leakfile.cpp',
+		'../../public/loadcmdline.cpp',
+		'../../public/lumpfiles.cpp',
+		'map.cpp',
+		'manifest.cpp',
+		'materialpatch.cpp',
+		'materialsub.cpp',
+		'../common/mstristrip.cpp',
+		'nodraw.cpp',
+		'normals.cpp',
+		'overlay.cpp',
+		'../common/physdll.cpp',
+		'portals.cpp',
+		'prtfile.cpp',
+		'../../public/ScratchPad3D.cpp',
+		'../common/scratchpad_helpers.cpp',
+		'StaticProp.cpp',
+		'textures.cpp',
+		'tree.cpp',
+		'../common/utilmatlib.cpp',
+		'vbsp.cpp',
+		'worldvertextransitionfixup.cpp',
+		'writebsp.cpp',
+		'../../public/zip_utils.cpp',
+        '../common/bsplib.cpp',
+        '../../public/builddisp.cpp',
+        '../../public/ChunkFile.cpp',
+        '../common/cmdlib.cpp',
+        '../../public/filesystem_helpers.cpp',
+        '../../public/filesystem_init.cpp',
+        '../common/filesystem_tools.cpp',
+        '../common/map_shared.cpp',
+        '../common/pacifier.cpp',
+        '../common/polylib.cpp',
+        '../common/scriplib.cpp',
+        '../common/threads.cpp',
+        '../common/tools_minidump.cpp',
+        '../../public/tier0/memoverride.cpp'
+    ]
+
+    includes = [
+        '.',
+        '../common',
+        '../../public',
+        '../../public/tier0',
+        '../../public/tier1',
+        '../../public/tier2'
+    ]
+    defines = []
+    libs = [
+        'tier0',
+        'tier1',
+        'tier2',
+        'vstdlib',
+        'bitmap',
+        'fgdlib',
+        'mathlib',
+        'lzma',
+        'vtf',
+        'USER32',
+        'SHELL32'
+    ]
+
+    linkflags = []
+
+    if bld.env.DEST_OS == 'win32':
+        linkflags += [
+            '/SUBSYSTEM:CONSOLE'
+        ]
+
+    install_path = bld.env.LIBDIR
+    bld(
+        source   = source,
+        target   = PROJECT_NAME,
+        name     = PROJECT_NAME,
+        features = 'c cxx cxxprogram',
+        includes = includes,
+        defines  = defines,
+        use      = libs,
+        linkflags = linkflags,
+        install_path = install_path,
+        subsystem = bld.env.MSVC_SUBSYSTEM,
+        idx      = bld.get_taskgen_count()
+    )
+
