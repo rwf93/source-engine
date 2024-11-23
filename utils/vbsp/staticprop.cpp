@@ -32,7 +32,7 @@ IPhysicsCollision *s_pPhysCollision = NULL;
 // These puppies are used to construct the game lumps
 //-----------------------------------------------------------------------------
 static CUtlVector<StaticPropDictLump_t>	s_StaticPropDictLump;
-static CUtlVector<StaticPropLump_t>		s_StaticPropLump;
+static CUtlVector<StaticPropLumpV10_21_t>		s_StaticPropLump;
 static CUtlVector<StaticPropLeafLump_t>	s_StaticPropLeafLump;
 
 
@@ -161,11 +161,6 @@ bool LoadStudioModel( char const* pModelName, char const* pEntityType, CUtlBuffe
 	studiohdr_t* pHdr = (studiohdr_t*)buf.PeekGet();
 
 	Studio_ConvertStudioHdrToNewVersion( pHdr );
-
-	if (pHdr->version != STUDIO_VERSION)
-	{
-		return false;
-	}
 
 	isstaticprop_ret isStaticProp = IsStaticProp(pHdr);
 	if ( isStaticProp != RET_VALID )
@@ -491,7 +486,7 @@ static void AddStaticPropToLump( StaticPropBuild_t const& build )
 	}
 	// Insert an element into the lump data...
 	int i = s_StaticPropLump.AddToTail( );
-	StaticPropLump_t& propLump = s_StaticPropLump[i];
+	StaticPropLumpV10_21_t& propLump = s_StaticPropLump[i];
 	propLump.m_PropType = AddStaticPropDictLump( build.m_pModelName ); 
 	VectorCopy( build.m_Origin, propLump.m_Origin );
 	VectorCopy( build.m_Angles, propLump.m_Angles );
@@ -507,9 +502,7 @@ static void AddStaticPropToLump( StaticPropBuild_t const& build )
 	propLump.m_FadeMinDist = build.m_FadeMinDist;
 	propLump.m_FadeMaxDist = build.m_FadeMaxDist;
 	propLump.m_flForcedFadeScale = build.m_flForcedFadeScale;
-	propLump.m_nMinDXLevel = build.m_nMinDXLevel;
-	propLump.m_nMaxDXLevel = build.m_nMaxDXLevel;
-	
+
 	if (build.m_pLightingOrigin && *build.m_pLightingOrigin)
 	{
 		if (ComputeLightingOrigin( build, propLump.m_LightingOrigin ))
@@ -517,9 +510,6 @@ static void AddStaticPropToLump( StaticPropBuild_t const& build )
 			propLump.m_Flags |= STATIC_PROP_USE_LIGHTING_ORIGIN;
 		}
 	}
-
-	propLump.m_nLightmapResolutionX = build.m_LightmapResolutionX;
-	propLump.m_nLightmapResolutionY = build.m_LightmapResolutionY;
 
 	// Add the leaves to the leaf lump
 	for (int j = 0; j < leafList.Size(); ++j)
@@ -543,7 +533,7 @@ static void SetLumpData( )
 		g_GameLumps.DestroyGameLump(handle);
 
 	int dictsize = s_StaticPropDictLump.Size() * sizeof(StaticPropDictLump_t);
-	int objsize = s_StaticPropLump.Size() * sizeof(StaticPropLump_t);
+	int objsize = s_StaticPropLump.Size() * sizeof(StaticPropLumpV10_21_t);
 	int leafsize = s_StaticPropLeafLump.Size() * sizeof(StaticPropLeafLump_t);
 	int size = dictsize + objsize + leafsize + 3 * sizeof(int);
 
@@ -681,21 +671,27 @@ void EmitStaticProps()
 	SetLumpData( );
 }
 
-static studiohdr_t *g_pActiveStudioHdr;
+struct activestudiohdr_t {
+	studiohdr_t *studiohdr;
+	intp unused_pVertexBase;
+	intp unused_pIndexBase;
+};
+
+static activestudiohdr_t g_pActiveStudioHdr;
 static void SetCurrentModel( studiohdr_t *pStudioHdr )
 {
 	// track the correct model
-	g_pActiveStudioHdr = pStudioHdr;
+	g_pActiveStudioHdr.studiohdr = pStudioHdr;
 }
 
 static void FreeCurrentModelVertexes()
 {
-	Assert( g_pActiveStudioHdr );
+	Assert( g_pActiveStudioHdr.studiohdr );
 
-	if ( g_pActiveStudioHdr->unused_pVertexBase )
+	if ( g_pActiveStudioHdr.unused_pVertexBase )
 	{
-		free( (void*)g_pActiveStudioHdr->unused_pVertexBase );
-		g_pActiveStudioHdr->unused_pVertexBase = NULL;
+		free( (void*)g_pActiveStudioHdr.unused_pVertexBase );
+		g_pActiveStudioHdr.unused_pVertexBase = NULL;
 	}
 }
 
@@ -708,15 +704,15 @@ const vertexFileHeader_t * mstudiomodel_t::CacheVertexData( void * pModelData )
 	Assert( pModelData == NULL );
 	Assert( g_pActiveStudioHdr );
 
-	if ( g_pActiveStudioHdr->unused_pVertexBase )
+	if ( g_pActiveStudioHdr.unused_pVertexBase )
 	{
-		return (vertexFileHeader_t *)g_pActiveStudioHdr->unused_pVertexBase;
+		return (vertexFileHeader_t *)g_pActiveStudioHdr.unused_pVertexBase;
 	}
 
 	// mandatory callback to make requested data resident
 	// load and persist the vertex file
 	strcpy( fileName, "models/" );	
-	strcat( fileName, g_pActiveStudioHdr->pszName() );
+	strcat( fileName, g_pActiveStudioHdr.studiohdr->pszName() );
 	Q_StripExtension( fileName, fileName, sizeof( fileName ) );
 	strcat( fileName, ".vvd" );
 
@@ -748,12 +744,16 @@ const vertexFileHeader_t * mstudiomodel_t::CacheVertexData( void * pModelData )
 	{
 		Error("Error Vertex File %s version %d should be %d\n", fileName, pVvdHdr->version, MODEL_VERTEX_FILE_VERSION);
 	}
-	if (pVvdHdr->checksum != g_pActiveStudioHdr->checksum)
+	if (pVvdHdr->checksum != g_pActiveStudioHdr.studiohdr->checksum)
 	{
-		Error("Error Vertex File %s checksum %d should be %d\n", fileName, pVvdHdr->checksum, g_pActiveStudioHdr->checksum);
+		Error("Error Vertex File %s checksum %d should be %d\n", fileName, pVvdHdr->checksum, g_pActiveStudioHdr.studiohdr->checksum);
 	}
 
-	g_pActiveStudioHdr->unused_pVertexBase = (int)pVvdHdr;
+	g_pActiveStudioHdr.unused_pVertexBase = (intp)pVvdHdr;
+	g_pActiveStudioHdr.studiohdr->unused_virtualModel = NULL;
+	g_pActiveStudioHdr.studiohdr->unused_pVertexBase = NULL;
+	g_pActiveStudioHdr.studiohdr->unused_pIndexBase = NULL;
+
 	return pVvdHdr;
 }
 
