@@ -35,8 +35,17 @@ BEGIN_VS_SHADER( DecalModulate_dx9,
 	
 	SHADER_FALLBACK
 	{
-		if( CommandLine() && !CommandLine()->CheckParm("-nodeferred"))
+		if( CommandLine() && !CommandLine()->CheckParm("-nodeferred")) 
+		{
+			bool bAlphaBlending = (params[ALPHA]->GetFloatValue()) || IS_FLAG_SET( MATERIAL_VAR_TRANSLUCENT );
+
+			SET_FLAGS( MATERIAL_VAR_DECAL );
+
+			if( bAlphaBlending )
+				SET_FLAGS( MATERIAL_VAR_ALPHATEST );
+
 			return "DEFERRED_DECALMODULATE";
+		}
 
 		if (g_pHardwareConfig->GetDXSupportLevel() < 90)
 			return "DecalModulate_DX6";

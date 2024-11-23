@@ -140,7 +140,13 @@ END_SHADER_PARAMS
 	SHADER_FALLBACK
 	{
 		if( CommandLine() && !CommandLine()->CheckParm("-nodeferred") )
+		{
+			bool bTwoSided = IS_FLAG_SET( MATERIAL_VAR_NOCULL );
+			if(!bTwoSided)
+				SET_FLAGS( MATERIAL_VAR_NOCULL );
+
 			return "DEFERRED_BRUSH";
+		}
 
 		if( g_pHardwareConfig->GetDXSupportLevel() < 90 )
 			return "LightmappedGeneric_DX8";
