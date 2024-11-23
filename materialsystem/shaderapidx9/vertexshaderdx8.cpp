@@ -1153,6 +1153,20 @@ static const char *GetShaderSourcePath( void )
 				Q_StripFilename( shaderDir );
 				Q_StripLastDir( shaderDir, MAX_PATH );
 				Q_strncat( shaderDir, "stdshaders", MAX_PATH, COPY_ALL_CHARACTERS );
+
+				// If we can't find a source tree, we check mounts
+				if(!g_pFullFileSystem->IsDirectory(shaderDir))
+				{
+					Warning("THIS BUILD IS USING LOCAL SHADERS\n");
+					g_pFullFileSystem->RelativePathToFullPath_safe( "./", "STDSHADERS", shaderDir);
+					Q_StripFilename( shaderDir );
+					Q_StripLastDir( shaderDir, MAX_PATH );
+					Q_StripTrailingSlash( shaderDir );
+				}
+
+				// If we can't check mounts, we warn
+				if(!g_pFullFileSystem->IsDirectory(shaderDir))
+					Warning("Couldn't mount local source tree shaders or check for stdshaders in the VFS!\n");
 			}
 #			endif
 		}
