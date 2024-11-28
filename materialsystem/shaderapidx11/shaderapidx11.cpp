@@ -199,7 +199,6 @@ void CShaderAPIDx11::CopyTextureToTexture( ShaderAPITextureHandle_t srcTex, Shad
 	D3D11DeviceContext()->CopyResource(pDstTex->GetTexture(), pSrcTex->GetTexture());
 }
 
-
 void CShaderAPIDx11::UpdateConstantBuffer( ConstantBufferHandle_t cbuffer, void *pNewData )
 {
 	g_pShaderDeviceDx11->UpdateConstantBuffer( cbuffer, pNewData );
@@ -2916,8 +2915,6 @@ void CShaderAPIDx11::CreateTextures(
 	CreateTextureHandles( pHandles, count );
 	CTextureDx11 **arrTxp = new CTextureDx11 * [count];
 
-	Log( "Creating Textures with format: %s\n", ImageLoader::GetName( dstImageFormat ) );
-
 	for ( int idxFrame = 0; idxFrame < count; ++idxFrame )
 	{
 		arrTxp[idxFrame] = &GetTexture( pHandles[idxFrame] );
@@ -3816,38 +3813,31 @@ void CShaderAPIDx11::CopyRenderTargetToTextureEx( ShaderAPITextureHandle_t textu
 
 void CShaderAPIDx11::CopyTextureToRenderTargetEx(int nRenderTargetID, ShaderAPITextureHandle_t textureHandle, Rect_t* pSrcRect, Rect_t* pDstRect)
 {
-	// don't use this
-	return;
+	LOCK_SHADERAPI();
 
-	// LOCK_SHADERAPI();
-	//VPROF_BUDGET( "CShaderAPIDx11::CopyRenderTargetToTexture", "Refraction overhead" );
-
-	/*if (!TextureIsAllocated(textureHandle))
+	if (!TextureIsAllocated(textureHandle))
 		return;
 
 	CTextureDx11* pTexture = &GetTexture(textureHandle);
-	Assert(pTexture);
-	ID3D11Resource* pD3DTexture = pTexture->GetTexture();
-	Assert(pD3DTexture);
+	if(!pTexture)
+		pTexture = &GetTexture(0);
 
 	ITexture* rt = g_pShaderUtil->GetRenderTargetEx(nRenderTargetID);
+	ITextureInternal* texInt = static_cast<ITextureInternal*>(rt);
+	ShaderAPITextureHandle_t texHandle = texInt->GetTextureHandle(0);
+	CTextureDx11* pTextureRT = &GetTexture(texHandle);
 
-	CTextureDx11* pTextureRT;
-	if (rt == NULL)
-	{
-		pTextureRT = &GetTexture(0); // copy back buffer
-	}
-	else
-	{
-		ITextureInternal* texInt = static_cast<ITextureInternal*>(rt);
-		ShaderAPITextureHandle_t texHandle = texInt->GetTextureHandle(0);
-		pTextureRT = &GetTexture(texHandle);
-	}
+	// If (for some reason) the RT is invalid, we just replace it with the backbuffer.
+	// Note that failure results in reaplcing data
+	if( pTextureRT == NULL )
+		pTextureRT = &GetTexture(0);
 
-	ID3D11Resource* pD3DTextureRT = pTextureRT->GetTexture();
-	Assert(pD3DTextureRT);*/
+	static float BLACK[4] = { 0, 0, 0, 0 };
+	ID3D11RenderTargetView *views[1] = { pTextureRT->GetRenderTargetView() };
 
-	// need to draw a quad with the texture and downscale it
+	D3D11DeviceContext()->ClearRenderTargetView( pTextureRT->GetRenderTargetView(), BLACK );
+	D3D11DeviceContext()->OMSetRenderTargets( 1, views, nullptr );
+	D3D11DeviceContext()->CopyResource( pTexture->GetTexture(), pTextureRT->GetTexture() );
 }
 
 //------------------------------------------------------------------------------------

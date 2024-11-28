@@ -523,11 +523,6 @@ float4 main( PS_INPUT i ) : SV_TARGET
 
 	bool bWriteDepthToAlpha = false;
 
-	// ps_2_b and beyond
-#if !(defined(SHADER_MODEL_PS_1_1) || defined(SHADER_MODEL_PS_1_4) || defined(SHADER_MODEL_PS_2_0))
-	bWriteDepthToAlpha = ( WRITE_DEPTH_TO_DESTALPHA != 0 ) && ( WRITEWATERFOGTODESTALPHA == 0 );
-#endif
-
 	float fogFactor = CalcPixelFogFactor( PIXELFOGTYPE, c.g_FogParams, cEyePos.z, i.worldPos_projPosZ.z, length( i.eyePos ) );
 #if WRITEWATERFOGTODESTALPHA && (PIXELFOGTYPE == PIXEL_FOG_TYPE_HEIGHT)
 	alpha = fogFactor;

@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve LLC, All rights reserved. ============
+//========= Copyright ï¿½ 1996-2005, Valve LLC, All rights reserved. ============
 //
 // Purpose: 
 //
@@ -22,7 +22,7 @@ class IShaderShadow;
 //-----------------------------------------------------------------------------
 // Structure that defines that constants used by the shader
 //-----------------------------------------------------------------------------
-ALIGN16 struct VertexLitGeneric_CBuffer_t
+CREATE_CONSTANT_BUFFER( VertexLitGeneric )
 {
 	// Vertex shader
 	Vector4D cBaseTextureTransform[2];
@@ -60,8 +60,6 @@ ALIGN16 struct VertexLitGeneric_CBuffer_t
 
 	float cAlphaTestRef;
 };
-
-extern ConstantBufferHandle_t g_hVertexLitGeneric_CBuffer;
 
 //-----------------------------------------------------------------------------
 // Init params/ init/ draw methods
@@ -187,7 +185,7 @@ void InitParamsVertexLitGeneric_DX11( CBaseVSShader *pShader, IMaterialVar **par
 void InitVertexLitGeneric_DX11( CBaseVSShader *pShader, IMaterialVar **params, bool bVertexLitGeneric, VertexLitGeneric_DX11_Vars_t &info );
 void DrawVertexLitGeneric_DX11( CBaseVSShader *pShader, IMaterialVar **params, IShaderDynamicAPI *pShaderAPI, IShaderShadow *pShaderShadow,
 			       bool bVertexLitGeneric, VertexLitGeneric_DX11_Vars_t &info, VertexCompressionType_t vertexCompression,
-			       CBasePerMaterialContextData **pContextDataPtr, bool bForceFlashlight = false
+			       CBasePerMaterialContextData **pContextDataPtr, ConstantBufferHandle_t constantBuffer, bool bForceFlashlight = false
 );
 
 

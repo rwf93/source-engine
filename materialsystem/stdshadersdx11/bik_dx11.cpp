@@ -1,5 +1,5 @@
 #if 1
-//========= Copyright © 1996-2006, Valve Corporation, All rights reserved. ============//
+//========= Copyright ï¿½ 1996-2006, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -9,8 +9,8 @@
 
 #include "BaseVSShader.h"
 
-#include "bik_ps40.inc"
-#include "bik_vs40.inc"
+#include "bik_ps50.inc"
+#include "bik_vs50.inc"
 
 BEGIN_VS_SHADER( Bik, "Help for Bik" )
 	BEGIN_SHADER_PARAMS
@@ -61,11 +61,11 @@ BEGIN_VS_SHADER( Bik, "Help for Bik" )
 			SetVertexShaderConstantBuffer(1, SHADER_CONSTANTBUFFER_PERFRAME);
 			SetVertexShaderConstantBuffer(2, SHADER_CONSTANTBUFFER_PERSCENE);
 
-			DECLARE_STATIC_VERTEX_SHADER( bik_vs40 );
-			SET_STATIC_VERTEX_SHADER( bik_vs40 );
+			DECLARE_STATIC_VERTEX_SHADER( bik_vs50 );
+			SET_STATIC_VERTEX_SHADER( bik_vs50 );
 
-			DECLARE_STATIC_PIXEL_SHADER(bik_ps40);
-			SET_STATIC_PIXEL_SHADER(bik_ps40);
+			DECLARE_STATIC_PIXEL_SHADER(bik_ps50 );
+			SET_STATIC_PIXEL_SHADER(bik_ps50 );
 
 			pShaderShadow->EnableSRGBWrite( false );
 
@@ -76,13 +76,13 @@ BEGIN_VS_SHADER( Bik, "Help for Bik" )
 			BindTexture( SHADER_SAMPLER1, CRTEXTURE, FRAME );
 			BindTexture( SHADER_SAMPLER2, CBTEXTURE, FRAME );
 
-			DECLARE_DYNAMIC_VERTEX_SHADER( bik_vs40 );
+			DECLARE_DYNAMIC_VERTEX_SHADER( bik_vs50 );
 			SET_DYNAMIC_VERTEX_SHADER_COMBO( DOWATERFOG,  0 );
-			SET_DYNAMIC_VERTEX_SHADER( bik_vs40 );
+			SET_DYNAMIC_VERTEX_SHADER( bik_vs50 );
 
-			DECLARE_DYNAMIC_PIXEL_SHADER( bik_ps40 );
+			DECLARE_DYNAMIC_PIXEL_SHADER( bik_ps50 );
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, 0 );
-			SET_DYNAMIC_PIXEL_SHADER( bik_ps40 );
+			SET_DYNAMIC_PIXEL_SHADER( bik_ps50 );
 		}
 		Draw();
 	}

@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//===== Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ======//
 //
 // Purpose: 
 //
@@ -46,7 +46,6 @@ void CBaseVSShader::EnablePixelShaderOverbright( int reg, bool bEnable, bool bDi
 	}
 	s_pShaderAPI->SetPixelShaderConstant( reg, v, 1 );
 }
-
 
 //-----------------------------------------------------------------------------
 // Helper for dealing with modulation
@@ -170,6 +169,101 @@ void CBaseVSShader::SetEnvMapTintPixelShaderDynamicState( int pixelReg, int tint
 	s_pShaderAPI->SetPixelShaderConstant( pixelReg, color, 1 );
 }
 
+void CBaseVSShader::SetVertexShaderTextureTransform( Vector4D *transform, int transformVar )
+{
+	static Vector4D tempTransform[2];
+
+	IMaterialVar* pTransformationVar = s_ppParams[transformVar];
+	if( pTransformationVar && (pTransformationVar->GetType() == MATERIAL_VAR_TYPE_MATRIX) )
+	{
+		const VMatrix &mat = pTransformationVar->GetMatrixValue();
+		tempTransform[0].Init( mat[0][0], mat[0][1], mat[0][2], mat[0][3] );
+        tempTransform[1].Init( mat[1][0], mat[1][1], mat[1][2], mat[1][3] );
+	}
+	else
+	{
+		tempTransform[0].Init( 1.0f, 0.0f, 0.0f, 0.0f );
+        tempTransform[1].Init( 0.0f, 1.0f, 0.0f, 0.0f );
+	}
+
+	// This should be faster because tempTransform should fit in cache.
+	// Lets hope that V_memcpy will optimize for this.
+	V_memcpy( transform, tempTransform, sizeof( Vector4D ) * 2 );
+}
+
+void CBaseVSShader::SetVertexShaderTextureScaledTransform( Vector4D *transform, int transformVar, int scaleVar )
+{
+	static Vector4D tempTransform[2];
+
+	IMaterialVar* pTransformationVar = s_ppParams[transformVar];
+	if( pTransformationVar && (pTransformationVar->GetType() == MATERIAL_VAR_TYPE_MATRIX) )
+	{
+		const VMatrix &mat = pTransformationVar->GetMatrixValue();
+        tempTransform[0].Init( mat[0][0], mat[0][1], mat[0][2], mat[0][3] );
+        tempTransform[1].Init( mat[1][0], mat[1][1], mat[1][2], mat[1][3] );
+	}
+	else
+	{
+		tempTransform[0].Init( 1.0f, 0.0f, 0.0f, 0.0f );
+        tempTransform[1].Init( 0.0f, 1.0f, 0.0f, 0.0f );
+	}
+
+	Vector2D scale( 1, 1 );
+	IMaterialVar* pScaleVar = s_ppParams[scaleVar];
+
+	if( pScaleVar )
+	{
+		if( pScaleVar->GetType() == MATERIAL_VAR_TYPE_VECTOR )
+			pScaleVar->GetVecValue( scale.Base(), 2 );
+		else if ( pScaleVar->IsDefined() )
+			scale[0] = scale[1] = pScaleVar->GetFloatValue();
+	}
+
+	tempTransform[0][0] *= scale[0];
+    tempTransform[0][1] *= scale[1];
+    tempTransform[1][0] *= scale[0];
+    tempTransform[1][1] *= scale[1];
+    tempTransform[0][3] *= scale[0];
+    tempTransform[1][3] *= scale[1];
+
+	V_memcpy( transform, tempTransform, sizeof( Vector4D ) * 2 );
+}
+
+void CBaseVSShader::SetConstantGammaToLinear( vec_t *transform, int transformVar )
+{
+	static vec_t tempTransform[4];
+	IMaterialVar* pTransformationVar = s_ppParams[transformVar];
+
+	if( pTransformationVar && (pTransformationVar->GetType() == MATERIAL_VAR_TYPE_VECTOR) )
+	{
+		tempTransform[0] = GammaToLinear( transform[0] ) * pTransformationVar->GetFloatValueFast();
+		tempTransform[1] = GammaToLinear( transform[1] ) * pTransformationVar->GetFloatValueFast();
+		tempTransform[2] = GammaToLinear( transform[2] ) * pTransformationVar->GetFloatValueFast();
+		tempTransform[3] = GammaToLinear( transform[3] ) * pTransformationVar->GetFloatValueFast();
+	}
+	else
+	{
+		V_memset( tempTransform, 0, sizeof( vec_t ) * 4 );
+	}
+
+	V_memcpy( transform, tempTransform, sizeof( vec_t ) * 4 );
+}
+
+void CBaseVSShader::SetEnvmapTint( Vector4D &transform, int transformVar )
+{
+
+	IMaterialVar* pTransformationVar = s_ppParams[transformVar];
+	if( pTransformationVar && (pTransformationVar->GetType() == MATERIAL_VAR_TYPE_VECTOR) )
+	{
+		V_memcpy( &transform, pTransformationVar->GetVecValueFast(), sizeof( Vector4D ) );
+	}
+	else
+	{
+		V_memset( &transform, 0, sizeof( Vector4D ) );
+	}
+}
+
+
 void CBaseVSShader::SetAmbientCubeDynamicStateVertexShader( )
 {
 	s_pShaderAPI->SetVertexShaderStateAmbientLightCube();
@@ -192,14 +286,14 @@ void CBaseVSShader::SetHWMorphVertexShaderState( Vector4D &dimensions, Vector4D 
 	s_pShaderAPI->GetStandardTextureDimensions( &nMorphWidth, &nMorphHeight, TEXTURE_MORPH_ACCUMULATOR );
 
 	int nDim = s_pShaderAPI->GetIntRenderingParameter( INT_RENDERPARM_MORPH_ACCUMULATOR_4TUPLE_COUNT );
-	float pMorphAccumSize[4] = { nMorphWidth, nMorphHeight, nDim, 0.0f };
+	float pMorphAccumSize[4] = { (float)nMorphWidth, (float)nMorphHeight, nDim, 0.0f };
 	dimensions.Init( pMorphAccumSize[0], pMorphAccumSize[1], pMorphAccumSize[2], pMorphAccumSize[3] );
 
 	int nXOffset = s_pShaderAPI->GetIntRenderingParameter( INT_RENDERPARM_MORPH_ACCUMULATOR_X_OFFSET );
 	int nYOffset = s_pShaderAPI->GetIntRenderingParameter( INT_RENDERPARM_MORPH_ACCUMULATOR_Y_OFFSET );
 	int nWidth = s_pShaderAPI->GetIntRenderingParameter( INT_RENDERPARM_MORPH_ACCUMULATOR_SUBRECT_WIDTH );
 	int nHeight = s_pShaderAPI->GetIntRenderingParameter( INT_RENDERPARM_MORPH_ACCUMULATOR_SUBRECT_HEIGHT );
-	float pMorphAccumSubrect[4] = { nXOffset, nYOffset, nWidth, nHeight };
+	float pMorphAccumSubrect[4] = { (float)nXOffset, (float)nYOffset, (float)nWidth, (float)nHeight };
 	subrect.Init( pMorphAccumSubrect[0], pMorphAccumSubrect[1], pMorphAccumSubrect[2], pMorphAccumSubrect[3] );
 
 	s_pShaderAPI->BindStandardVertexTexture( morphSampler, TEXTURE_MORPH_ACCUMULATOR );

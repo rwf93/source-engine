@@ -8,7 +8,7 @@
 
 #include "lightmappedgeneric_dx9_helper.h"
 #include "BaseVSShader.h"
-#include "commandbuilder.h"
+#include "shaderlib/commandbuilder.h"
 #include "convar.h"
 #include "lightmappedgeneric_ps20.inc"
 #include "lightmappedgeneric_vs20.inc"

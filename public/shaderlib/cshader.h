@@ -64,8 +64,9 @@ bool IsUsingGraphics();
 #define CREATE_CONSTANT_BUFFER(name) ALIGN16 struct name##_CBuffer_t
 #define DECLARE_CONSTANT_BUFFER(name) ConstantBufferHandle_t m_CB##name;
 #define CONSTANT_BUFFER(name) m_CB##name
-#define INIT_CONSTANT_BUFFER(name) m_CB##name = pShaderDevice->CreateConstantBuffer(sizeof( name##_CBuffer_t ))
+#define INIT_CONSTANT_BUFFER(name) m_CB##name = pShaderDevice->CreateConstantBuffer( sizeof( name##_CBuffer_t ) )
 #define UPDATE_CONSTANT_BUFFER(name, newData) UpdateConstantBuffer( m_CB##name, &newData )
+#define SHADER_INIT_GLOBAL virtual void OnInitShader( IShaderDevice *pShaderDevice )
 #endif
 
 // Typesafe flag setting

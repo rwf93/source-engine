@@ -9,10 +9,10 @@ from waflib.Configure import conf
 
 re_ps2x = re.compile(r'_ps2x')
 re_vsxx = re.compile(r'_vsxx')
-re_shader = re.compile(r'_(ps11|ps14|ps2x|ps20b|ps20|ps30|ps40|vs11|vs14|vsxx|vs20b|vs20|vs30|vs40)')
+re_shader = re.compile(r'_(ps11|ps14|ps2x|ps20b|ps20|ps30|ps40|ps50|vs11|vs14|vsxx|vs20b|vs20|vs30|vs40|vs50)')
 re_static_match = re.compile(r'\s*STATIC\s*\:\s*\"(.*)\"\s+\"(\d+)\.\.(\d+)\"')
 re_dynamic_match = re.compile(r'\s*DYNAMIC\s*\:\s*\"(.*)\"\s+\"(\d+)\.\.(\d+)\"')
-re_model_match = re.compile(r'\[([ps11|ps20b|ps20|ps30|ps40|vs11|vs20|vs20b|vs30|vs40]+)\]')
+re_model_match = re.compile(r'\[([ps11|ps20b|ps20|ps30|ps40|ps50|vs11|vs20|vs20b|vs30|vs40|vs50]+)\]')
 re_assignment_match = re.compile(r'\[\s*?\=(.*?)\]')
 re_platform_match = re.compile(r'\[(XBOX|PC|CONSOLE|SONYPS3)\]')
 
@@ -172,12 +172,16 @@ SHADER_TYPE = {
     'vs20': 'vs_2_0',
     'vs20b': 'vs_2_0',
     'vs30': 'vs_3_0',
+    'vs40': 'vs_4_0',
+    'vs50': 'vs_5_0',
 
     'ps11': 'ps_1_1',
     'ps14': 'ps_1_4',
     'ps20': 'ps_2_0',
     'ps20b': 'ps_2_b',
     'ps30': 'ps_3_0',
+    'ps40': 'ps_4_0',
+    'ps50': 'ps_5_0',
 }
 
 MODEL_MAPPING = {
@@ -190,12 +194,15 @@ MODEL_MAPPING = {
     'vs20': ['vs20'],
     'vs30': ['vs30'],
     'vs40': ['vs40'],
+    'vs50': ['vs50'],
 
     'ps11': ['ps11'],
     'ps20b': ['ps20b'],
     'ps20': ['ps20'],
     'ps30': ['ps30'],
     'ps40': ['ps40'],
+    'ps50': ['ps50'],
+
 }
 
 def get_models_from_name(filename, override: int):

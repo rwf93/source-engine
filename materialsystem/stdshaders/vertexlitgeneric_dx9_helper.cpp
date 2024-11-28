@@ -24,7 +24,7 @@
 #include "vertexlit_and_unlit_generic_bump_ps30.inc"
 #endif
 
-#include "commandbuilder.h"
+#include "shaderlib/commandbuilder.h"
 #include "convar.h"
 
 // memdbgon must be the last include file in a .cpp file!!!

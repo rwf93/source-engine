@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//===== Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ======//
 //
 // Purpose: 
 //
@@ -8,14 +8,14 @@
 
 #include "BaseVSShader.h"
 
-#include "fxctmp9/unlitgeneric_ps40.inc"
-#include "fxctmp9/unlitgeneric_vs40.inc"
+#include "fxctmp9/unlitgeneric_ps50.inc"
+#include "fxctmp9/unlitgeneric_vs50.inc"
 
 //extern ConVar r_flashlight_version2;
 
 // HACKHACK
-DEFINE_FALLBACK_SHADER(Vertexlitgeneric, UnlitGeneric)
-DEFINE_FALLBACK_SHADER(Lightmappedgeneric, UnlitGeneric)
+//DEFINE_FALLBACK_SHADER(Vertexlitgeneric, UnlitGeneric)
+//DEFINE_FALLBACK_SHADER(Lightmappedgeneric, UnlitGeneric)
 DEFINE_FALLBACK_SHADER(WorldVertexTransition, UnlitGeneric)
 
 BEGIN_VS_SHADER( UnlitGeneric, "Help for UnlitGeneric" )
@@ -101,119 +101,110 @@ BEGIN_VS_SHADER( UnlitGeneric, "Help for UnlitGeneric" )
 
 	SHADER_INIT
 	{
-		if (params[BASETEXTURE]->IsDefined())
+		if( params[BASETEXTURE]->IsDefined() )
 		{
-			LoadTexture(BASETEXTURE);
+			LoadTexture( BASETEXTURE );
 		}
 	}
 
-		SHADER_DRAW
+	SHADER_DRAW
 	{
 		bool bDrawStandardPass = true;
+		bool bHasVertexColor = IS_FLAG_SET( MATERIAL_VAR_VERTEXCOLOR );
+		bool bHasVertexAlpha = IS_FLAG_SET( MATERIAL_VAR_VERTEXALPHA );
 
-		bool bHasVertexColor = IS_FLAG_SET(MATERIAL_VAR_VERTEXCOLOR);
-		bool bHasVertexAlpha = IS_FLAG_SET(MATERIAL_VAR_VERTEXALPHA);
-
-		if (bDrawStandardPass)
+		SHADOW_STATE
 		{
-			BlendType_t nBlendType = EvaluateBlendRequirements(BASETEXTURE, true);
-			bool bFullyOpaque = (nBlendType != BT_BLENDADD) && (nBlendType != BT_BLEND) && !IS_FLAG_SET(MATERIAL_VAR_ALPHATEST); //dest alpha is free for special use
-
-			SHADOW_STATE
+			if( bDrawStandardPass )
 			{
-				// Either we've got a constant modulation
-				bool isTranslucent = IsAlphaModulating();
+				BlendType_t nBlendType = EvaluateBlendRequirements( BASETEXTURE, true );
+				bool bFullyOpaque = ( nBlendType != BT_BLENDADD ) && ( nBlendType != BT_BLEND ) && !IS_FLAG_SET( MATERIAL_VAR_ALPHATEST );
+				bool bIsTranslucent = IsAlphaModulating();
 
-			// Or we've got a texture alpha on either texture
-			isTranslucent = isTranslucent || TextureIsTranslucent(BASETEXTURE, true);
+				bIsTranslucent = bIsTranslucent || TextureIsTranslucent(BASETEXTURE, true);
 
-			if (isTranslucent)
-			{
-				if (IS_FLAG_SET(MATERIAL_VAR_ADDITIVE))
+				if( bIsTranslucent )
 				{
-					EnableAlphaBlending(SHADER_BLEND_SRC_ALPHA, SHADER_BLEND_ONE);
+					if( IS_FLAG_SET( MATERIAL_VAR_ADDITIVE ) )
+					{
+						EnableAlphaBlending( SHADER_BLEND_SRC_ALPHA, SHADER_BLEND_ONE );
+					}
+					else
+					{
+						EnableAlphaBlending( SHADER_BLEND_SRC_ALPHA, SHADER_BLEND_ONE_MINUS_SRC_ALPHA );
+					}
 				}
 				else
 				{
-					EnableAlphaBlending(SHADER_BLEND_SRC_ALPHA, SHADER_BLEND_ONE_MINUS_SRC_ALPHA);
+					if( IS_FLAG_SET( MATERIAL_VAR_ADDITIVE ) )
+					{
+						EnableAlphaBlending( SHADER_BLEND_ONE, SHADER_BLEND_ONE );
+					}
+					else
+					{
+						DisableAlphaBlending();
+					}
 				}
-			}
-			else
-			{
-				if (IS_FLAG_SET(MATERIAL_VAR_ADDITIVE))
+
+				unsigned int flags = VERTEX_POSITION | VERTEX_NORMAL | VERTEX_FORMAT_COMPRESSED;
+				if ( bHasVertexColor || bHasVertexAlpha )
 				{
-					EnableAlphaBlending(SHADER_BLEND_ONE, SHADER_BLEND_ONE);
+					flags |= VERTEX_COLOR;
 				}
-				else
+
+				int nTexCoordCount = 1;
+				int userDataSize = 0;
+
+				if( IS_FLAG_SET( MATERIAL_VAR_VERTEXCOLOR ) )
 				{
-					DisableAlphaBlending();
+					flags |= VERTEX_COLOR;
 				}
+
+				int pTexCoordDim[1] = { 4 };
+				pShaderShadow->VertexShaderVertexFormat( flags, nTexCoordCount, pTexCoordDim, userDataSize );
+
+				SetVertexShaderConstantBuffer( 0, SHADER_CONSTANTBUFFER_SKINNING );
+				SetVertexShaderConstantBuffer( 1, SHADER_CONSTANTBUFFER_PERFRAME );
+				SetVertexShaderConstantBuffer( 2, SHADER_CONSTANTBUFFER_PERSCENE );
+
+				SetPixelShaderConstantBuffer( 0, SHADER_CONSTANTBUFFER_PERFRAME );
+				SetPixelShaderConstantBuffer( 1, SHADER_CONSTANTBUFFER_PERSCENE );
+
+				DECLARE_STATIC_VERTEX_SHADER( unlitgeneric_vs50 );
+				SET_STATIC_VERTEX_SHADER_COMBO( VERTEXCOLOR, bHasVertexColor || bHasVertexAlpha );
+				SET_STATIC_VERTEX_SHADER_COMBO( MODEL, 1 );
+				SET_STATIC_VERTEX_SHADER( unlitgeneric_vs50 );
+
+				DECLARE_STATIC_PIXEL_SHADER( unlitgeneric_ps50 );
+				SET_STATIC_PIXEL_SHADER( unlitgeneric_ps50 );
+
+				DefaultFog();
+
+				pShaderShadow->EnableAlphaWrites(bFullyOpaque);
 			}
-
-
-			// Set stream format (note that this shader supports compression)
-			unsigned int flags = VERTEX_POSITION | VERTEX_NORMAL | VERTEX_FORMAT_COMPRESSED;
-			if (bHasVertexColor || bHasVertexAlpha)
-			{
-				flags |= VERTEX_COLOR;
-			}
-			int nTexCoordCount = 1;
-			int userDataSize = 0;
-			if (IS_FLAG_SET(MATERIAL_VAR_VERTEXCOLOR))
-			{
-				flags |= VERTEX_COLOR;
-			}
-			int pTexCoordDim[1] = { 4 };
-			pShaderShadow->VertexShaderVertexFormat(flags, nTexCoordCount, pTexCoordDim, userDataSize);
-
-			SetVertexShaderConstantBuffer(0, SHADER_CONSTANTBUFFER_SKINNING);
-			SetVertexShaderConstantBuffer(1, SHADER_CONSTANTBUFFER_PERFRAME);
-			SetVertexShaderConstantBuffer(2, SHADER_CONSTANTBUFFER_PERSCENE);
-
-			SetPixelShaderConstantBuffer(0, SHADER_CONSTANTBUFFER_PERFRAME);
-			SetPixelShaderConstantBuffer(1, SHADER_CONSTANTBUFFER_PERSCENE);
-
-			DECLARE_STATIC_VERTEX_SHADER(unlitgeneric_vs40);
-			SET_STATIC_VERTEX_SHADER_COMBO(VERTEXCOLOR, bHasVertexColor || bHasVertexAlpha);
-			SET_STATIC_VERTEX_SHADER_COMBO(MODEL, 1);
-			SET_STATIC_VERTEX_SHADER(unlitgeneric_vs40);
-
-			DECLARE_STATIC_PIXEL_SHADER(unlitgeneric_ps40);
-			SET_STATIC_PIXEL_SHADER(unlitgeneric_ps40);
-
-			DefaultFog();
-
-			pShaderShadow->EnableAlphaWrites(bFullyOpaque);
 		}
+
 		DYNAMIC_STATE
 		{
-			BindTexture(SHADER_SAMPLER0, BASETEXTURE, FRAME);
+            if( params[BASETEXTURE]->IsTexture() )
+                BindTexture( SHADER_SAMPLER0, BASETEXTURE, FRAME );
+            else
+                pShaderAPI->BindStandardTexture( SHADER_SAMPLER0, TEXTURE_GREY );
 
-			//pShaderAPI->GetFogParamsAndColor(consts.FogParams.Base(), consts.FogColor.Base());
+			DECLARE_DYNAMIC_VERTEX_SHADER( unlitgeneric_vs50 );
+			SET_DYNAMIC_VERTEX_SHADER( unlitgeneric_vs50 );
 
-			//StoreVertexShaderTextureTransform(consts.BaseTextureTransform, BASETEXTURETRANSFORM);
-			//StoreVertexShaderTextureTransform(consts.BaseTexture2Transform, TEXTURE2TRANSFORM);
+			DECLARE_DYNAMIC_PIXEL_SHADER( unlitgeneric_ps50 );
+			SET_DYNAMIC_PIXEL_SHADER( unlitgeneric_ps50 );
 
-			//SetModulationDynamicState_LinearColorSpace(consts.ModulationColor);
-
-			//UPDATE_CONSTANT_BUFFER(UnlitTwoTexture, consts);
-
-			//MaterialFogMode_t fogType = pShaderAPI->GetSceneFogMode();
-			//int fogIndex = (fogType == MATERIAL_FOG_LINEAR_BELOW_FOG_Z) ? 1 : 0;
-			//int numBones = pShaderAPI->GetCurrentNumBones();
-
-			DECLARE_DYNAMIC_VERTEX_SHADER(unlitgeneric_vs40);
-			SET_DYNAMIC_VERTEX_SHADER(unlitgeneric_vs40);
-
-			DECLARE_DYNAMIC_PIXEL_SHADER(unlitgeneric_ps40);
-			SET_DYNAMIC_PIXEL_SHADER(unlitgeneric_ps40);
+			if( bDrawStandardPass )
+			{
+				Draw();
+			}
 		}
-		Draw();
-	}
-	else
-	{
-			// Skip this pass!
-			Draw(false);
+		else
+		{
+			Draw( false );
 		}
 	}
 END_SHADER

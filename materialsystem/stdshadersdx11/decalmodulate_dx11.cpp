@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//===== Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ======//
 //
 // Purpose: 
 //
@@ -10,8 +10,8 @@
 #include "shader_register_map.h"
 #include "vertexlitgeneric_dx11_helper.h"
 
-#include "vertexlit_and_unlit_generic_vs40.inc"
-#include "decalmodulate_ps40.inc"
+#include "vertexlit_and_unlit_generic_vs50.inc"
+#include "decalmodulate_ps50.inc"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -82,7 +82,7 @@ SHADER_DRAW
 		pShaderShadow->DisableFogGammaCorrection( true ); //fog should stay exactly middle grey
 		FogToGrey();
 
-		DECLARE_STATIC_VERTEX_SHADER( vertexlit_and_unlit_generic_vs40 );
+		DECLARE_STATIC_VERTEX_SHADER( vertexlit_and_unlit_generic_vs50 );
 		SET_STATIC_VERTEX_SHADER_COMBO( VERTEXCOLOR,  false );
 		SET_STATIC_VERTEX_SHADER_COMBO( CUBEMAP,  false );
 		SET_STATIC_VERTEX_SHADER_COMBO( HALFLAMBERT,  false );
@@ -92,10 +92,10 @@ SHADER_DRAW
 		SET_STATIC_VERTEX_SHADER_COMBO( DECAL, true );
 		SET_STATIC_VERTEX_SHADER_COMBO( BUMPMAP, false );
 		SET_STATIC_VERTEX_SHADER_COMBO( WRINKLEMAP, false );
-		SET_STATIC_VERTEX_SHADER( vertexlit_and_unlit_generic_vs40 );
+		SET_STATIC_VERTEX_SHADER( vertexlit_and_unlit_generic_vs50 );
 
-		DECLARE_STATIC_PIXEL_SHADER( decalmodulate_ps40 );
-		SET_STATIC_PIXEL_SHADER( decalmodulate_ps40 );
+		DECLARE_STATIC_PIXEL_SHADER( decalmodulate_ps50 );
+		SET_STATIC_PIXEL_SHADER( decalmodulate_ps50 );
 
 		// Set stream format (note that this shader supports compression)
 		unsigned int flags = VERTEX_POSITION | VERTEX_FORMAT_COMPRESSED;
@@ -138,7 +138,7 @@ SHADER_DRAW
 			MaterialFogMode_t fogType = s_pShaderAPI->GetSceneFogMode();
 			int fogIndex = ( fogType == MATERIAL_FOG_LINEAR_BELOW_FOG_Z ) ? 1 : 0;
 
-			DECLARE_DYNAMIC_VERTEX_SHADER( vertexlit_and_unlit_generic_vs40 );
+			DECLARE_DYNAMIC_VERTEX_SHADER( vertexlit_and_unlit_generic_vs50 );
 			SET_DYNAMIC_VERTEX_SHADER_COMBO( DYNAMIC_LIGHT, 0 );	// Use simplest possible vertex lighting, since ps is so simple
 			SET_DYNAMIC_VERTEX_SHADER_COMBO( STATIC_LIGHT, 0 );		//
 			SET_DYNAMIC_VERTEX_SHADER_COMBO( DOWATERFOG, fogIndex );
@@ -147,11 +147,11 @@ SHADER_DRAW
 			SET_DYNAMIC_VERTEX_SHADER_COMBO( MORPHING, pShaderAPI->IsHWMorphingEnabled() );
 			SET_DYNAMIC_VERTEX_SHADER_COMBO( COMPRESSED_VERTS, (int)vertexCompression );
 			SET_DYNAMIC_VERTEX_SHADER_COMBO( FLASHLIGHT, false );
-			SET_DYNAMIC_VERTEX_SHADER( vertexlit_and_unlit_generic_vs40 );
+			SET_DYNAMIC_VERTEX_SHADER( vertexlit_and_unlit_generic_vs50 );
 
-			DECLARE_DYNAMIC_PIXEL_SHADER( decalmodulate_ps40 );
+			DECLARE_DYNAMIC_PIXEL_SHADER( decalmodulate_ps50 );
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
-			SET_DYNAMIC_PIXEL_SHADER( decalmodulate_ps40 );
+			SET_DYNAMIC_PIXEL_SHADER( decalmodulate_ps50 );
 
 			bool bUnusedTexCoords[3] = { false, false, !pShaderAPI->IsHWMorphingEnabled() };
 			pShaderAPI->MarkUnusedVertexFields( 0, 3, bUnusedTexCoords );

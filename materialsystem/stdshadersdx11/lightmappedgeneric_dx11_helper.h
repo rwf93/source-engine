@@ -20,7 +20,7 @@ class IMaterialVar;
 class IShaderDynamicAPI;
 class IShaderShadow;
 
-ALIGN16 struct LightmappedGeneric_CBuffer_t
+CREATE_CONSTANT_BUFFER(LightmappedGeneric)
 {
 	// Vertex shader
 	Vector4D cBaseTexCoordTransform[2];
@@ -48,8 +48,6 @@ ALIGN16 struct LightmappedGeneric_CBuffer_t
 
 	float g_AlphaTestRef;
 };
-
-extern ALIGN16 ConstantBufferHandle_t g_hLightmappedGeneric_CBuffer;
 
 //-----------------------------------------------------------------------------
 // Init params/ init/ draw methods
@@ -137,17 +135,37 @@ enum PhongMaskVariant_t
 	PHONGMASK_STANDALONE,
 };
 
-struct LightmappedAdvFlashlight_DX11_Vars_t : public CBaseVSShader::DrawFlashlight_dx90_Vars_t
+struct LightmappedAdvFlashlight_DX11_Vars_t
 {
 	LightmappedAdvFlashlight_DX11_Vars_t()
-		: m_nPhong( -1 )
-		, m_nPhongBoost( -1 )
-		, m_nPhongFresnelRanges( -1 )
-		, m_nPhongExponent( -1 )
-		, m_nPhongMask( -1 )
-		, m_nPhongMaskFrame( -1 )
 	{
+		memset( this, 0xFF, sizeof( LightmappedAdvFlashlight_DX11_Vars_t ) );
 	}
+
+	bool m_bBump;
+	bool m_bLightmappedGeneric;
+	bool m_bWorldVertexTransition;
+	bool m_bTeeth;
+	int m_nBumpmapVar;
+	int m_nBumpmapFrame;
+	int m_nBumpTransform;
+	int m_nFlashlightTextureVar;
+	int m_nFlashlightTextureFrameVar;
+	int m_nBaseTexture2Var;
+	int m_nBaseTexture2FrameVar;
+	int m_nBumpmap2Var;
+	int m_nBumpmap2Frame;
+	int m_nBump2Transform;
+	int m_nDetailVar;
+	int m_nDetailScale;
+	int m_nDetailTextureCombineMode;
+	int m_nDetailTextureBlendFactor;
+	int m_nDetailTint;
+	int m_nTeethForwardVar;
+	int m_nTeethIllumFactorVar;
+	int m_nAlphaTestReference;
+	bool m_bSSBump;
+	float m_fSeamlessScale;								// 0.0 = not seamless
 	int m_nPhong;
 	int m_nPhongBoost;
 	int m_nPhongFresnelRanges;
@@ -160,7 +178,7 @@ void InitParamsLightmappedGeneric_DX11( CBaseVSShader *pShader, IMaterialVar **p
 void InitLightmappedGeneric_DX11( CBaseVSShader *pShader, IMaterialVar **params, LightmappedGeneric_DX11_Vars_t &info );
 void DrawLightmappedGeneric_DX11( CBaseVSShader *pShader, IMaterialVar **params,
 				 IShaderDynamicAPI *pShaderAPI, IShaderShadow *pShaderShadow,
-				 LightmappedGeneric_DX11_Vars_t &info, CBasePerMaterialContextData **pContextDataPtr );
+				 LightmappedGeneric_DX11_Vars_t &info, CBasePerMaterialContextData **pContextDataPtr, ConstantBufferHandle_t constantBuffer );
 
 
 #endif // LIGHTMAPPEDGENERIC_DX11_HELPER_H

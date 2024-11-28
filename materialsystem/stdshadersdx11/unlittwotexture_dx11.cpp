@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//===== Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ======//
 //
 // Purpose: 
 //
@@ -9,8 +9,8 @@
 #include "BaseVSShader.h"
 //#include "cloak_blended_pass_helper.h"
 
-#include "unlittwotexture_vs40.inc"
-#include "unlittwotexture_ps40.inc"
+#include "unlittwotexture_vs50.inc"
+#include "unlittwotexture_ps50.inc"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -205,11 +205,11 @@ BEGIN_VS_SHADER( UnlitTwoTexture_DX11, "Help for UnlitTwoTexture_DX11" )
 				SetPixelShaderConstantBuffer( 1, SHADER_CONSTANTBUFFER_PERSCENE );
 				SetPixelShaderConstantBuffer( 2, CONSTANT_BUFFER( UnlitTwoTexture ) );
 
-				DECLARE_STATIC_VERTEX_SHADER( unlittwotexture_vs40 );
-				SET_STATIC_VERTEX_SHADER( unlittwotexture_vs40 );
+				DECLARE_STATIC_VERTEX_SHADER( unlittwotexture_vs50 );
+				SET_STATIC_VERTEX_SHADER( unlittwotexture_vs50 );
 
-				DECLARE_STATIC_PIXEL_SHADER( unlittwotexture_ps40 );
-				SET_STATIC_PIXEL_SHADER( unlittwotexture_ps40 );
+				DECLARE_STATIC_PIXEL_SHADER( unlittwotexture_ps50 );
+				SET_STATIC_PIXEL_SHADER( unlittwotexture_ps50 );
 
 				DefaultFog();
 
@@ -235,16 +235,16 @@ BEGIN_VS_SHADER( UnlitTwoTexture_DX11, "Help for UnlitTwoTexture_DX11" )
 				int fogIndex = ( fogType == MATERIAL_FOG_LINEAR_BELOW_FOG_Z ) ? 1 : 0;
 				int numBones = pShaderAPI->GetCurrentNumBones();
 
-				DECLARE_DYNAMIC_VERTEX_SHADER( unlittwotexture_vs40 );
+				DECLARE_DYNAMIC_VERTEX_SHADER( unlittwotexture_vs50 );
 				SET_DYNAMIC_VERTEX_SHADER_COMBO( SKINNING,  numBones > 0 );
 				SET_DYNAMIC_VERTEX_SHADER_COMBO( DOWATERFOG,  fogIndex );
 				SET_DYNAMIC_VERTEX_SHADER_COMBO( COMPRESSED_VERTS, (int)vertexCompression );
-				SET_DYNAMIC_VERTEX_SHADER( unlittwotexture_vs40 );
+				SET_DYNAMIC_VERTEX_SHADER( unlittwotexture_vs50 );
 
-				DECLARE_DYNAMIC_PIXEL_SHADER( unlittwotexture_ps40 );
+				DECLARE_DYNAMIC_PIXEL_SHADER( unlittwotexture_ps50 );
 				SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
 				SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITE_DEPTH_TO_DESTALPHA, bFullyOpaque && pShaderAPI->ShouldWriteDepthToDestAlpha() );
-				SET_DYNAMIC_PIXEL_SHADER( unlittwotexture_ps40 );
+				SET_DYNAMIC_PIXEL_SHADER( unlittwotexture_ps50 );
 			}
 			Draw();
 		}

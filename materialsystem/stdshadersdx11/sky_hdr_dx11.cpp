@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -6,10 +6,10 @@
 // $NoKeywords: $
 //=============================================================================//
 #include "BaseVSShader.h"
-#include "sky_vs40.inc"
-#include "sky_ps40.inc"
-#include "sky_hdr_compressed_ps40.inc"
-#include "sky_hdr_compressed_rgbs_ps40.inc"
+#include "sky_vs50.inc"
+#include "sky_ps50.inc"
+#include "sky_hdr_compressed_ps50.inc"
+#include "sky_hdr_compressed_rgbs_ps50.inc"
 
 CREATE_CONSTANT_BUFFER( Sky_HDR )
 {
@@ -105,30 +105,30 @@ BEGIN_VS_SHADER( Sky_HDR_DX11, "Help for Sky_HDR_DX11 shader" )
 
 			SetPixelShaderConstantBuffer( 0, SHADER_CONSTANTBUFFER_PERFRAME );
 
-			DECLARE_STATIC_VERTEX_SHADER( sky_vs40 );
-			SET_STATIC_VERTEX_SHADER( sky_vs40 );
+			DECLARE_STATIC_VERTEX_SHADER( sky_vs50 );
+			SET_STATIC_VERTEX_SHADER( sky_vs50 );
 
 			if ( (params[HDRCOMPRESSEDTEXTURE]->IsDefined()) &&
 				 mat_use_compressed_hdr_textures.GetBool() )
 			{
 				SetPixelShaderConstantBuffer( 1, CONSTANT_BUFFER( Sky_HDR ) );
 
-				DECLARE_STATIC_PIXEL_SHADER( sky_hdr_compressed_rgbs_ps40 );
-				SET_STATIC_PIXEL_SHADER( sky_hdr_compressed_rgbs_ps40 );
+				DECLARE_STATIC_PIXEL_SHADER( sky_hdr_compressed_rgbs_ps50 );
+				SET_STATIC_PIXEL_SHADER( sky_hdr_compressed_rgbs_ps50 );
 			}
 			else
 			{
 				if (params[HDRCOMPRESSEDTEXTURE0]->IsDefined())
 				{					
-					DECLARE_STATIC_PIXEL_SHADER( sky_hdr_compressed_ps40 );
-					SET_STATIC_PIXEL_SHADER( sky_hdr_compressed_ps40 );
+					DECLARE_STATIC_PIXEL_SHADER( sky_hdr_compressed_ps50 );
+					SET_STATIC_PIXEL_SHADER( sky_hdr_compressed_ps50 );
 				}
 				else
 				{
 					SetPixelShaderConstantBuffer( 1, CONSTANT_BUFFER( Sky_HDR ) );
 
-					DECLARE_STATIC_PIXEL_SHADER( sky_ps40 );
-					SET_STATIC_PIXEL_SHADER( sky_ps40 );
+					DECLARE_STATIC_PIXEL_SHADER( sky_ps50 );
+					SET_STATIC_PIXEL_SHADER( sky_ps50 );
 				}
 			}
 
@@ -137,8 +137,8 @@ BEGIN_VS_SHADER( Sky_HDR_DX11, "Help for Sky_HDR_DX11 shader" )
 
 		DYNAMIC_STATE
 		{
-			DECLARE_DYNAMIC_VERTEX_SHADER( sky_vs40 );
-			SET_DYNAMIC_VERTEX_SHADER( sky_vs40 );
+			DECLARE_DYNAMIC_VERTEX_SHADER( sky_vs50 );
+			SET_DYNAMIC_VERTEX_SHADER( sky_vs50 );
 
 			ALIGN16 Sky_HDR_CBuffer_t constants;
 			memset( &constants, 0, sizeof( Sky_HDR_CBuffer_t ) );
@@ -170,9 +170,9 @@ BEGIN_VS_SHADER( Sky_HDR_DX11, "Help for Sky_HDR_DX11 shader" )
 				vInputScale[2]*=8.0;
 				constants.vInputScale = vInputScale;
 
-				DECLARE_DYNAMIC_PIXEL_SHADER( sky_hdr_compressed_rgbs_ps40 );
+				DECLARE_DYNAMIC_PIXEL_SHADER( sky_hdr_compressed_rgbs_ps50 );
 				SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITE_DEPTH_TO_DESTALPHA, pShaderAPI->ShouldWriteDepthToDestAlpha() );
-				SET_DYNAMIC_PIXEL_SHADER( sky_hdr_compressed_rgbs_ps40 );
+				SET_DYNAMIC_PIXEL_SHADER( sky_hdr_compressed_rgbs_ps50 );
 			}
 			else
 			{
@@ -182,9 +182,9 @@ BEGIN_VS_SHADER( Sky_HDR_DX11, "Help for Sky_HDR_DX11 shader" )
 					BindTexture( SHADER_SAMPLER0, HDRCOMPRESSEDTEXTURE0, FRAME );
 					BindTexture( SHADER_SAMPLER1, HDRCOMPRESSEDTEXTURE1, FRAME );
 					BindTexture( SHADER_SAMPLER2, HDRCOMPRESSEDTEXTURE2, FRAME );
-					DECLARE_DYNAMIC_PIXEL_SHADER( sky_hdr_compressed_ps40 );
+					DECLARE_DYNAMIC_PIXEL_SHADER( sky_hdr_compressed_ps50 );
 					SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITE_DEPTH_TO_DESTALPHA, pShaderAPI->ShouldWriteDepthToDestAlpha() );
-					SET_DYNAMIC_PIXEL_SHADER( sky_hdr_compressed_ps40 );
+					SET_DYNAMIC_PIXEL_SHADER( sky_hdr_compressed_ps50 );
 
 				}
 				else
@@ -206,9 +206,9 @@ BEGIN_VS_SHADER( Sky_HDR_DX11, "Help for Sky_HDR_DX11 shader" )
 
 					constants.vInputScale = vInputScale;
 
-					DECLARE_DYNAMIC_PIXEL_SHADER( sky_ps40 );
+					DECLARE_DYNAMIC_PIXEL_SHADER( sky_ps50 );
 					SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITE_DEPTH_TO_DESTALPHA, pShaderAPI->ShouldWriteDepthToDestAlpha() );
-					SET_DYNAMIC_PIXEL_SHADER( sky_ps40 );
+					SET_DYNAMIC_PIXEL_SHADER( sky_ps50 );
 				}
 			}
 

@@ -804,8 +804,9 @@ private:
 
 	virtual void ExecuteCommandBuffer( uint8 *pBuf );
 
-	void SetStandardTextureHandle( StandardTextureId_t, ShaderAPITextureHandle_t )
+	void SetStandardTextureHandle( StandardTextureId_t nID, ShaderAPITextureHandle_t nHandle )
 	{
+		m_Textures[ nID ] = GetTexture( nHandle );
 	}
 
 

@@ -628,8 +628,9 @@ public:
 	virtual void CopyTextureToTexture( ShaderAPITextureHandle_t srcTex, ShaderAPITextureHandle_t dstTex ) = 0;
 
 #if defined(SHADERAPI_DX11) || defined(SHADERLIB_DX11)
-	virtual void UpdateConstantBuffer(ConstantBufferHandle_t cbuffer, void* pNewData) = 0;
-	virtual ConstantBufferHandle_t GetInternalConstantBuffer(int type) = 0;
+	virtual void UpdateConstantBuffer( ConstantBufferHandle_t cbuffer, void* pNewData ) = 0;
+	virtual ConstantBufferHandle_t GetInternalConstantBuffer( int type ) = 0;
+	virtual void GetFogParamsAndColor( float *fogParams, float *rgba ) = 0;
 #endif
 };
 

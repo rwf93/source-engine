@@ -1,4 +1,4 @@
-//====== Copyright © 1996-2007, Valve Corporation, All rights reserved. =======//
+//====== Copyright ï¿½ 1996-2007, Valve Corporation, All rights reserved. =======//
 //
 // Purpose: Common pixel shader code
 //
@@ -181,7 +181,7 @@ float4 DecompressNormal( Texture2D NormalTex, SamplerState NormalSampler, float2
 }
 
 
-HALF3 NormalizeWithCubemap( TextureCube normalizeTexture, SamplerState normalizeSampler, HALF3 input )
+HALF3 NormalizeWithCubemap( Texture2D normalizeTexture, SamplerState normalizeSampler, HALF3 input )
 {
 //	return texCUBE( normalizeSampler, input ) * 2.0f - 1.0f;
 	return normalizeTexture.Sample( normalizeSampler, input );

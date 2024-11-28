@@ -6,7 +6,7 @@
 //=============================================================================
 
 #include "BaseVSShader.h"
-#include "commandbuilder.h"
+#include "shaderlib/commandbuilder.h"
 
 #include "vr_distort_texture_ps20.inc"
 #include "vr_distort_texture_ps20b.inc"

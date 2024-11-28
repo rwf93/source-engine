@@ -810,6 +810,7 @@ void CTextureDx11::MakeView()
 	}
 
 	CD3D11_SHADER_RESOURCE_VIEW_DESC desc( dim, format );
+	desc.Texture2D.MipLevels = -1;
 
 	if ( m_NumCopies > 1 )
 	{

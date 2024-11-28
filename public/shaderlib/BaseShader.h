@@ -130,6 +130,7 @@ public:
 	virtual void SetPixelShaderConstantBuffer(int slot, ShaderInternalConstantBuffer_t cbuffer);
 	virtual void SetVertexShaderConstantBuffer(int slot, ShaderInternalConstantBuffer_t cbuffer);
 	virtual void UpdateConstantBuffer(ConstantBufferHandle_t cbuffer, void* pNewData);
+	virtual void GetFogParamsAndColor( float *fogParams, float *rgba );
 #endif
 
 public:

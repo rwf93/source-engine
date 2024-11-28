@@ -3986,21 +3986,20 @@ void CMeshMgr::GetMaxToRender( IMesh *pMesh, bool bMaxUntilFlush, int *pMaxVerts
 
 int CMeshMgr::GetMaxVerticesToRender( IMaterial *pMaterial )
 {
-	//if ( !( ( pMaterial == NULL ) || ( (IMaterialInternal *)pMaterial )->IsRealTimeVersion() ) )
-	//{
-	//	DebuggerBreak();
-	//}//
-
 	// Be conservative, assume no compression (in here, we don't know if the caller will used a compressed VB or not)
 	// FIXME: allow the caller to specify which compression type should be used to compute size from the vertex format
 	//        (this can vary between multiple VBs/Meshes using the same material)
 	VertexFormat_t fmt = pMaterial->GetVertexFormat() & ~VERTEX_FORMAT_COMPRESSED;
-	int nMaxVerts = ShaderAPI()->GetCurrentDynamicVBSize() / VertexFormatSize( fmt );
-	if ( nMaxVerts > VERTEX_BUFFER_SIZE)
+	int nVertexSize = VertexFormatSize( fmt );
+	if ( nVertexSize == 0 )
 	{
-		nMaxVerts = VERTEX_BUFFER_SIZE;
+		// unable to determine vertex format information, possibly due to device loss.
+		Warning( "bad vertex size for material %s\n", pMaterial->GetName() );
+		return 0;
 	}
-	return nMaxVerts;
+
+	int nMaxVerts = ShaderAPI()->GetCurrentDynamicVBSize() / nVertexSize;
+	return MIN( nMaxVerts, 65535 );
 }
 
 int CMeshMgr::GetMaxIndicesToRender()

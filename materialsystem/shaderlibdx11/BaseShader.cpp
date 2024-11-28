@@ -1845,8 +1845,14 @@ void CBaseShader::SetVertexShaderConstantBuffer(int slot, ShaderInternalConstant
 }
 
 // Called from DYNAMIC_STATE
-void CBaseShader::UpdateConstantBuffer(ConstantBufferHandle_t cbuffer, void* pNewData)
+void CBaseShader::UpdateConstantBuffer( ConstantBufferHandle_t cbuffer, void* pNewData )
 {
 	Assert(s_pShaderAPI);
-	static_cast<IShaderAPI*>(s_pShaderAPI)->UpdateConstantBuffer(cbuffer, pNewData);
+	static_cast<IShaderAPI*>(s_pShaderAPI)->UpdateConstantBuffer( cbuffer, pNewData );
+}
+
+void CBaseShader::GetFogParamsAndColor( float *fogParams, float *rgba )
+{
+	Assert(s_pShaderAPI);
+	static_cast<IShaderAPI*>(s_pShaderAPI)->GetFogParamsAndColor( fogParams, rgba );
 }

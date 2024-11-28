@@ -1221,7 +1221,7 @@ int CMatQueuedRenderContext::GetMaxVerticesToRender( IMaterial *pMaterial )
 	VertexFormat_t materialFormat = pMaterial->GetVertexFormat() & ~VERTEX_FORMAT_COMPRESSED;
 	g_pShaderAPI->ComputeVertexDescription( 0, materialFormat, temp );
 
-	int maxVerts = g_pShaderAPI->GetCurrentDynamicVBSize() / temp.m_ActualVertexSize;
+	int maxVerts = g_pShaderAPI->GetCurrentDynamicVBSize() / MAX( temp.m_ActualVertexSize, 4);
 	if ( maxVerts > 65535 )
 	{
 		maxVerts = 65535;

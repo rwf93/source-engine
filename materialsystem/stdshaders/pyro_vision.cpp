@@ -6,7 +6,7 @@
 //=============================================================================
 
 #include "BaseVSShader.h"
-#include "commandbuilder.h"
+#include "shaderlib/commandbuilder.h"
 
 #include "pyro_vision_ps20.inc"
 #include "pyro_vision_ps20b.inc"

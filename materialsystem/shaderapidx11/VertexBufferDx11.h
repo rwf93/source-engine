@@ -41,8 +41,8 @@ public:
 	void ChangeConfiguration( int vertexSize, int totalSize, VertexFormat_t fmt )
 	{
 		Assert( m_bIsDynamic && !m_bIsLocked && vertexSize );
-		m_VertexSize = vertexSize;
-		m_nVertexCount = m_nBufferSize / vertexSize;
+		m_VertexSize = MAX( vertexSize, 4 );
+		m_nVertexCount = m_nBufferSize / MAX( vertexSize, 4 );
 		m_VertexFormat = fmt;
 	}
 

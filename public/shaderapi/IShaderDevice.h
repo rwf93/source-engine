@@ -274,7 +274,7 @@ public:
 #endif
 	virtual char *GetDisplayDeviceName() = 0;
 
-#if defined(SHADERAPI_DX11)
+#if defined(SHADERAPI_DX11) || defined(SHADERLIB_DX11)
 	virtual ConstantBufferHandle_t CreateConstantBuffer(size_t nBufSize) = 0;
 	virtual void UpdateConstantBuffer(ConstantBufferHandle_t hBuffer, void* pData) = 0;
 	virtual void UploadConstantBuffers(ConstantBufferHandle_t* pBuffers, int nBuffers) = 0;

@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -6,8 +6,8 @@
 #if 0
 #include "BaseVSShader.h"
 
-#include "modulate_vs40.inc"
-#include "modulate_ps40.inc"
+#include "modulate_vs50.inc"
+#include "modulate_ps50.inc"
 
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -195,11 +195,11 @@ BEGIN_VS_SHADER( Modulate_DX11,
 				SetPixelShaderConstantBuffer( 1, SHADER_CONSTANTBUFFER_PERSCENE );
 				SetPixelShaderConstantBuffer( 2, CONSTANT_BUFFER( Modulate ) );
 
-				DECLARE_STATIC_VERTEX_SHADER( modulate_vs40 );
-				SET_STATIC_VERTEX_SHADER( modulate_vs40 );
+				DECLARE_STATIC_VERTEX_SHADER( modulate_vs50 );
+				SET_STATIC_VERTEX_SHADER( modulate_vs50 );
 
-				DECLARE_STATIC_PIXEL_SHADER( modulate_ps40 );
-				SET_STATIC_PIXEL_SHADER( modulate_ps40 );
+				DECLARE_STATIC_PIXEL_SHADER( modulate_ps50 );
+				SET_STATIC_PIXEL_SHADER( modulate_ps50 );
 
 				// We need to fog to *white* regardless of overbrighting...
 				if( bMod2X )
@@ -242,16 +242,16 @@ BEGIN_VS_SHADER( Modulate_DX11,
 
 				UPDATE_CONSTANT_BUFFER( Modulate, consts );
 
-				DECLARE_DYNAMIC_VERTEX_SHADER( modulate_vs40 );
+				DECLARE_DYNAMIC_VERTEX_SHADER( modulate_vs50 );
 				SET_DYNAMIC_VERTEX_SHADER_COMBO( DOWATERFOG, pShaderAPI->GetSceneFogMode() == MATERIAL_FOG_LINEAR_BELOW_FOG_Z );
 				SET_DYNAMIC_VERTEX_SHADER_COMBO( SKINNING, pShaderAPI->GetCurrentNumBones() > 0 );
 				SET_DYNAMIC_VERTEX_SHADER_COMBO( COMPRESSED_VERTS, (int)vertexCompression );
-				SET_DYNAMIC_VERTEX_SHADER( modulate_vs40 );
+				SET_DYNAMIC_VERTEX_SHADER( modulate_vs50 );
 
-				DECLARE_DYNAMIC_PIXEL_SHADER( modulate_ps40 );
+				DECLARE_DYNAMIC_PIXEL_SHADER( modulate_ps50 );
 				SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
 				SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITE_DEPTH_TO_DESTALPHA, bWriteZ && bFullyOpaque && pShaderAPI->ShouldWriteDepthToDestAlpha() );
-				SET_DYNAMIC_PIXEL_SHADER( modulate_ps40 );
+				SET_DYNAMIC_PIXEL_SHADER( modulate_ps50 );
 			}
 			Draw();
 		}

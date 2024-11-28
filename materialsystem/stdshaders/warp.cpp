@@ -6,7 +6,7 @@
 //=============================================================================
 
 #include "BaseVSShader.h"
-#include "commandbuilder.h"
+#include "shaderlib/commandbuilder.h"
 
 #include "warp_ps20.inc"
 #include "warp_ps20b.inc"

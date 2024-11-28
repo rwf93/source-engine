@@ -1622,6 +1622,7 @@ KeyValues* CMaterial::InitializeShader( KeyValues &keyValues, KeyValues &patchKe
 
 	// Store off the shader
 	m_pShader = pShader;
+	pShader->InitShader( g_pShaderDevice );
 
 	// Store off the material vars + flags
 	m_VarCount = varCount;
@@ -3075,7 +3076,7 @@ void CMaterial::DrawMesh( VertexCompressionType_t vertexCompression )
 	}
 	else
 	{
-		Warning( "CMaterial::DrawElements: No bound shader\n" );
+		//Warning( "CMaterial::DrawElements: No bound shader\n" );
 	}
 }
 

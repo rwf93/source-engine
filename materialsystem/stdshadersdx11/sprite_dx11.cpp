@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -13,8 +13,8 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#include "sprite_vs40.inc"
-#include "sprite_ps40.inc"
+#include "sprite_vs50.inc"
+#include "sprite_ps50.inc"
 
 // WARNING!  Change these in engine/SpriteGn.h if you change them here!
 #define SPR_VP_PARALLEL_UPRIGHT		0
@@ -143,17 +143,17 @@ BEGIN_VS_SHADER( Sprite_DX11,
 		SetPixelShaderConstantBuffer( 1, SHADER_CONSTANTBUFFER_PERSCENE );
 		SetPixelShaderConstantBuffer( 2, CONSTANT_BUFFER( Sprite ) );
 
-		DECLARE_STATIC_VERTEX_SHADER( sprite_vs40 );
+		DECLARE_STATIC_VERTEX_SHADER( sprite_vs50 );
 		SET_STATIC_VERTEX_SHADER_COMBO( VERTEXCOLOR,  ( shaderFlags & SHADER_USE_VERTEX_COLOR ) ? true : false );
 		SET_STATIC_VERTEX_SHADER_COMBO( SRGB,  bSRGB );
-		SET_STATIC_VERTEX_SHADER( sprite_vs40 );
+		SET_STATIC_VERTEX_SHADER( sprite_vs50 );
 
-		DECLARE_STATIC_PIXEL_SHADER( sprite_ps40 );
+		DECLARE_STATIC_PIXEL_SHADER( sprite_ps50 );
 		SET_STATIC_PIXEL_SHADER_COMBO( VERTEXCOLOR,  ( shaderFlags &  SHADER_USE_VERTEX_COLOR ) ? true : false );
 		SET_STATIC_PIXEL_SHADER_COMBO( CONSTANTCOLOR,  ( shaderFlags & SHADER_USE_CONSTANT_COLOR ) ? true : false );
 		SET_STATIC_PIXEL_SHADER_COMBO( HDRTYPE,  g_pHardwareConfig->GetHDRType() );
 		SET_STATIC_PIXEL_SHADER_COMBO( SRGB, bSRGB );
-		SET_STATIC_PIXEL_SHADER( sprite_ps40 );
+		SET_STATIC_PIXEL_SHADER( sprite_ps50 );
 	}
 
 	void SetSpriteCommonDynamicState( unsigned int shaderFlags )
@@ -165,14 +165,14 @@ BEGIN_VS_SHADER( Sprite_DX11,
 
 		MaterialFogMode_t fogType = s_pShaderAPI->GetSceneFogMode();
 		int fogIndex = ( fogType == MATERIAL_FOG_LINEAR_BELOW_FOG_Z ) ? 1 : 0;
-		DECLARE_DYNAMIC_VERTEX_SHADER( sprite_vs40 );
+		DECLARE_DYNAMIC_VERTEX_SHADER( sprite_vs50 );
 		SET_DYNAMIC_VERTEX_SHADER_COMBO( DOWATERFOG,  fogIndex );
-		SET_DYNAMIC_VERTEX_SHADER( sprite_vs40 );
+		SET_DYNAMIC_VERTEX_SHADER( sprite_vs50 );
 
-		DECLARE_DYNAMIC_PIXEL_SHADER( sprite_ps40 );
+		DECLARE_DYNAMIC_PIXEL_SHADER( sprite_ps50 );
 		SET_DYNAMIC_PIXEL_SHADER_COMBO( HDRENABLED, IsHDREnabled() );
 		SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
-		SET_DYNAMIC_PIXEL_SHADER( sprite_ps40 );
+		SET_DYNAMIC_PIXEL_SHADER( sprite_ps50 );
 
 		ALIGN16 Sprite_CBuffer_t psConsts;
 		psConsts.cModulationColor.Init( 1, 1, 1, 1 );
@@ -358,14 +358,14 @@ BEGIN_VS_SHADER( Sprite_DX11,
 
 					MaterialFogMode_t fogType = s_pShaderAPI->GetSceneFogMode();
 					int fogIndex = ( fogType == MATERIAL_FOG_LINEAR_BELOW_FOG_Z ) ? 1 : 0;
-					DECLARE_DYNAMIC_VERTEX_SHADER( sprite_vs40 );
+					DECLARE_DYNAMIC_VERTEX_SHADER( sprite_vs50 );
 					SET_DYNAMIC_VERTEX_SHADER_COMBO( DOWATERFOG,  fogIndex );
-					SET_DYNAMIC_VERTEX_SHADER( sprite_vs40 );
+					SET_DYNAMIC_VERTEX_SHADER( sprite_vs50 );
 
-					DECLARE_DYNAMIC_PIXEL_SHADER( sprite_ps40 );
+					DECLARE_DYNAMIC_PIXEL_SHADER( sprite_ps50 );
 					SET_DYNAMIC_PIXEL_SHADER_COMBO( HDRENABLED,  IsHDREnabled() );
 					SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
-					SET_DYNAMIC_PIXEL_SHADER( sprite_ps40 );
+					SET_DYNAMIC_PIXEL_SHADER( sprite_ps50 );
 
 					float color[4];
 					if ( bSRGB )
@@ -407,14 +407,14 @@ BEGIN_VS_SHADER( Sprite_DX11,
 
 					MaterialFogMode_t fogType = s_pShaderAPI->GetSceneFogMode();
 					int fogIndex = ( fogType == MATERIAL_FOG_LINEAR_BELOW_FOG_Z ) ? 1 : 0;
-					DECLARE_DYNAMIC_VERTEX_SHADER( sprite_vs40 );
+					DECLARE_DYNAMIC_VERTEX_SHADER( sprite_vs50 );
 					SET_DYNAMIC_VERTEX_SHADER_COMBO( DOWATERFOG,  fogIndex );
-					SET_DYNAMIC_VERTEX_SHADER( sprite_vs40 );
+					SET_DYNAMIC_VERTEX_SHADER( sprite_vs50 );
 
-					DECLARE_DYNAMIC_PIXEL_SHADER( sprite_ps40 );
+					DECLARE_DYNAMIC_PIXEL_SHADER( sprite_ps50 );
 					SET_DYNAMIC_PIXEL_SHADER_COMBO( HDRENABLED,  IsHDREnabled() );
 					SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
-					SET_DYNAMIC_PIXEL_SHADER( sprite_ps40 );
+					SET_DYNAMIC_PIXEL_SHADER( sprite_ps50 );
 
 					float color[4];
 					if ( bSRGB )

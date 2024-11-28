@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -6,8 +6,8 @@
 // $NoKeywords: $
 //=============================================================================//
 #include "BaseVSShader.h"
-#include "sky_vs40.inc"
-#include "sky_ps40.inc"
+#include "sky_vs50.inc"
+#include "sky_ps50.inc"
 
 #include "ConVar.h"
 
@@ -67,11 +67,11 @@ BEGIN_VS_SHADER( Sky_DX11, "Help for Sky_DX11 shader" )
 			SetPixelShaderConstantBuffer( 0, SHADER_CONSTANTBUFFER_PERFRAME );
 			SetPixelShaderConstantBuffer( 1, CONSTANT_BUFFER( Sky ) );
 
-			DECLARE_STATIC_VERTEX_SHADER( sky_vs40 );
-			SET_STATIC_VERTEX_SHADER( sky_vs40 );
+			DECLARE_STATIC_VERTEX_SHADER( sky_ps50 );
+			SET_STATIC_VERTEX_SHADER( sky_ps50 );
 
-			DECLARE_STATIC_PIXEL_SHADER( sky_ps40 );
-			SET_STATIC_PIXEL_SHADER( sky_ps40 );
+			DECLARE_STATIC_PIXEL_SHADER( sky_ps50 );
+			SET_STATIC_PIXEL_SHADER( sky_ps50 );
 
 			pShaderShadow->EnableAlphaWrites( true );
 		}
@@ -105,12 +105,12 @@ BEGIN_VS_SHADER( Sky_DX11, "Help for Sky_DX11 shader" )
 
 			UPDATE_CONSTANT_BUFFER( Sky, constants );
 
-			DECLARE_DYNAMIC_VERTEX_SHADER( sky_vs40 );
-			SET_DYNAMIC_VERTEX_SHADER( sky_vs40 );			
+			DECLARE_DYNAMIC_VERTEX_SHADER( sky_ps50 );
+			SET_DYNAMIC_VERTEX_SHADER( sky_ps50 );			
 
-			DECLARE_DYNAMIC_PIXEL_SHADER( sky_ps40 );
+			DECLARE_DYNAMIC_PIXEL_SHADER( sky_ps50 );
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITE_DEPTH_TO_DESTALPHA, pShaderAPI->ShouldWriteDepthToDestAlpha() );
-			SET_DYNAMIC_PIXEL_SHADER( sky_ps40 );
+			SET_DYNAMIC_PIXEL_SHADER( sky_ps50 );
 		}
 		Draw( );
 	}

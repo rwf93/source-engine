@@ -11,7 +11,7 @@
 #include "cpp_shader_constant_register_map.h"
 #include "example_model_vs20.inc"
 #include "example_model_ps20b.inc"
-#include "commandbuilder.h"
+#include "shaderlib/commandbuilder.h"
 
 
 // memdbgon must be the last include file in a .cpp file!!!

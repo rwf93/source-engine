@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2007, Valve Corporation, All rights reserved. ======//
+//===== Copyright ï¿½ 1996-2007, Valve Corporation, All rights reserved. ======//
 //
 // Purpose: shader for drawing sprites as cards, with animation frame lerping
 //
@@ -9,9 +9,9 @@
 #include "BaseVSShader.h"
 #include "convar.h"
 
-#include "spritecard_ps40.inc"
-#include "spritecard_vs40.inc"
-#include "splinecard_vs40.inc"
+#include "spritecard_ps50.inc"
+#include "spritecard_vs50.inc"
+#include "splinecard_vs50.inc"
 
 #include "tier0/icommandline.h" //command line
 
@@ -250,8 +250,8 @@ BEGIN_VS_SHADER_FLAGS( Spritecard, "Help for Spritecard", SHADER_NOT_EDITABLE )
 				SetVertexShaderConstantBuffer( 0, SHADER_CONSTANTBUFFER_PERFRAME );
 				SetVertexShaderConstantBuffer( 1, SHADER_CONSTANTBUFFER_PERSCENE );
 
-				DECLARE_STATIC_VERTEX_SHADER( splinecard_vs40 );
-				SET_STATIC_VERTEX_SHADER( splinecard_vs40 );
+				DECLARE_STATIC_VERTEX_SHADER( splinecard_vs50 );
+				SET_STATIC_VERTEX_SHADER( splinecard_vs50 );
 			}
 			else
 			{
@@ -260,15 +260,15 @@ BEGIN_VS_SHADER_FLAGS( Spritecard, "Help for Spritecard", SHADER_NOT_EDITABLE )
 				SetVertexShaderConstantBuffer( 2, SHADER_CONSTANTBUFFER_PERSCENE );
 				SetVertexShaderConstantBuffer( 3, CONSTANT_BUFFER( SpriteCard ) );
 
-				DECLARE_STATIC_VERTEX_SHADER( spritecard_vs40 );
+				DECLARE_STATIC_VERTEX_SHADER( spritecard_vs50 );
 				SET_STATIC_VERTEX_SHADER_COMBO( DUALSEQUENCE, bSecondSequence );
-				SET_STATIC_VERTEX_SHADER( spritecard_vs40 );
+				SET_STATIC_VERTEX_SHADER( spritecard_vs50 );
 			}
 
 			SetPixelShaderConstantBuffer( 0, SHADER_CONSTANTBUFFER_PERFRAME );
 			SetPixelShaderConstantBuffer( 1, CONSTANT_BUFFER( SpriteCard ) );
 
-			DECLARE_STATIC_PIXEL_SHADER( spritecard_ps40 );
+			DECLARE_STATIC_PIXEL_SHADER( spritecard_ps50 );
 			SET_STATIC_PIXEL_SHADER_COMBO( ADDBASETEXTURE2, bAdditive2ndTexture );
 			SET_STATIC_PIXEL_SHADER_COMBO( ADDSELF, bAddSelf );
 			SET_STATIC_PIXEL_SHADER_COMBO( ANIMBLEND, bBlendFrames );
@@ -280,7 +280,7 @@ BEGIN_VS_SHADER_FLAGS( Spritecard, "Help for Spritecard", SHADER_NOT_EDITABLE )
 			SET_STATIC_PIXEL_SHADER_COMBO( EXTRACTGREENALPHA, bExtractGreenAlpha );
 			SET_STATIC_PIXEL_SHADER_COMBO( DEPTHBLEND, bDepthBlend );
 			SET_STATIC_PIXEL_SHADER_COMBO( ALPHATEST, !( bAdditive2ndTexture || bAddSelf ) );
-			SET_STATIC_PIXEL_SHADER( spritecard_ps40 );
+			SET_STATIC_PIXEL_SHADER( spritecard_ps50 );
 		}
 		DYNAMIC_STATE
 		{
@@ -334,18 +334,18 @@ BEGIN_VS_SHADER_FLAGS( Spritecard, "Help for Spritecard", SHADER_NOT_EDITABLE )
 
 			if ( nSplineType )
 			{
-				DECLARE_DYNAMIC_VERTEX_SHADER( splinecard_vs40 );
-				SET_DYNAMIC_VERTEX_SHADER( splinecard_vs40 );
+				DECLARE_DYNAMIC_VERTEX_SHADER( splinecard_vs50 );
+				SET_DYNAMIC_VERTEX_SHADER( splinecard_vs50 );
 			}
 			else
 			{
-				DECLARE_DYNAMIC_VERTEX_SHADER( spritecard_vs40 );
+				DECLARE_DYNAMIC_VERTEX_SHADER( spritecard_vs50 );
 				SET_DYNAMIC_VERTEX_SHADER_COMBO( ORIENTATION, nOrientation );
-				SET_DYNAMIC_VERTEX_SHADER( spritecard_vs40 );
+				SET_DYNAMIC_VERTEX_SHADER( spritecard_vs50 );
 			}
 
-			DECLARE_DYNAMIC_PIXEL_SHADER( spritecard_ps40 );
-			SET_DYNAMIC_PIXEL_SHADER( spritecard_ps40 );
+			DECLARE_DYNAMIC_PIXEL_SHADER( spritecard_ps50 );
+			SET_DYNAMIC_PIXEL_SHADER( spritecard_ps50 );
 		}
 		Draw( );
 	}

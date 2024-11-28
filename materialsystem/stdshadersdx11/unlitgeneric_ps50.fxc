@@ -1,3 +1,4 @@
+// STATIC "ALPHATEST"	"0..1"
 #include "common_ps_fxc.h"
 #include "common_cbuffers_fxc.h"
 
@@ -31,7 +32,10 @@ float4 main( PS_INPUT i ) : SV_TARGET
 	HALF4 baseColor = BaseTexture.Sample( BaseTextureSampler, i.baseTexCoord );
 	HALF4 result = baseColor.xyzw * i.vertexColor;
 	float alpha = baseColor.a * i.vertexColor.a;
-	
-	return float4( result.rgb, alpha );
+
+	if ( !GreaterEqualAlphaTest( alpha, 0.1 ) )
+		discard;
+
+	return float4( result.xyz, alpha );
 }
 

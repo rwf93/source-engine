@@ -821,6 +821,9 @@ const CShaderManager::ShaderCombos_t *CShaderManager::FindOrCreateShaderCombos( 
 		if ( Q_stristr( pShaderName, "_ps40" ) &&
 		     Q_stristr( line, "[ps" ) && !Q_stristr( line, "[ps40]" ) )
 			continue;
+		if ( Q_stristr( pShaderName, "_ps50" ) &&
+		     Q_stristr( line, "[ps" ) && !Q_stristr( line, "[ps50]" ) )
+			continue;
 		if ( Q_stristr( pShaderName, "_vs20" ) &&
 			Q_stristr( line, "[vs" ) &&	 !Q_stristr( line, "[vs20]" ) )
 			continue;
@@ -830,6 +833,10 @@ const CShaderManager::ShaderCombos_t *CShaderManager::FindOrCreateShaderCombos( 
 		if ( Q_stristr( pShaderName, "_vs40" ) &&
 		     Q_stristr( line, "[vs" ) && !Q_stristr( line, "[vs40]" ) )
 			continue;
+		if ( Q_stristr( pShaderName, "_vs50" ) &&
+		     Q_stristr( line, "[vs" ) && !Q_stristr( line, "[vs50]" ) )
+			continue;
+
 
 		char *pScan = &line[2];
 		while( *pScan == ' ' || *pScan == '\t' )
@@ -1044,6 +1051,11 @@ static const char *FileNameToShaderModel( const char *pShaderName, bool bVertexS
 	const char *pShaderModel = NULL;
 	if( bVertexShader )
 	{
+		if ( Q_stristr( pShaderName, "vs50" ) )
+		{
+			pShaderModel = "vs_5_0";
+			bVertexShader = true;
+		}
 		if ( Q_stristr( pShaderName, "vs40" ) )
 		{
 			pShaderModel = "vs_4_0";
@@ -1080,6 +1092,10 @@ static const char *FileNameToShaderModel( const char *pShaderName, bool bVertexS
 	}
 	else
 	{
+		if ( Q_stristr( pShaderName, "ps50" ) )
+		{
+			pShaderModel = "ps_5_0";
+		}
 		if ( Q_stristr( pShaderName, "ps40" ) )
 		{
 			pShaderModel = "ps_4_0";
@@ -2510,11 +2526,7 @@ void CShaderManager::FlushShaders( void )
 		{
 			if( combos->m_pHardwareShaders[i] != INVALID_HARDWARE_SHADER )
 			{
-#ifdef _DEBUG
-				int nRetVal=
-#endif
-					( ( ID3D11VertexShader * )combos->m_pHardwareShaders[i] )->Release();
-				Assert( nRetVal == 0 );
+				///( ( ID3D11VertexShader * )combos->m_pHardwareShaders[i] )->Release();
 			}
 			combos->m_pHardwareShaders[i] = INVALID_HARDWARE_SHADER;
 		}
@@ -2538,7 +2550,7 @@ void CShaderManager::FlushShaders( void )
 #ifdef _DEBUG
 				int nRetVal =
 #endif
-					( ( ID3D11PixelShader * )combos.m_pHardwareShaders[i] )->Release();
+					//( ( ID3D11PixelShader * )combos.m_pHardwareShaders[i] )->Release();
 				Assert( nRetVal == 0 );
 			}
 			combos.m_pHardwareShaders[i] = INVALID_HARDWARE_SHADER;

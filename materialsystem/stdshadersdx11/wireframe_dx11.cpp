@@ -9,8 +9,8 @@
 #if 1
 #include "shaderlib/cshader.h"
 
-#include "wireframe_vs40.inc"
-#include "wireframe_ps40.inc"
+#include "wireframe_vs50.inc"
+#include "wireframe_ps50.inc"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -47,20 +47,20 @@ BEGIN_SHADER( Wireframe_DX11,
 
 			SetInternalVertexShaderConstantBuffersNoSkinning();
 
-			DECLARE_STATIC_VERTEX_SHADER( wireframe_vs40 );
-			SET_STATIC_VERTEX_SHADER( wireframe_vs40 );
+			DECLARE_STATIC_VERTEX_SHADER( wireframe_vs50 );
+			SET_STATIC_VERTEX_SHADER( wireframe_vs50 );
 
-			DECLARE_STATIC_PIXEL_SHADER( wireframe_ps40 );
-			SET_STATIC_PIXEL_SHADER( wireframe_ps40 );
+			DECLARE_STATIC_PIXEL_SHADER( wireframe_ps50 );
+			SET_STATIC_PIXEL_SHADER( wireframe_ps50 );
 		}
 		DYNAMIC_STATE
 		{
 			
-			DECLARE_DYNAMIC_VERTEX_SHADER( wireframe_vs40 );
-			SET_DYNAMIC_VERTEX_SHADER( wireframe_vs40 );
+			DECLARE_DYNAMIC_VERTEX_SHADER( wireframe_vs50 );
+			SET_DYNAMIC_VERTEX_SHADER( wireframe_vs50 );
 
-			DECLARE_DYNAMIC_PIXEL_SHADER( wireframe_ps40 );
-			SET_DYNAMIC_PIXEL_SHADER( wireframe_ps40 );
+			DECLARE_DYNAMIC_PIXEL_SHADER( wireframe_ps50 );
+			SET_DYNAMIC_PIXEL_SHADER( wireframe_ps50 );
 		}
 		Draw();
 	}

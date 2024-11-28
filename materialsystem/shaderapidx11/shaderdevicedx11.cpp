@@ -495,7 +495,6 @@ CreateInterfaceFn CShaderDeviceMgrDx11::SetMode( void *hWnd, int nAdapter, const
 		nDXLevel = m_Adapters[nAdapter].m_ActualCaps.m_nMaxDXSupportLevel;
 	}
 	nDXLevel = GetClosestActualDXLevel( nDXLevel );
-	Log("nDXLevel: %i\n", nDXLevel);
 	if ( nDXLevel < 110 )
 	{
 		// Fall back to the Dx9 implementations
@@ -595,19 +594,16 @@ bool CShaderDeviceDx11::InitDevice( void *hWnd, int nAdapter, const ShaderDevice
 	sd.Flags = mode.m_bWindowed ? 0 : DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	// NOTE: Having more than 1 back buffer disables MSAA!
-	sd.SwapEffect = mode.m_nBackBufferCount > 1 ? DXGI_SWAP_EFFECT_SEQUENTIAL : DXGI_SWAP_EFFECT_DISCARD;
+	sd.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
 
 	// FIXME: Chicken + egg problem with SampleDesc.
-	sd.SampleDesc.Count = mode.m_nAASamples ? mode.m_nAASamples : 1;
-	sd.SampleDesc.Quality = mode.m_nAAQuality;
+	sd.SampleDesc.Count = 1;
+	sd.SampleDesc.Quality = 0;
 
-	UINT nDeviceFlags = 0;
-#ifdef _DEBUG
-	nDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
-
+	const D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
+	UINT nDeviceFlags = 0 | D3D11_CREATE_DEVICE_DEBUG;
 	HRESULT hr = D3D11CreateDeviceAndSwapChain( pAdapter, D3D_DRIVER_TYPE_UNKNOWN,
-						    NULL, nDeviceFlags, NULL, 0, D3D11_SDK_VERSION, &sd, &m_pSwapChain,
+						    NULL, nDeviceFlags, featureLevels, ARRAYSIZE( featureLevels ), D3D11_SDK_VERSION, &sd, &m_pSwapChain,
 						    &m_pDevice, NULL, &m_pDeviceContext );
 
 	if ( FAILED( hr ) )
@@ -782,10 +778,10 @@ void CShaderDeviceDx11::SetHardwareGammaRamp( float fGamma, float fGammaTVRangeM
 IShaderBuffer* CShaderDeviceDx11::CompileShader( const char *pProgram, size_t nBufLen, const char *pShaderVersion )
 {
 	int nCompileFlags = D3DCOMPILE_AVOID_FLOW_CONTROL;
-	nCompileFlags |= D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY;
+	nCompileFlags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 
 #ifdef _DEBUG
-	nCompileFlags |= D3DCOMPILE_DEBUG;
+	//nCompileFlags |= D3DCOMPILE_DEBUG;
 #endif
 
 	ID3DBlob *pCompiledShader, *pErrorMessages;
