@@ -34,6 +34,7 @@
 #include "tier1/utldict.h"
 #include "tier1/utlsymbol.h"
 #include "bitmap/tgawriter.h"
+#include "tier1/utlhashtable.h"
 
 #include "messbuf.h"
 #include "vmpi.h"
@@ -243,6 +244,13 @@ static void DumpLightmapLinear( const char* _dstFilename, const CUtlVector<color
 //-----------------------------------------------------------------------------
 // Vrad's static prop manager
 //-----------------------------------------------------------------------------
+
+struct StaticPropPointerCache_t
+{
+	intp unused_VertexBase;
+	intp unused_IndexBase;
+};
+CUtlHashtable<intp, StaticPropPointerCache_t> g_StaticPropsPointerCache;
 
 class CVradStaticPropMgr : public IVradStaticPropMgr
 {
@@ -1110,9 +1118,11 @@ void CVradStaticPropMgr::Shutdown()
 		studiohdr_t *pStudioHdr = m_StaticPropDict[i].m_pStudioHdr;
 		if ( pStudioHdr )
 		{
-			if ( pStudioHdr->unused_pVertexBase )
+			StaticPropPointerCache_t &cache = g_StaticPropsPointerCache[ g_StaticPropsPointerCache.Find( (intp)pStudioHdr ) ];
+
+			if ( cache.unused_VertexBase )
 			{
-				free( (void*)pStudioHdr->unused_pVertexBase );
+				free( (void*)cache.unused_VertexBase );
 			}
 			free( pStudioHdr );
 		}
@@ -2169,10 +2179,13 @@ const vertexFileHeader_t * mstudiomodel_t::CacheVertexData( void *pModelData )
 	studiohdr_t *pActiveStudioHdr = static_cast<studiohdr_t *>(pModelData);
 	Assert( pActiveStudioHdr );
 
-	if ( pActiveStudioHdr->unused_pVertexBase )
-	{
-		return (vertexFileHeader_t *)(int)pActiveStudioHdr->unused_pVertexBase;
-	}
+	if( g_StaticPropsPointerCache.HasElement( (intp)pActiveStudioHdr ) )
+		return (vertexFileHeader_t *)g_StaticPropsPointerCache[ g_StaticPropsPointerCache.Find( (intp)pActiveStudioHdr ) ].unused_VertexBase;
+
+	//if ( pActiveStudioHdr->unused_pVertexBase )
+	//{
+	//	return (vertexFileHeader_t *)(int)pActiveStudioHdr->unused_pVertexBase;
+	//}
 
 	// mandatory callback to make requested data resident
 	// load and persist the vertex file
@@ -2230,7 +2243,9 @@ const vertexFileHeader_t * mstudiomodel_t::CacheVertexData( void *pModelData )
 	free( pVvdHdr );
 	pVvdHdr = pNewVvdHdr;
 
-	pActiveStudioHdr->unused_pVertexBase = (int)(void*)pVvdHdr;
+	StaticPropPointerCache_t &cache = g_StaticPropsPointerCache[ g_StaticPropsPointerCache.Insert( (intp)pActiveStudioHdr ) ];
+	cache.unused_VertexBase = (intp)pVvdHdr;
+
 	return pVvdHdr;
 }
 

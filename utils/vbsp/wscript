@@ -81,7 +81,7 @@ def build(bld):
         '../../public/tier1',
         '../../public/tier2'
     ]
-    defines = []
+    defines = ['MACRO_MATHLIB']
     libs = [
         'tier0',
         'tier1',
