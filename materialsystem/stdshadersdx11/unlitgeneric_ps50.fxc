@@ -19,12 +19,9 @@ sampler BaseTextureSampler	   : register( s0 );
 
 struct PS_INPUT
 {
-    float4 projPos					: SV_POSITION;			// Projection-space position	
+    float4 projPos					: SV_POSITION;		// Projection-space position
 	HALF2 baseTexCoord				: TEXCOORD0;		// Base texture coordinate
 	float4 vertexColor				: TEXCOORD1;
-	float3 eyeSpacePos				: TEXCOORD2;
-	float3 normals					: TEXCOORD3;
-	float4 worldPos_projPosZ		: TEXCOORD7;		// Necessary for water fog dest alpha
 };
 
 float4 main( PS_INPUT i ) : SV_TARGET
@@ -33,9 +30,6 @@ float4 main( PS_INPUT i ) : SV_TARGET
 	HALF4 result = baseColor.xyzw * i.vertexColor;
 	float alpha = baseColor.a * i.vertexColor.a;
 
-	if ( !GreaterEqualAlphaTest( alpha, 0.1 ) )
-		discard;
-
-	return float4( result.xyz, alpha );
+	return FinalOutput( float4( result.xyz, alpha ), 0, PIXEL_FOG_TYPE_NONE, TONEMAP_SCALE_NONE, 0 );
 }
 

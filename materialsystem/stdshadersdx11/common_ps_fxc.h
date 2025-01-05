@@ -181,10 +181,10 @@ float4 DecompressNormal( Texture2D NormalTex, SamplerState NormalSampler, float2
 }
 
 
-HALF3 NormalizeWithCubemap( Texture2D normalizeTexture, SamplerState normalizeSampler, HALF3 input )
+HALF3 NormalizeWithCubemap( TextureCube normalizeTexture, SamplerState normalizeSampler, HALF3 input )
 {
 //	return texCUBE( normalizeSampler, input ) * 2.0f - 1.0f;
-	return normalizeTexture.Sample( normalizeSampler, input );
+	return normalizeTexture.Sample( normalizeSampler, input ).rgb;
 }
 
 /*
@@ -311,10 +311,14 @@ float3 SRGBOutput( const float3 vShaderColor )
 #else
 #endif
 #endif
-	
+
 float3 SRGBOutput( const float3 vShaderColor )
 {
-	return vShaderColor; //ps 1.1, 1.4, and 2.0 never do srgb conversion in the pixel shader // maybe 2.0b as well?
+	return float3( 
+		vShaderColor.r,
+		vShaderColor.g,
+		vShaderColor.b
+	); //ps 1.1, 1.4, and 2.0 never do srgb conversion in the pixel shader // maybe 2.0b as well?
 }
 
 //#endif

@@ -1,0 +1,62 @@
+//  STATIC: "COLOR_DEPTH"	"0..1"
+//	DYNAMIC: "COMPRESSED_VERTS"		"0..1"
+//	DYNAMIC: "SKINNING"				"0..1"
+
+#include "common_cbuffers_def_fxc.h"
+#include "common_vs_fxc.h"
+
+cbuffer DepthWrite_CBuffer : USER_CBUFFER_REG_0
+{
+    float4 cMorphDimensions;
+	float4 cMorphSubrect;
+};
+
+static const bool g_bSkinning = SKINNING ? true : false;
+
+Texture2D morphTexture	:	register( t0 );
+SamplerState morphSampler	: register( s0 );
+
+struct VS_INPUT
+{
+	float4 vPos					: POSITION;
+	float2 vTexCoord			: TEXCOORD0;
+	float4 vBoneWeights			: BLENDWEIGHT;
+	float4 vBoneIndices			: BLENDINDICES;
+	float3 vPosFlex				: POSITION1;
+	float vVertexID				: POSITION2;
+};
+
+struct VS_OUTPUT
+{
+    float4 vProjPos				: POSITION;
+	float2 texCoord				: TEXCOORD0;
+
+#if COLOR_DEPTH
+	float4 vWorldPos_projPosZ	: TEXCOORD1;
+#endif
+
+};
+
+VS_OUTPUT main( const VS_INPUT v )
+{
+    VS_OUTPUT o = ( VS_OUTPUT )0;
+
+    float3 worldPos;
+
+    ApplyMorph( morphSampler, cMorphDimensions, cMorphSubrect, v.vVertexID, 0.0f.xxx, v.vPos );
+    SkinPosition( g_bSkinning, v.vPos, v.vBoneWeights, v.vBoneIndices, worldPos );
+
+    float4 projPos = mul( float4( worldPos, 1.0f ), cViewProj );
+    o.vProjPos = projPos;
+
+#if (ONLY_PROJECT_POSITION == 0)
+	o.texCoord   = v.vTexCoord;
+#endif
+
+#if ( COLOR_DEPTH )
+	o.vWorldPos_projPosZ.z = vProjPos.z;
+	o.vWorldPos_projPosZ.w = vProjPos.w;
+#endif
+
+    return o;
+}

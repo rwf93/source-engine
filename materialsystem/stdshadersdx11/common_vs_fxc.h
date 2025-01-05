@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//===== Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ======//
 //
 // Purpose: This is where all common code for vertex shaders go.
 //
@@ -30,7 +30,7 @@
 #define COMPRESSED_VERTS 0
 #endif
 
-#if ( !defined( SHADER_MODEL_VS_2_0 ) && !defined( SHADER_MODEL_VS_3_0 ) && !defined(SHADER_MODEL_VS_4_0) )
+#if ( !defined( SHADER_MODEL_VS_2_0 ) && !defined( SHADER_MODEL_VS_3_0 ) && !defined(SHADER_MODEL_VS_4_0) && !defined(SHADER_MODEL_VS_5_0))
 #if COMPRESSED_VERTS == 1
 #error "Vertex compression is only for DX9 and up!"
 #endif
@@ -201,7 +201,7 @@ void DecompressVertex_NormalTangent( float4 inputNormal,  float4 inputTangent, o
 }
 
 
-#if defined(SHADER_MODEL_VS_3_0) || defined(SHADER_MODEL_VS_4_0)
+#if defined(SHADER_MODEL_VS_3_0) || defined(SHADER_MODEL_VS_4_0) || defined(SHADER_MODEL_VS_5_0)
 
 //-----------------------------------------------------------------------------
 // Methods to sample morph data from a vertex texture
@@ -285,8 +285,8 @@ bool ApplyMorph( float4 vPosFlex, float3 vNormalFlex, float4 flexScale,
 	return true;
 }
 
-#if defined(SHADER_MODEL_VS_3_0) || defined(SHADER_MODEL_VS_4_0)
-#pragma message "We have sm 3.0 or 4.0"
+#if defined(SHADER_MODEL_VS_3_0) || defined(SHADER_MODEL_VS_4_0) || defined(SHADER_MODEL_VS_5_0)
+#pragma message "We have sm 3.0 or 4.0 or 5.0"
 
 bool ApplyMorph( Texture2D morphTexture, SamplerState morphSampler, const float3 vMorphTargetTextureDim, const float4 vMorphSubrect, 
 				const float flVertexID, const float3 vMorphTexCoord,
@@ -628,10 +628,10 @@ float3 AmbientLight( const float3 worldNormal, const float3 ambientCube[6] )
 float CosineTermInternal( const float3 worldPos, const float3 worldNormal, int lightNum, bool bHalfLambert, LightInfo lightInfo[MAX_NUM_LIGHTS] )
 {
 	// Calculate light direction assuming this is a point or spot
-	float3 lightDir = normalize( lightInfo[lightNum].pos - worldPos );
+	float3 lightDir = normalize( lightInfo[lightNum].pos.xyz - worldPos );
 
 	// Select the above direction or the one in the structure, based upon light type
-	lightDir = lerp( lightDir, -lightInfo[lightNum].dir, lightInfo[lightNum].color.w );
+	lightDir = lerp( lightDir, -lightInfo[lightNum].dir.xyz, lightInfo[lightNum].color.w );
 
 	// compute N dot L
 	float NDotL = dot( worldNormal, lightDir );
@@ -665,7 +665,7 @@ float CosineTerm( const float3 worldPos, const float3 worldNormal, int lightNum,
 float3 DoLightInternal( const float3 worldPos, const float3 worldNormal, int lightNum, bool bHalfLambert,
 			LightInfo lightInfo[MAX_NUM_LIGHTS] )
 {
-	return lightInfo[lightNum].color *
+	return lightInfo[lightNum].color.rgb *
 		CosineTermInternal( worldPos, worldNormal, lightNum, bHalfLambert, lightInfo ) *
 		LightAttenInternal( worldPos, lightNum, lightInfo );
 }

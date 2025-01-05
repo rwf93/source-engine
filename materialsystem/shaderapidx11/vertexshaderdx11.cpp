@@ -72,7 +72,7 @@ int BZ2_bzBuffToBuffDecompress(
 #define DYNAMIC_SHADER_COMPILE
 
 // uncomment to get spew about what combos are being compiled.
-//#define DYNAMIC_SHADER_COMPILE_VERBOSE
+#define DYNAMIC_SHADER_COMPILE_VERBOSE
 
 // uncomment and fill in with a path to use a specific set of shader source files. Meant for network use.
 //		PC path format is of style "\\\\somemachine\\sourcetreeshare\\materialsystem\\stdshaders"
@@ -623,20 +623,6 @@ void CShaderManager::CreateStaticShaders()
 	{
 		return;
 	}
-
-#if 0
-	if ( IsPC() )
-	{
-		// GR - hack for illegal materials
-		const DWORD psIllegalMaterial[] =
-		{
-			0xffff0101, 0x00000051, 0xa00f0000, 0x00000000, 0x3f800000, 0x00000000, 
-			0x3f800000, 0x00000001, 0x800f0000, 0xa0e40000, 0x0000ffff
-		};
-		// create default shader
-		Dx9Device()->CreatePixelShader( psIllegalMaterial, ( IDirect3DPixelShader9 ** )&s_pIllegalMaterialPS );
-	}
-#endif
 }
 
 void CShaderManager::DestroyStaticShaders()
@@ -689,6 +675,20 @@ static const char *GetShaderSourcePath( void )
 				Q_StripFilename( shaderDir );
 				Q_StripLastDir( shaderDir, MAX_PATH );
 				Q_strncat( shaderDir, "stdshadersdx11", MAX_PATH, COPY_ALL_CHARACTERS );
+
+				// If we can't find a source tree, we check mounts
+				if(!g_pFullFileSystem->IsDirectory(shaderDir))
+				{
+					Warning("THIS BUILD IS USING LOCAL SHADERS\n");
+					g_pFullFileSystem->RelativePathToFullPath_safe( "./", "STDSHADERSDX11", shaderDir);
+					Q_StripFilename( shaderDir );
+					Q_StripLastDir( shaderDir, MAX_PATH );
+					Q_StripTrailingSlash( shaderDir );
+				}
+
+				// If we can't check mounts, we warn
+				if(!g_pFullFileSystem->IsDirectory(shaderDir))
+					Warning("Couldn't mount local source tree shaders or check for stdshaders in the VFS!\n");
 			}
 #			endif
 		}
@@ -728,57 +728,6 @@ const CShaderManager::ShaderCombos_t *CShaderManager::FindOrCreateShaderCombos( 
 
 		if ( !bOpenResult )
 		{
-			// Maybe this is a specific version [20 & 20b] -> [2x]
-			if ( Q_strlen( pShaderName ) >= 3 )
-			{
-				char *pszEndFilename = filename + strlen( filename );
-				if ( !Q_stricmp( pszEndFilename - 6, "30.fxc" ) )
-				{
-					// Total hack. Who knows what builds that 30 shader?
-					strcpy( pszEndFilename - 6, "20b.fxc" );
-					bOpenResult = g_pFullFileSystem->ReadFile( filename, NULL, bffr );
-					if ( !bOpenResult )
-					{
-						strcpy( pszEndFilename - 6, "2x.fxc" );
-						bOpenResult = g_pFullFileSystem->ReadFile( filename, NULL, bffr );
-					}
-					if ( !bOpenResult )
-					{
-						strcpy( pszEndFilename - 6, "20.fxc" );
-						bOpenResult = g_pFullFileSystem->ReadFile( filename, NULL, bffr );
-					}
-				}
-				else
-				{
-					if ( !stricmp( pszEndFilename - 6, "20.fxc" ) )
-					{
-						pszEndFilename[ -5 ] = 'x';
-					}
-					else if ( !stricmp( pszEndFilename - 7, "20b.fxc" ) )
-					{
-						strcpy( pszEndFilename - 7, "2x.fxc" );
-						--pszEndFilename;
-					}
-					else if ( !stricmp( pszEndFilename - 6, "11.fxc" ) )
-					{
-						strcpy( pszEndFilename - 6, "xx.fxc" );
-					}
-
-					bOpenResult = g_pFullFileSystem->ReadFile( filename, NULL, bffr );
-					if ( !bOpenResult )
-					{
-						if ( !stricmp( pszEndFilename - 6, "2x.fxc" ) )
-						{
-							pszEndFilename[ -6 ] = 'x';
-							bOpenResult = g_pFullFileSystem->ReadFile( filename, NULL, bffr );
-						}
-					}
-				}
-			}
-		}
-
-		if ( !bOpenResult )
-		{
 			Assert( 0 );
 			return NULL;
 		}
@@ -796,40 +745,7 @@ const CShaderManager::ShaderCombos_t *CShaderManager::FindOrCreateShaderCombos( 
 			continue;
 		}
 
-		// Check if line intended for platform lines
-		if( IsX360() )
-		{
-			if ( Q_stristr( line, "[PC]" ) )
-				continue;
-		}
-		else
-		{
-			if ( Q_stristr( line, "[360]" ) || Q_stristr( line, "[XBOX]" ) )
-				continue;
-		}
-
 		// Skip any lines intended for other shader version
-		if ( Q_stristr( pShaderName, "_ps20" ) && !Q_stristr( pShaderName, "_ps20b" ) &&
-			 Q_stristr( line, "[ps" ) && !Q_stristr( line, "[ps20]" ) )
-			 continue;
-		if ( Q_stristr( pShaderName, "_ps20b" ) &&
-			 Q_stristr( line, "[ps" ) && !Q_stristr( line, "[ps20b]" ) )
-			 continue;
-		if ( Q_stristr( pShaderName, "_ps30" ) &&
-			Q_stristr( line, "[ps" ) &&	 !Q_stristr( line, "[ps30]" ) )
-			continue;
-		if ( Q_stristr( pShaderName, "_ps40" ) &&
-		     Q_stristr( line, "[ps" ) && !Q_stristr( line, "[ps40]" ) )
-			continue;
-		if ( Q_stristr( pShaderName, "_ps50" ) &&
-		     Q_stristr( line, "[ps" ) && !Q_stristr( line, "[ps50]" ) )
-			continue;
-		if ( Q_stristr( pShaderName, "_vs20" ) &&
-			Q_stristr( line, "[vs" ) &&	 !Q_stristr( line, "[vs20]" ) )
-			continue;
-		if ( Q_stristr( pShaderName, "_vs30" ) &&
-			Q_stristr( line, "[vs" ) &&	 !Q_stristr( line, "[vs30]" ) )
-			continue;
 		if ( Q_stristr( pShaderName, "_vs40" ) &&
 		     Q_stristr( line, "[vs" ) && !Q_stristr( line, "[vs40]" ) )
 			continue;
@@ -1100,26 +1016,6 @@ static const char *FileNameToShaderModel( const char *pShaderName, bool bVertexS
 		{
 			pShaderModel = "ps_4_0";
 		}
-		else if( Q_stristr( pShaderName, "ps20b" ) )
-		{
-			pShaderModel = "ps_2_b";
-		}
-		else if( Q_stristr( pShaderName, "ps20" ) )
-		{
-			pShaderModel = "ps_2_0";
-		}
-		else if( Q_stristr( pShaderName, "ps11" ) )
-		{
-			pShaderModel = "ps_1_1";
-		}
-		else if( Q_stristr( pShaderName, "ps14" ) )
-		{
-			pShaderModel = "ps_1_4";
-		}
-		else if( Q_stristr( pShaderName, "ps30" ) )
-		{
-			pShaderModel = "ps_3_0";
-		}
 		else
 		{
 #ifdef _DEBUG
@@ -1231,16 +1127,6 @@ HardwareShader_t CShaderManager::CompileShader( const char *pShaderName,
 	macros[macroIndex].Definition = "1";
 	macroIndex++;
 
-	char x360DefineString[1024];
-	if( IsX360() )
-	{
-		Q_snprintf( x360DefineString, 1024, "_X360", pShaderModel );
-		Q_strupr( x360DefineString );
-		macros[macroIndex].Name = x360DefineString;
-		macros[macroIndex].Definition = "1";
-		macroIndex++;
-	}
-
 	// NULL terminate.
 	macros[macroIndex].Name = NULL;
 	macros[macroIndex].Definition = NULL;
@@ -1255,57 +1141,6 @@ retry_compile:
 	// Try and open the file to see if it exists
 	FileHandle_t fp = g_pFullFileSystem->Open( filename, "r" );
 
-	if ( fp == FILESYSTEM_INVALID_HANDLE )
-	{
-		// Maybe this is a specific version [20 & 20b] -> [2x]
-		if ( strlen( pShaderName ) >= 3 )
-		{
-			char *pszEndFilename = filename + strlen( filename );
-			if ( !Q_stricmp( pszEndFilename - 6, "30.fxc" ) )
-			{
-				strcpy( pszEndFilename - 6, "20b.fxc" );
-				fp = g_pFullFileSystem->Open( filename, "r" );
-				if ( fp == FILESYSTEM_INVALID_HANDLE )
-				{
-					strcpy( pszEndFilename - 6, "2x.fxc" );
-					fp = g_pFullFileSystem->Open( filename, "r" );
-				}
-				if ( fp == FILESYSTEM_INVALID_HANDLE )
-				{
-					strcpy( pszEndFilename - 6, "20.fxc" );
-					fp = g_pFullFileSystem->Open( filename, "r" );
-				}
-			}
-			else
-			{
-				if ( !Q_stricmp( pszEndFilename - 6, "20.fxc" ) )
-				{
-					pszEndFilename[ -5 ] = 'x';
-					fp = g_pFullFileSystem->Open( filename, "r" );
-				}
-				else if ( !Q_stricmp( pszEndFilename - 7, "20b.fxc" ) )
-				{
-					strcpy( pszEndFilename - 7, "2x.fxc" );
-					fp = g_pFullFileSystem->Open( filename, "r" );
-				}
-				else if ( !stricmp( pszEndFilename - 6, "11.fxc" ) )
-				{
-					strcpy( pszEndFilename - 6, "xx.fxc" );
-					fp = g_pFullFileSystem->Open( filename, "r" );
-				}
-
-				if ( fp == FILESYSTEM_INVALID_HANDLE )
-				{
-					if ( !stricmp( pszEndFilename - 6, "2x.fxc" ) )
-					{
-						pszEndFilename[ -6 ] = 'x';
-						fp = g_pFullFileSystem->Open( filename, "r" );
-					}
-				}
-			}
-		}
-	}
-
 	if ( fp != FILESYSTEM_INVALID_HANDLE )
 	{
 		g_pFullFileSystem->Close( fp );
@@ -1315,9 +1150,7 @@ retry_compile:
 	memset( wfilename, 0, MAX_PATH );
 	//mbtowc( wfilename, filename, strlen( filename ) );
 
-	int nCompileFlags = D3DCOMPILE_AVOID_FLOW_CONTROL;
-	nCompileFlags |= D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY;
-
+	int nCompileFlags = D3DCOMPILE_AVOID_FLOW_CONTROL | D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY | D3DCOMPILE_DEBUG;
 #ifdef _DEBUG
 	nCompileFlags |= D3DCOMPILE_DEBUG;
 #endif
@@ -1337,6 +1170,11 @@ retry_compile:
 	hr = D3DCompile( pShaderData, numBytes, filename, macros.Base(), &dxInclude, "main", pShaderModel, nCompileFlags, 0, &pShader, &pErrorMessages );
 
 	dxInclude.Close( lpcvData );
+
+#	ifdef DYNAMIC_SHADER_COMPILE_VERBOSE
+	if( pErrorMessages )
+		Warning( "%s\n", ( const char* )pErrorMessages->GetBufferPointer() );
+#	endif
 
 	if ( hr != S_OK && pErrorMessages )
 	{
@@ -2526,7 +2364,7 @@ void CShaderManager::FlushShaders( void )
 		{
 			if( combos->m_pHardwareShaders[i] != INVALID_HARDWARE_SHADER )
 			{
-				///( ( ID3D11VertexShader * )combos->m_pHardwareShaders[i] )->Release();
+				//( ( ID3D11VertexShader * )combos->m_pHardwareShaders[i] )->Release();
 			}
 			combos->m_pHardwareShaders[i] = INVALID_HARDWARE_SHADER;
 		}
@@ -2550,7 +2388,7 @@ void CShaderManager::FlushShaders( void )
 #ifdef _DEBUG
 				int nRetVal =
 #endif
-					//( ( ID3D11PixelShader * )combos.m_pHardwareShaders[i] )->Release();
+				//( ( ID3D11PixelShader * )combos.m_pHardwareShaders[i] )->Release();
 				Assert( nRetVal == 0 );
 			}
 			combos.m_pHardwareShaders[i] = INVALID_HARDWARE_SHADER;

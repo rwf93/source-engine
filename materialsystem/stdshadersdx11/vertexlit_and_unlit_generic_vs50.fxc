@@ -25,7 +25,6 @@
 // SKIP: $CASCADED_SHADOW && $VERTEXCOLOR
 
 // If using static control flow on Direct3D, we should use the NUM_LIGHTS=0 combo
-// _SKIP: $USE_STATIC_CONTROL_FLOW && ( $NUM_LIGHTS > 0 ) [vs20]
 // SKIP: ($SEPARATE_DETAIL_UVS) && ($SEAMLESS_DETAIL)
 // SKIP: ($DONT_GAMMA_CONVERT_VERTEX_COLOR && ( ! $VERTEXCOLOR ) )
 

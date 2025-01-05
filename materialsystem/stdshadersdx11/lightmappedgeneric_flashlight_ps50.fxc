@@ -1,0 +1,51 @@
+// STATIC: "NORMALMAP"					"0..2"
+// STATIC: "NORMALMAP2"					"0..1"
+// STATIC: "WORLDVERTEXTRANSITION"		"0..1"
+// STATIC: "SEAMLESS"               	"0..1"
+// STATIC: "DETAILTEXTURE"             	"0..1"
+// STATIC: "DETAIL_BLEND_MODE"			"0..1"
+// STATIC: "FLASHLIGHTDEPTHFILTERMODE"	"0..2"
+
+// DYNAMIC: "PIXELFOGTYPE"				"0..1"
+// DYNAMIC: "FLASHLIGHTSHADOWS"			"0..1"
+
+#include "common_ps_fxc.h"
+#include "common_cbuffers_def_noskinning_fxc.h"
+#include "common_flashlight_fxc.h"
+#include "common_lightmappedgeneric_fxc.h"
+#include "lightmappedgeneric_dx11_shared_fxc.h"
+
+#define g_EyePos cEyePos.xyz
+
+cbuffer LightmappedGeneric_PS : register( b3 )
+{
+	LightmappedGeneric_t c;
+};
+
+struct PS_INPUT
+{
+	float4 spotTexCoord						: TEXCOORD0;
+#if SEAMLESS
+	float3 SeamlessTexCoord					: TEXCOORD1;
+#else
+	float2 baseTexCoord						: TEXCOORD1;
+#endif
+#if NORMALMAP
+	float3 tangentPosToLightVector			: TEXCOORD2;
+	float2 normalMapTexCoord				: TEXCOORD3;
+#else
+	float3 worldPosToLightVector			: TEXCOORD2;
+	float3 normal							: TEXCOORD3;
+#endif
+
+	float2 detailCoords						: TEXCOORD4;
+	float4 worldPos_worldTransition			: TEXCOORD5;
+	float3 projPos							: TEXCOORD6;
+	float4 fogFactorW						: TEXCOORD7;
+};
+
+float4 main( PS_INPUT i ) : COLOR
+{
+    float fogFactor = CalcPixelFogFactor( PIXELFOGTYPE, c.g_FogParams, g_EyePos, i.worldPos_worldTransition.z, i.projPos.z );
+    return FinalOutput( float4(0, 1, 1, 1) , fogFactor, PIXELFOGTYPE, TONEMAP_SCALE_LINEAR, cToneMappingScale );
+}

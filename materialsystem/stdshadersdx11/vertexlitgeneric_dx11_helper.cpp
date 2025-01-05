@@ -880,7 +880,7 @@ static void DrawVertexLitGeneric_DX11_Internal( CBaseVSShader *pShader, IMateria
 			pContextData->m_Constants.cEnvMapSaturation_SelfIllumMask[3] = bHasSelfIllumMask ? 1.0f : 0.0f;
 			if ( bHasEnvmap )
 			{
-				//pShader->StoreEnvmapTintGammaToLinear( pContextData->m_Constants.cEnvMapTint, info.m_nEnvmapTint );
+				pShader->SetEnvmapTintGammaToLinear( pContextData->m_Constants.cEnvMapTint, info.m_nEnvmapTint );
 			}
 			bool bHasEnvmapMask = ( !bHasFlashlight ) && info.m_nEnvmapMask != -1 && params[info.m_nEnvmapMask]->IsTexture();
 

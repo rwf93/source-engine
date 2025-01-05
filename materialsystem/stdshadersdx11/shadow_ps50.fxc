@@ -1,0 +1,48 @@
+// DYNAMIC: "PIXELFOGTYPE"		"0..1"
+
+#include "common_ps_fxc.h"
+#include "common_cbuffers_def_noskinning_fxc.h"
+#include "shadow_dx11_shared_fxc.h"
+
+cbuffer Shadow_VS : register( b3 )
+{
+	Shadow_t c;
+};
+
+#define g_EyePos cEyePos
+
+Texture2D BaseTexture			: register( t0 );
+sampler BaseTextureSampler		: register( s0 );
+
+struct PS_INPUT
+{
+    float4 projPos					: POSITION;
+	float  fog						: FOG;
+	float2 texCoord0				: TEXCOORD0;
+	float2 texCoord1				: TEXCOORD1;
+	float2 texCoord2				: TEXCOORD2;
+	float2 texCoord3				: TEXCOORD3;
+	float2 texCoord4				: TEXCOORD4;
+	HALF4 worldPos_projPosZ		    : TEXCOORD5;
+	float4 shadowColor				: COLOR0;
+	float4 fogFactorW				: COLOR1;
+};
+
+float4 main( PS_INPUT i ) : SV_TARGET
+{
+    HALF4 samples[5];
+	samples[0] = BaseTexture.Sample( BaseTextureSampler, i.texCoord0 );
+	samples[1] = BaseTexture.Sample( BaseTextureSampler, i.texCoord1 );
+	samples[2] = BaseTexture.Sample( BaseTextureSampler, i.texCoord2 );
+	samples[3] = BaseTexture.Sample( BaseTextureSampler, i.texCoord3 );
+	samples[4] = BaseTexture.Sample( BaseTextureSampler, i.texCoord4 );
+
+    HALF shadowCoverage = (samples[0].a + samples[1].a + samples[2].a + samples[3].a + samples[4].a) * 0.2;
+    shadowCoverage = saturate( shadowCoverage - i.shadowColor.a );
+
+    HALF4 result = shadowCoverage * c.Color - shadowCoverage;
+    result = 1.0 + result;
+
+    return FinalOutput( float4( 1, 0, 0, 1 ), 0, PIXEL_FOG_TYPE_NONE, 0,
+			    TONEMAP_SCALE_NONE, 0 );
+}

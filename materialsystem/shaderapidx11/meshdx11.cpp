@@ -3424,7 +3424,7 @@ CMeshMgr::CMeshMgr() :
 	m_CurrentVertexFormat( 0 ),
 	m_pCurrentIndexBuffer( NULL ),
 	m_DynamicIndexBuffer( SHADER_BUFFER_TYPE_DYNAMIC, MATERIAL_INDEX_FORMAT_16BIT, INDEX_BUFFER_SIZE, "dynamic" ),
-	m_DynamicVertexBuffer( SHADER_BUFFER_TYPE_DYNAMIC, VERTEX_FORMAT_UNKNOWN, DYNAMIC_VERTEX_BUFFER_MEMORY, "dynamic" )
+	m_DynamicVertexBuffer( SHADER_BUFFER_TYPE_DYNAMIC, VERTEX_POSITION, DYNAMIC_VERTEX_BUFFER_MEMORY, "dynamic" )
 {
 	m_bUseFatVertices = false;
 	m_nIndexBufferOffset = 0;

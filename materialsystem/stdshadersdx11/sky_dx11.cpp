@@ -84,7 +84,7 @@ BEGIN_VS_SHADER( Sky_DX11, "Help for Sky_DX11 shader" )
 			memset( &constants, 0, sizeof( Sky_CBuffer_t ) );
 
 			// Texture coord transform
-			StoreVertexShaderTextureTransform( constants.mBaseTexCoordTransform, BASETEXTURETRANSFORM );
+			SetVertexShaderTextureTransform( constants.mBaseTexCoordTransform, BASETEXTURETRANSFORM );
 
 			if (params[COLOR]->IsDefined())
 			{
@@ -105,8 +105,8 @@ BEGIN_VS_SHADER( Sky_DX11, "Help for Sky_DX11 shader" )
 
 			UPDATE_CONSTANT_BUFFER( Sky, constants );
 
-			DECLARE_DYNAMIC_VERTEX_SHADER( sky_ps50 );
-			SET_DYNAMIC_VERTEX_SHADER( sky_ps50 );			
+			DECLARE_DYNAMIC_VERTEX_SHADER( sky_vs50 );
+			SET_DYNAMIC_VERTEX_SHADER( sky_vs50 );
 
 			DECLARE_DYNAMIC_PIXEL_SHADER( sky_ps50 );
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITE_DEPTH_TO_DESTALPHA, pShaderAPI->ShouldWriteDepthToDestAlpha() );

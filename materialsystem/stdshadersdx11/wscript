@@ -18,7 +18,7 @@ def configure(conf):
 	])
 
 def build(bld):
-	stdshader_dx11_40 = [
+	stdshader_dx11_50 = [
 		'bik_vs50.fxc',
 		'bik_ps50.fxc',
 		'unlitgeneric_vs50.fxc',
@@ -45,10 +45,18 @@ def build(bld):
 		'wireframe_vs50.fxc',
 		'lightmappedgeneric_ps50.fxc',
 		'lightmappedgeneric_vs50.fxc',
+		'lightmappedgeneric_flashlight_ps50.fxc',
+		'lightmappedgeneric_flashlight_vs50.fxc',
+		'unlittwotexture_ps50.fxc',
+		'unlittwotexture_vs50.fxc',
+		'shadow_ps50.fxc',
+		'shadow_vs50.fxc',
+		'depthwrite_ps50.fxc',
+		'depthwrite_vs50.fxc'
 	]
 	bld(
-		source = stdshader_dx11_40,
-		target = 'stdshader_dx11_40',
+		source = stdshader_dx11_50,
+		target = 'stdshader_dx11_50',
 		features = 'fxc',
 		subsystem = bld.env.MSVC_SUBSYSTEM,
 		idx      = bld.get_taskgen_count()
@@ -67,6 +75,15 @@ def build(bld):
 		'vertexlitgeneric_dx11_helper.cpp',
 		'lightmappedgeneric_dx11.cpp',
 		'lightmappedgeneric_dx11_helper.cpp',
+		'unlittwotexture_dx11.cpp',
+		'decalmodulate_dx11.cpp',
+		'sprite_dx11.cpp',
+		'spritecard_dx11.cpp',
+		'sky_dx11.cpp',
+		'sky_hdr_dx11.cpp',
+		'worldvertextransition_dx11.cpp',
+		'shadow_dx11.cpp',
+		'depthwrite_dx11.cpp',
 		'../shader_dll_verify.cpp',
 	]
 

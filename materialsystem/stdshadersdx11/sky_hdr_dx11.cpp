@@ -144,7 +144,7 @@ BEGIN_VS_SHADER( Sky_HDR_DX11, "Help for Sky_HDR_DX11 shader" )
 			memset( &constants, 0, sizeof( Sky_HDR_CBuffer_t ) );
 
 			// Texture coord transform
-			StoreVertexShaderTextureTransform( constants.mBaseTexCoordTransform, BASETEXTURETRANSFORM );
+			SetVertexShaderTextureTransform( constants.mBaseTexCoordTransform, BASETEXTURETRANSFORM );
 
 			Vector4D vInputScale( 1, 1, 1, 1 );
 			if ( params[COLOR]->IsDefined() )

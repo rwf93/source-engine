@@ -179,7 +179,7 @@ BEGIN_VS_SHADER( Sprite_DX11,
 		if ( IsHDREnabled() )
 		{
 			if ( bSRGB )
-				StoreConstantGammaToLinear( psConsts.cHDRColorScale.Base(), HDRCOLORSCALE );
+				SetConstantGammaToLinear( psConsts.cHDRColorScale.Base(), HDRCOLORSCALE );
 			else
 				s_ppParams[HDRCOLORSCALE]->GetVecValueFast( psConsts.cHDRColorScale.Base(), 4 );
 		}
@@ -187,7 +187,7 @@ BEGIN_VS_SHADER( Sprite_DX11,
 		{
 			psConsts.cHDRColorScale.Init( 0, 0, 0, 0 );
 		}
-		pShaderAPI->GetFogParamsAndColor( psConsts.cFogParams.Base(), psConsts.cFogColor.Base() );
+		GetFogParamsAndColor( psConsts.cFogParams.Base(), psConsts.cFogColor.Base() );
 		
 		UPDATE_CONSTANT_BUFFER( Sprite, psConsts );
 
@@ -379,7 +379,7 @@ BEGIN_VS_SHADER( Sprite_DX11,
 					if ( IsHDREnabled() )
 					{
 						if ( bSRGB )
-							StoreConstantGammaToLinear( psConsts.cHDRColorScale.Base(), HDRCOLORSCALE );
+							SetConstantGammaToLinear( psConsts.cHDRColorScale.Base(), HDRCOLORSCALE );
 						else
 							s_ppParams[HDRCOLORSCALE]->GetVecValueFast( psConsts.cHDRColorScale.Base(), 4 );
 					}
@@ -387,7 +387,7 @@ BEGIN_VS_SHADER( Sprite_DX11,
 					{
 						psConsts.cHDRColorScale.Init( 0, 0, 0, 0 );
 					}
-					pShaderAPI->GetFogParamsAndColor( psConsts.cFogParams.Base(), psConsts.cFogColor.Base() );
+					GetFogParamsAndColor( psConsts.cFogParams.Base(), psConsts.cFogColor.Base() );
 
 					UPDATE_CONSTANT_BUFFER( Sprite, psConsts );
 				}
@@ -428,7 +428,7 @@ BEGIN_VS_SHADER( Sprite_DX11,
 					if ( IsHDREnabled() )
 					{
 						if ( bSRGB )
-							StoreConstantGammaToLinear( psConsts.cHDRColorScale.Base(), HDRCOLORSCALE );
+							SetConstantGammaToLinear( psConsts.cHDRColorScale.Base(), HDRCOLORSCALE );
 						else
 							s_ppParams[HDRCOLORSCALE]->GetVecValueFast( psConsts.cHDRColorScale.Base(), 4 );
 					}
@@ -436,7 +436,7 @@ BEGIN_VS_SHADER( Sprite_DX11,
 					{
 						psConsts.cHDRColorScale.Init( 0, 0, 0, 0 );
 					}
-					pShaderAPI->GetFogParamsAndColor( psConsts.cFogParams.Base(), psConsts.cFogColor.Base() );
+					GetFogParamsAndColor( psConsts.cFogParams.Base(), psConsts.cFogColor.Base() );
 
 					UPDATE_CONSTANT_BUFFER( Sprite, psConsts );
 				}

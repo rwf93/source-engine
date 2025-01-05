@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2007, Valve Corporation, All rights reserved. ============//
+//========= Copyright ï¿½ 1996-2007, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -246,7 +246,7 @@ float LightAttenInternal( const float3 worldPos, int lightNum, LightInfo lightIn
 	float result = 0.0f;
 
 	// Get light direction
-	float3 lightDir = lightInfo[lightNum].pos - worldPos;
+	float3 lightDir = lightInfo[lightNum].pos.xyz - worldPos;
 
 	// Get light distance squared.
 	float lightDistSquared = dot( lightDir, lightDir );

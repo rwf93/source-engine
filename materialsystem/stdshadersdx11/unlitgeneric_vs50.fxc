@@ -13,11 +13,6 @@ CBUFFER_SKINNING(register(b0))
 CBUFFER_PERFRAME(register(b1))
 CBUFFER_PERSCENE(register(b2))
 
-/*cbuffer UnlitTwoTexture_CBuffer : register(b3)
-{
-	UnlitTwoTexture_t c;
-};*/
-
 #define cBaseTexCoordTransform c.cBaseTextureTransform
 #define cBaseTexCoordTransform2 c.cBaseTexture2Transform
 
@@ -43,9 +38,6 @@ struct VS_OUTPUT
     float4 projPos					: SV_POSITION;			// Projection-space position	
 	HALF2 baseTexCoord				: TEXCOORD0;		// Base texture coordinate
 	float4 vertexColor				: TEXCOORD1;
-	float3 eyeSpacePos				: TEXCOORD2;
-	float3 normals					: TEXCOORD3;
-	float4 worldPos_projPosZ		: TEXCOORD7;		// Necessary for water fog dest alpha
 };
 
 VS_OUTPUT main( const VS_INPUT v )
@@ -54,23 +46,12 @@ VS_OUTPUT main( const VS_INPUT v )
 	
 	float4 vPosition = float4(v.vPos.xyz, 1.0f);
 
-	// Perform skinning
-	float3 worldNormal, worldPos;
-
-	worldPos = mul4x3( vPosition, (float4x3)cModel[0] );
-	worldNormal = mul3x3( v.vNormal.xyz, ( const float3x3 )cModel[0] );
-
+	float3 worldPos = mul4x3( vPosition, (float4x3)cModel[0] );
+	float3 worldNormal = mul3x3( v.vNormal.xyz, ( const float3x3 )cModel[0] );
 	float4x4 viewProj = mul(cViewMatrix, cProjMatrix);
-
-	// Transform into projection space
 	float4 projPos = mul( float4( worldPos, 1 ), viewProj );
-	o.projPos = projPos;
 
-	o.eyeSpacePos = mul(float4(worldPos, 1), cViewMatrix).xyz;
-	
-	// Needed for water fog alpha; 
-	// FIXME: we shouldn't have to compute this all thie time.
-	o.worldPos_projPosZ = float4( worldPos.xyz, projPos.z );
+	o.projPos = projPos;
 
 	// Base texture coordinates
     o.baseTexCoord = v.vTexCoord0.xy;
@@ -80,8 +61,6 @@ VS_OUTPUT main( const VS_INPUT v )
 	#else
 	o.vertexColor = 1.0f.xxxx;
 #endif
-	
-    o.normals = v.vNormal.xyz;
 
 	return o;
 }

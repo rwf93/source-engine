@@ -6,9 +6,9 @@ struct VertexLitAndUnlitGeneric_t
 	// Vertex shader
 	float4 cBaseTexCoordTransform[2];
 	float4 cDetailTexCoordTransform[2];
-	float4 cSeamlessScale;
-	float4 cMorphSubrect;
 	float4 cMorphTargetTextureDim;
+	float4 cMorphSubrect;
+	float4 cSeamlessScale;
 	float4 cModulationColor;
 
 	// Pixel shader

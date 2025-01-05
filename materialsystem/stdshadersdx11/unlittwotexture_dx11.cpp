@@ -222,10 +222,10 @@ BEGIN_VS_SHADER( UnlitTwoTexture_DX11, "Help for UnlitTwoTexture_DX11" )
 
 				ALIGN16 CONSTANT_BUFFER_TYPE( UnlitTwoTexture ) consts;
 
-				pShaderAPI->GetFogParamsAndColor( consts.FogParams.Base(), consts.FogColor.Base() );
+				GetFogParamsAndColor( consts.FogParams.Base(), consts.FogColor.Base() );
 
-				StoreVertexShaderTextureTransform( consts.BaseTextureTransform, BASETEXTURETRANSFORM );
-				StoreVertexShaderTextureTransform( consts.BaseTexture2Transform, TEXTURE2TRANSFORM );
+				SetVertexShaderTextureTransform( consts.BaseTextureTransform, BASETEXTURETRANSFORM );
+				SetVertexShaderTextureTransform( consts.BaseTexture2Transform, TEXTURE2TRANSFORM );
 
 				SetModulationDynamicState_LinearColorSpace( consts.ModulationColor );
 

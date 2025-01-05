@@ -900,20 +900,6 @@ void CTextureDx11::BlitSurfaceBits( CTextureDx11::TextureLoadInfo_t &info, int x
 		return;
 	}
 
-#if 0
-	if ( m_CreationFlags & TEXTURE_CREATE_CUBEMAP )
-	{
-		char cmfile[100];
-		sprintf( cmfile, "C:\\Users\\Brian\\Desktop\\SourceDX11Debug\\cubemap-%i-face-%i.tga", s_CubemapBlits, info.m_CubeFaceID );
-		TGAWriter::WriteTGAFile( cmfile, info.m_nWidth, info.m_nHeight, m_Format, pNewImage, dstStride * info.m_nWidth );
-
-		if ( info.m_CubeFaceID == 4 )
-		{
-			s_CubemapBlits++;
-		}
-	}
-#endif
-	
 	UINT subresource = D3D11CalcSubresource( info.m_nLevel, info.m_CubeFaceID, m_NumLevels );
 
 	D3D11DeviceContext()->UpdateSubresource( info.m_pTexture, subresource, &box, pNewImage,

@@ -4,7 +4,6 @@
 //
 // $NoKeywords: $
 //=============================================================================//
-#if 0
 #include "BaseVSShader.h"
 
 #include "writez_vs50.inc"
@@ -66,4 +65,3 @@ BEGIN_VS_SHADER_FLAGS( Occlusion_DX11, "Help for Occlusion", SHADER_NOT_EDITABLE
 		Draw();
 	}
 END_SHADER
-#endif

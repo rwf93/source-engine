@@ -297,7 +297,7 @@ static unsigned int ComputeInputDesc( VertexFormat_t fmt, bool bStaticLit, bool 
 	}
 
 	// For debugging only...
-	PrintInputDesc( nCount, pDecl );
+	// PrintInputDesc( nCount, pDecl );
 
 	return nCount;
 }

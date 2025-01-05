@@ -17,8 +17,8 @@
 #include "lightmappedgeneric_ps50.inc"
 #include "lightmappedgeneric_vs50.inc"
 
-//#include "lightmappedadv_flashlight_ps30.inc"
-//#include "lightmappedadv_flashlight_vs30.inc"
+#include "lightmappedgeneric_flashlight_ps50.inc"
+#include "lightmappedgeneric_flashlight_vs50.inc"
 
 #include "tier0/memdbgon.h"
 
@@ -90,8 +90,72 @@ public:
 };
 
 void DrawLightmappedAdvFlashlight_DX11_Internal( CBaseVSShader *pShader, IMaterialVar **params, IShaderDynamicAPI *pShaderAPI,
-						IShaderShadow *pShaderShadow, LightmappedAdvFlashlight_DX11_Vars_t &vars, ConstantBufferHandle_t constantBuffer )
+						IShaderShadow *pShaderShadow, LightmappedAdvFlashlight_DX11_Vars_t &vars, CLightmappedGeneric_DX11_Context *pContextData, ConstantBufferHandle_t constantBuffer )
 {
+	vars.m_bBump = false;
+	bool bBump2 = vars.m_bWorldVertexTransition && vars.m_bBump && vars.m_nBumpmap2Var != -1 && params[vars.m_nBumpmap2Var]->IsTexture();
+	bool bSeamless = vars.m_fSeamlessScale != 0.0;
+	bool bDetail = vars.m_bLightmappedGeneric && (vars.m_nDetailVar != -1) && params[vars.m_nDetailVar]->IsDefined() && (vars.m_nDetailScale != -1);
+
+	NOTE_UNUSED( bBump2 );
+	NOTE_UNUSED( bSeamless );
+
+	int nDetailBlendMode = 0;
+	if( bDetail )
+	{
+		nDetailBlendMode = GetIntParam( vars.m_nDetailTextureCombineMode, params );
+		nDetailBlendMode = nDetailBlendMode > 1 ? 1 : nDetailBlendMode;
+	}
+
+	// Regenerate static binds
+	if( !pContextData )
+	{
+		pContextData->ResetStaticCmds();
+		CCommandBufferBuilder< CFixedCommandStorageBuffer< 5000 > > staticCmdsBuf;
+
+		staticCmdsBuf.End();
+		pContextData->m_pStaticCmds = new uint8[staticCmdsBuf.Size()];
+		memcpy( pContextData->m_pStaticCmds, staticCmdsBuf.Base(), staticCmdsBuf.Size() );
+	}
+
+	SHADOW_STATE
+	{
+		pShaderShadow->EnableDepthWrites( false );
+		if ( vars.m_nAlphaTestReference != -1 && params[vars.m_nAlphaTestReference]->GetFloatValue() > 0.0f )
+		{
+		}
+
+		DECLARE_STATIC_VERTEX_SHADER( lightmappedgeneric_flashlight_vs50 );
+		SET_STATIC_VERTEX_SHADER_COMBO( NORMALMAP, 0 );
+		SET_STATIC_VERTEX_SHADER_COMBO( WORLDVERTEXTRANSITION, 0 );
+		SET_STATIC_VERTEX_SHADER_COMBO( SEAMLESS, 0 );
+		SET_STATIC_VERTEX_SHADER_COMBO( DETAIL, 0 );
+		SET_STATIC_VERTEX_SHADER( lightmappedgeneric_flashlight_vs50 );
+
+		DECLARE_STATIC_PIXEL_SHADER( lightmappedgeneric_flashlight_ps50 );
+		SET_STATIC_PIXEL_SHADER_COMBO( NORMALMAP, 0 );
+		SET_STATIC_PIXEL_SHADER_COMBO( NORMALMAP2, 0 );
+		SET_STATIC_PIXEL_SHADER_COMBO( WORLDVERTEXTRANSITION, 0 );
+		SET_STATIC_PIXEL_SHADER_COMBO( SEAMLESS, 0 );
+		SET_STATIC_PIXEL_SHADER_COMBO( DETAILTEXTURE, 0 );
+		SET_STATIC_PIXEL_SHADER_COMBO( DETAIL_BLEND_MODE, 0 );
+		SET_STATIC_PIXEL_SHADER_COMBO( FLASHLIGHTDEPTHFILTERMODE, 0 );
+		SET_STATIC_PIXEL_SHADER( lightmappedgeneric_flashlight_ps50 );
+	}
+
+	DYNAMIC_STATE
+	{
+		DECLARE_DYNAMIC_VERTEX_SHADER( lightmappedgeneric_flashlight_vs50 );
+		SET_DYNAMIC_VERTEX_SHADER_COMBO( DOWATERFOG, 0 );
+		SET_DYNAMIC_VERTEX_SHADER( lightmappedgeneric_flashlight_vs50 );
+
+		DECLARE_DYNAMIC_PIXEL_SHADER( lightmappedgeneric_flashlight_ps50 );
+		SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, 0 );
+		SET_DYNAMIC_PIXEL_SHADER_COMBO( FLASHLIGHTSHADOWS, 0 );
+		SET_DYNAMIC_PIXEL_SHADER( lightmappedgeneric_flashlight_ps50 );
+	}
+
+	pShader->Draw();
 }
 
 void InitParamsLightmappedGeneric_DX11( CBaseVSShader *pShader, IMaterialVar **params, const char *pMaterialName, LightmappedGeneric_DX11_Vars_t &info )
@@ -433,7 +497,7 @@ void DrawLightmappedGeneric_DX11_Internal( CBaseVSShader *pShader, IMaterialVar 
 			vars.m_nPhongMask = info.m_nEnvmapMask;
 			vars.m_nPhongMaskFrame = info.m_nEnvmapMaskFrame;
 
-			DrawLightmappedAdvFlashlight_DX11_Internal( pShader, params, pShaderAPI, pShaderShadow, vars, constantBuffer );
+			DrawLightmappedAdvFlashlight_DX11_Internal( pShader, params, pShaderAPI, pShaderShadow, vars, pContextData, constantBuffer );
 			return;
 		}
 

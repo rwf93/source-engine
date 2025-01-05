@@ -309,7 +309,7 @@ BEGIN_VS_SHADER_FLAGS( Spritecard, "Help for Spritecard", SHADER_NOT_EDITABLE )
 
 			// set fade constants in vsconsts 8 and 9
 			float flMaxDistance = params[MAXDISTANCE]->GetFloatValue();
-			float flStartFade = max( 1.0, flMaxDistance - params[FARFADEINTERVAL]->GetFloatValue() );
+			float flStartFade = max( (float)1.0, (float)flMaxDistance - params[FARFADEINTERVAL]->GetFloatValue() );
 
 			float VC0[8]={ params[MINSIZE]->GetFloatValue(), params[MAXSIZE]->GetFloatValue(),
 						   params[STARTFADESIZE]->GetFloatValue(), params[ENDFADESIZE]->GetFloatValue(),

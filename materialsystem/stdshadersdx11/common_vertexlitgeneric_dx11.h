@@ -46,7 +46,7 @@ float3 VertexShaderAmbientLight( const float3 worldNormal, const float3 cAmbient
 
 float3 AmbientLight( const float3 worldNormal, const float3 cAmbientCube[6] )
 {
-#if defined( SHADER_MODEL_VS_2_0 ) || defined( SHADER_MODEL_VS_3_0 ) || defined(SHADER_MODEL_PS_4_0)
+#if defined( SHADER_MODEL_VS_2_0 ) || defined( SHADER_MODEL_VS_3_0 ) || defined(SHADER_MODEL_PS_4_0) || defined(SHADER_MODEL_PS_5_0)
 	return VertexShaderAmbientLight( worldNormal, cAmbientCube );
 #else
 	return PixelShaderAmbientLight( worldNormal, cAmbientCube );
@@ -102,7 +102,7 @@ float3 PixelShaderDoGeneralDiffuseLight( const float fAtten, const float3 worldP
 										 const bool bDoAmbientOcclusion, const float fAmbientOcclusion,
 										 const bool bDoLightingWarp, in Texture2D lightWarpTexture, in sampler lightWarpSampler )
 {
-#if (defined(SHADER_MODEL_PS_2_B) || defined(SHADER_MODEL_PS_3_0) || defined(SHADER_MODEL_PS_4_0))
+#if (defined(SHADER_MODEL_PS_2_B) || defined(SHADER_MODEL_PS_3_0) || defined(SHADER_MODEL_PS_4_0) || defined(SHADER_MODEL_PS_5_0))
 	float3 lightDir = normalize( vPosition - worldPos );
 #else
 	float3 lightDir = NormalizeWithCubemap( NormalizeTexture, NormalizeSampler, vPosition - worldPos );
@@ -243,25 +243,25 @@ float3 PixelShaderDoLightingLinear( const float3 worldPos, const float3 worldNor
 	if ( nNumLights > 0 )
 	{
 		linearColor += PixelShaderDoGeneralDiffuseLight( lightAtten.x, worldPos, worldNormal, NormalizeTexture, NormalizeSampler,
-								 lightInfo[0].pos, lightInfo[0].color, bHalfLambert,
+								 lightInfo[0].pos.xyz, lightInfo[0].color.rgb, bHalfLambert,
 								 bDoAmbientOcclusion, fAmbientOcclusion,
 								 bDoLightingWarp, lightWarpTexture, lightWarpSampler );
 		if ( nNumLights > 1 )
 		{
 			linearColor += PixelShaderDoGeneralDiffuseLight( lightAtten.y, worldPos, worldNormal, NormalizeTexture, NormalizeSampler,
-									 lightInfo[1].pos, lightInfo[1].color, bHalfLambert,
+									 lightInfo[1].pos.xyz, lightInfo[1].color.rgb, bHalfLambert,
 									 bDoAmbientOcclusion, fAmbientOcclusion,
 									 bDoLightingWarp, lightWarpTexture, lightWarpSampler );
 			if ( nNumLights > 2 )
 			{
 				linearColor += PixelShaderDoGeneralDiffuseLight( lightAtten.z, worldPos, worldNormal, NormalizeTexture, NormalizeSampler,
-										 lightInfo[2].pos, lightInfo[2].color, bHalfLambert,
+										 lightInfo[2].pos.xyz, lightInfo[2].color.rgb, bHalfLambert,
 										 bDoAmbientOcclusion, fAmbientOcclusion,
 										 bDoLightingWarp, lightWarpTexture, lightWarpSampler );
 				if ( nNumLights > 3 )
 				{
 					linearColor += PixelShaderDoGeneralDiffuseLight( lightAtten.w, worldPos, worldNormal, NormalizeTexture, NormalizeSampler,
-											 lightInfo[3].pos, lightInfo[3].color, bHalfLambert,
+											 lightInfo[3].pos.xyz, lightInfo[3].color.rgb, bHalfLambert,
 											 bDoAmbientOcclusion, fAmbientOcclusion,
 											 bDoLightingWarp, lightWarpTexture, lightWarpSampler );
 				}

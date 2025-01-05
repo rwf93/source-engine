@@ -57,9 +57,6 @@
 // SKIP: ($CASCADED_SHADOW) && ($VERTEXCOLOR)
 // SKIP: (!$CASCADED_SHADOW) && ($TWO_SIDED_LIGHTING)
 
-// detail blend mode 6 = ps20b only
-// SKIP: $DETAIL_BLEND_MODE == 6				[ps20]
-
 // SKIP: ($DETAILTEXTURE == 0 ) && ( $DETAIL_BLEND_MODE != 0 )
 // SKIP: ($DETAILTEXTURE == 0 ) && ( $SEAMLESS_DETAIL )
 // SKIP: ($ENVMAPMASK || $SELFILLUM_ENVMAPMASK_ALPHA) && ($SEAMLESS_BASE || $SEAMLESS_DETAIL)
@@ -73,17 +70,10 @@
 // SKIP: ($DETAILTEXTURE == 0) && ($DISTANCEALPHAFROMDETAIL)
 
 // We don't care about flashlight depth unless the flashlight is on
-// SKIP: ( $FLASHLIGHT == 0 ) && ( $FLASHLIGHTSHADOWS )	[ps20b]
-// SKIP: ( $FLASHLIGHT == 0 ) && ( $FLASHLIGHTSHADOWS )	[ps30]
-// SKIP: ( $FLASHLIGHT == 0 ) && ( $FLASHLIGHTSHADOWS )	[ps40]
-
-// We don't care about uberlight unless the flashlight is on
-// SKIP: ( $FLASHLIGHT == 0 ) && ( $UBERLIGHT == 1 )	[ps30]
+// SKIP: ( $FLASHLIGHT == 0 ) && ( $FLASHLIGHTSHADOWS )
 
 // Flashlight shadow filter mode is irrelevant if there is no flashlight
-// SKIP: ( $FLASHLIGHT == 0 ) && ( $FLASHLIGHTDEPTHFILTERMODE != 0 ) [ps20b]
-// SKIP: ( $FLASHLIGHT == 0 ) && ( $FLASHLIGHTDEPTHFILTERMODE != 0 ) [ps30]
-// SKIP: ( $FLASHLIGHT == 0 ) && ( $FLASHLIGHTDEPTHFILTERMODE != 0 ) [ps40]
+// SKIP: ( $FLASHLIGHT == 0 ) && ( $FLASHLIGHTDEPTHFILTERMODE != 0 )
 
 // DISTANCEALPHA-related skips
 // SKIP: ($DISTANCEALPHA) && ($ENVMAPMASK || $BASEALPHAENVMAPMASK || $SELFILLUM || $SELFILLUM_ENVMAPMASK_ALPHA )
@@ -107,8 +97,8 @@
 // SKIP: ( $SELFILLUM == 0 ) && ( $SELFILLUMFRESNEL == 1 )
 // SKIP: ( $SELFILLUM == 0 ) && ( $SELFILLUMMASK == 1 )
 // SKIP: ( $SELFILLUMFRESNEL == 1 ) && ( $SELFILLUMMASK == 1 )
-// _SKIP: ( $FLASHLIGHT == 1 ) && ( $SELFILLUMFRESNEL == 1 )			[PC]
-// _SKIP: ( $FLASHLIGHT == 1 ) && ( $SELFILLUM == 1 )				[PC]
+// _SKIP: ( $FLASHLIGHT == 1 ) && ( $SELFILLUMFRESNEL == 1 )
+// _SKIP: ( $FLASHLIGHT == 1 ) && ( $SELFILLUM == 1 )
 // SKIP: ( $SELFILLUMFRESNEL == 1 ) && ( $DETAILTEXTURE == 1 )
 // SKIP: ( $SELFILLUMFRESNEL == 1 ) && ( $NORMALMAPALPHAENVMAPMASK == 1 )
 // Meaningless combinations
@@ -117,7 +107,7 @@
 // SKIP: ( $SELFILLUMFRESNEL == 1 ) && ( $LIGHTWARPTEXTURE == 1 )
 
 // Don't do diffuse warp on flashlight
-// _SKIP: ( $FLASHLIGHT == 1 ) && ( $LIGHTWARPTEXTURE == 1 )			[PC]
+// _SKIP: ( $FLASHLIGHT == 1 ) && ( $LIGHTWARPTEXTURE == 1 )
 
 #include "common_cbuffers_def_noskinning_fxc.h"
 
@@ -343,8 +333,8 @@ float4 main( PS_INPUT i ) : SV_TARGET
 	bool bDoSpecularWarp = PHONGWARPTEXTURE ? true : false;
 	const int nNumLights = cLightCount.x;
 
-	#if FLASHLIGHT
-	return float4(1, 0,0, 1);
+#if FLASHLIGHT
+	return float4(1, 0, 0, 1);
 #endif
 
 	float3 vEyeDir = normalize( i.worldVertToEyeVector.xyz );
@@ -483,7 +473,7 @@ float4 main( PS_INPUT i ) : SV_TARGET
 			false, 1.0f, bDoDiffuseWarp, DiffuseWarpTexture, DiffuseWarpSampler );
 #endif
 
-	float3 albedo = baseColor;
+	float3 albedo = baseColor.rgb;
 
 	//return float4(g_DiffuseModulation.rgb, 1.0f);
 
@@ -582,7 +572,7 @@ float4 main( PS_INPUT i ) : SV_TARGET
 		int nShadowSampleLevel = 0;
 		bool bDoShadows = false;
 		// On ps_2_b, we can do shadow mapping
-		#if ( FLASHLIGHTSHADOWS && (defined(SHADER_MODEL_PS_2_B) || defined(SHADER_MODEL_PS_3_0) || defined(SHADER_MODEL_PS_4_0) ) )
+		#if ( FLASHLIGHTSHADOWS && (defined(SHADER_MODEL_PS_2_B) || defined(SHADER_MODEL_PS_3_0) || defined(SHADER_MODEL_PS_4_0) || defined(SHADER_MODEL_PS_5_0)))
 				nShadowSampleLevel = FLASHLIGHTDEPTHFILTERMODE;
 				bDoShadows = true;
 		#endif

@@ -601,7 +601,7 @@ bool CShaderDeviceDx11::InitDevice( void *hWnd, int nAdapter, const ShaderDevice
 	sd.SampleDesc.Quality = 0;
 
 	const D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
-	UINT nDeviceFlags = 0 | D3D11_CREATE_DEVICE_DEBUG;
+	UINT nDeviceFlags = 0;
 	HRESULT hr = D3D11CreateDeviceAndSwapChain( pAdapter, D3D_DRIVER_TYPE_UNKNOWN,
 						    NULL, nDeviceFlags, featureLevels, ARRAYSIZE( featureLevels ), D3D11_SDK_VERSION, &sd, &m_pSwapChain,
 						    &m_pDevice, NULL, &m_pDeviceContext );

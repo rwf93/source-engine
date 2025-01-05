@@ -1,0 +1,63 @@
+//  DYNAMIC: "DOWATERFOG"				"0..1"
+
+#include "common_vs_fxc.h"
+#include "common_cbuffers_fxc.h"
+#include "shadow_dx11_shared_fxc.h"
+
+static const int g_FogType = DOWATERFOG;
+
+CBUFFER_PERMODEL( register( b0 ) )
+CBUFFER_PERFRAME( register( b1 ) )
+CBUFFER_PERSCENE( register( b2 ) )
+
+cbuffer Shadow_VS : register( b3 )
+{
+	Shadow_t c;
+};
+
+struct VS_INPUT
+{
+	float4 vPos				: POSITION;
+	float4 vColor			: COLOR0;
+	float4 vTexCoord0		: TEXCOORD0;
+};
+
+struct VS_OUTPUT
+{
+    float4 projPos					: POSITION;	
+	float  fog						: FOG;
+	float2 texCoord0				: TEXCOORD0;
+	float2 texCoord1				: TEXCOORD1;
+	float2 texCoord2				: TEXCOORD2;
+	float2 texCoord3				: TEXCOORD3;
+	float2 texCoord4				: TEXCOORD4;
+	HALF4 worldPos_projPosZ		    : TEXCOORD5;
+	float4 shadowColor				: COLOR0;
+	float4 fogFactorW				: COLOR1;
+};
+
+VS_OUTPUT main( VS_INPUT v )
+{
+    VS_OUTPUT o = (VS_OUTPUT)0;
+
+	float3 worldPos = mul( float4( v.vPos.xyz, 1 ), cModelMatrix ).xyz;
+    matrix viewProj = mul( cViewMatrix, cProjMatrix );
+    float4 projPos = mul( float4( worldPos, 1 ), viewProj );
+
+    o.projPos = projPos;
+
+    o.shadowColor = v.vColor;
+    o.worldPos_projPosZ = float4( worldPos, projPos.z );
+
+    float2 texCoord;
+    texCoord.x = dot( v.vTexCoord0, c.BaseTexCoordTransform[0] );
+	texCoord.y = dot( v.vTexCoord0, c.BaseTexCoordTransform[1] );
+
+    o.texCoord0.xy = texCoord;
+	o.texCoord1.xy = texCoord + c.TextureJitter[0].xy;
+	o.texCoord2.xy = texCoord - c.TextureJitter[0].xy;
+	o.texCoord3.xy = texCoord + c.TextureJitter[1].xy;
+	o.texCoord4.xy = texCoord - c.TextureJitter[1].xy;
+
+    return o;
+}

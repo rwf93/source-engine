@@ -18,7 +18,6 @@
 // SKIP: $CASCADED_SHADOW && $LIGHTING_PREVIEW
 
 #include "common_cbuffers_def_noskinning_fxc.h"
-
 #include "common_vs_fxc.h"
 
 static const int g_FogType						= DOWATERFOG;
@@ -113,8 +112,8 @@ VS_OUTPUT main( const VS_INPUT v )
 		}
 		else
 		{
-			o.baseTexCoord_VertexBlend.x = dot( v.vBaseTexCoord, c.cBaseTexCoordTransform[0] ) + c.cBaseTexCoordTransform[0].w;
-			o.baseTexCoord_VertexBlend.y = dot( v.vBaseTexCoord, c.cBaseTexCoordTransform[1] ) + c.cBaseTexCoordTransform[1].w;
+			o.baseTexCoord_VertexBlend.x = dot( v.vBaseTexCoord, c.cBaseTexCoordTransform[0].xy ) + c.cBaseTexCoordTransform[0].w;
+			o.baseTexCoord_VertexBlend.y = dot( v.vBaseTexCoord, c.cBaseTexCoordTransform[1].xy ) + c.cBaseTexCoordTransform[1].w;
 		}
 #if ( RELIEF_MAPPING == 0 )
 		{
@@ -130,14 +129,14 @@ VS_OUTPUT main( const VS_INPUT v )
 #endif
 	}
 #endif
-	if ( FASTPATH )
+if ( FASTPATH )
 	{
 		o.lightmapTexCoord3.zw = v.vBaseTexCoord;
 	}
 	else
 	{
-		o.lightmapTexCoord3.z = dot( v.vBaseTexCoord, c.cBlendMaskTexCoordTransform[0] ) + c.cBlendMaskTexCoordTransform[0].w;
-		o.lightmapTexCoord3.w = dot( v.vBaseTexCoord, c.cBlendMaskTexCoordTransform[1] ) + c.cBlendMaskTexCoordTransform[1].w;
+		o.lightmapTexCoord3.z = dot( v.vBaseTexCoord, c.cBlendMaskTexCoordTransform[0].xy ) + c.cBlendMaskTexCoordTransform[0].w;
+		o.lightmapTexCoord3.w = dot( v.vBaseTexCoord, c.cBlendMaskTexCoordTransform[1].xy ) + c.cBlendMaskTexCoordTransform[1].w;
 	}
 	
 	//  compute lightmap coordinates

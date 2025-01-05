@@ -55,6 +55,7 @@ public:
 	void SetVertexShaderTextureScaledTransform( Vector4D *transform, int transformVar, int scaleVar );
 	void SetConstantGammaToLinear( vec_t *transform, int transformVar );
 	void SetEnvmapTint( Vector4D &transform, int transformVar );
+	void SetEnvmapTintGammaToLinear( Vector4D &transform, int transformVar );
 
 	// Helper methods for pixel shader overbrighting
 	void EnablePixelShaderOverbright( int reg, bool bEnable, bool bDivideByTwo );

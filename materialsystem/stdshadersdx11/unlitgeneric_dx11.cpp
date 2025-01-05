@@ -16,7 +16,19 @@
 // HACKHACK
 //DEFINE_FALLBACK_SHADER(Vertexlitgeneric, UnlitGeneric)
 //DEFINE_FALLBACK_SHADER(Lightmappedgeneric, UnlitGeneric)
-DEFINE_FALLBACK_SHADER(WorldVertexTransition, UnlitGeneric)
+//DEFINE_FALLBACK_SHADER(WorldVertexTransition, UnlitGeneric)
+//DEFINE_FALLBACK_SHADER(Shadow, UnlitGeneric)
+DEFINE_FALLBACK_SHADER(ShadowModel, UnlitGeneric)
+DEFINE_FALLBACK_SHADER(Cable, UnlitGeneric)
+//DEFINE_FALLBACK_SHADER(Sky, UnlitGeneric)
+DEFINE_FALLBACK_SHADER(Eyes, UnlitGeneric)
+DEFINE_FALLBACK_SHADER(Eyeball, UnlitGeneric)
+DEFINE_FALLBACK_SHADER(Water, UnlitGeneric)
+
+CREATE_CONSTANT_BUFFER( UnlitGeneric )
+{
+	Vector4D BaseTextureTransform[2];
+};
 
 BEGIN_VS_SHADER( UnlitGeneric, "Help for UnlitGeneric" )
 
@@ -88,6 +100,13 @@ BEGIN_VS_SHADER( UnlitGeneric, "Help for UnlitGeneric" )
 
 	SHADER_INIT_PARAMS()
 	{
+	}
+
+	DECLARE_CONSTANT_BUFFER( UnlitGeneric )
+
+	SHADER_INIT_GLOBAL
+	{
+		INIT_CONSTANT_BUFFER( UnlitGeneric );
 	}
 
 	SHADER_FALLBACK
@@ -166,6 +185,7 @@ BEGIN_VS_SHADER( UnlitGeneric, "Help for UnlitGeneric" )
 				SetVertexShaderConstantBuffer( 0, SHADER_CONSTANTBUFFER_SKINNING );
 				SetVertexShaderConstantBuffer( 1, SHADER_CONSTANTBUFFER_PERFRAME );
 				SetVertexShaderConstantBuffer( 2, SHADER_CONSTANTBUFFER_PERSCENE );
+				SetVertexShaderConstantBuffer( 3, CONSTANT_BUFFER( UnlitGeneric ) );
 
 				SetPixelShaderConstantBuffer( 0, SHADER_CONSTANTBUFFER_PERFRAME );
 				SetPixelShaderConstantBuffer( 1, SHADER_CONSTANTBUFFER_PERSCENE );
@@ -190,6 +210,10 @@ BEGIN_VS_SHADER( UnlitGeneric, "Help for UnlitGeneric" )
                 BindTexture( SHADER_SAMPLER0, BASETEXTURE, FRAME );
             else
                 pShaderAPI->BindStandardTexture( SHADER_SAMPLER0, TEXTURE_GREY );
+
+			ALIGN16 UnlitGeneric_CBuffer_t constants;
+			SetVertexShaderTextureTransform( constants.BaseTextureTransform, BASETEXTURETRANSFORM );
+			UPDATE_CONSTANT_BUFFER( UnlitGeneric, constants );
 
 			DECLARE_DYNAMIC_VERTEX_SHADER( unlitgeneric_vs50 );
 			SET_DYNAMIC_VERTEX_SHADER( unlitgeneric_vs50 );
