@@ -526,7 +526,7 @@ def build(bld):
 		features = 'fxc',
 		subsystem = bld.env.MSVC_SUBSYSTEM,
 		idx      = bld.get_taskgen_count()
-	).FORCE_30 = True # Hack around Valve putting 3.0 directives in 2.0 files.
+	).FORCE_MODEL = 30 # Hack around Valve putting 3.0 directives in 2.0 files.
 
 	source = [
 		'aftershock.cpp',
@@ -691,4 +691,3 @@ def build(bld):
 		subsystem = bld.env.MSVC_SUBSYSTEM,
 		idx      = bld.get_taskgen_count()
 	)
-
