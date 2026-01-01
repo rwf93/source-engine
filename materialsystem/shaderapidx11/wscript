@@ -16,6 +16,7 @@ def configure(conf):
 		'SHADERAPIDX11',
 		'SHADERAPI_DX11', # Defines supported shader library for public/
 		'SHADER_DLL_EXPORT',
+		'RENDERDOC',
 		'strncpy=use_Q_strncpy_instead',
 		'_snprintf=use_Q_snprintf_instead',
 	])

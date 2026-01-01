@@ -51,6 +51,8 @@ def build(bld):
 		'unlittwotexture_vs50.fxc',
 		'shadow_ps50.fxc',
 		'shadow_vs50.fxc',
+		'shadowmodel_ps50.fxc',
+		'shadowmodel_vs50.fxc',
 		'depthwrite_ps50.fxc',
 		'depthwrite_vs50.fxc'
 	]
@@ -83,6 +85,7 @@ def build(bld):
 		'sky_hdr_dx11.cpp',
 		'worldvertextransition_dx11.cpp',
 		'shadow_dx11.cpp',
+		'shadowmodel_dx11.cpp',
 		'depthwrite_dx11.cpp',
 		'../shader_dll_verify.cpp',
 	]

@@ -700,7 +700,7 @@ static void DrawVertexLitGeneric_DX11_Internal( CBaseVSShader *pShader, IMateria
 
 			if ( pContextData->m_bBaseTextureTransform )
 			{
-				pShader->SetVertexShaderTextureTransform( pContextData->m_Constants.cBaseTextureTransform,
+				pShader->StoreShaderTextureTransform( pContextData->m_Constants.cBaseTextureTransform,
 									    info.m_nBaseTextureTransform );
 			}
 
@@ -709,18 +709,18 @@ static void DrawVertexLitGeneric_DX11_Internal( CBaseVSShader *pShader, IMateria
 			{
 				if ( IS_PARAM_DEFINED( info.m_nDetailTextureTransform ) )
 				{
-					pShader->SetVertexShaderTextureScaledTransform( pContextData->m_Constants.cDetailTextureTransform,
+					pShader->StoreShaderTextureScaledTransform( pContextData->m_Constants.cDetailTextureTransform,
 											  info.m_nDetailTextureTransform, info.m_nDetailScale );
 				}
 				else
 				{
-					pShader->SetVertexShaderTextureScaledTransform( pContextData->m_Constants.cDetailTextureTransform,
+					pShader->StoreShaderTextureScaledTransform( pContextData->m_Constants.cDetailTextureTransform,
 											  info.m_nBaseTextureTransform, info.m_nDetailScale );
 				}
 
 				if ( info.m_nDetailTint != -1 )
 				{
-					pShader->SetConstantGammaToLinear( pContextData->m_Constants.cDetailTint.Base(), info.m_nDetailTint );
+					pShader->StoreConstantGammaToLinear( pContextData->m_Constants.cDetailTint.Base(), info.m_nDetailTint );
 				}
 				else
 				{
@@ -880,7 +880,7 @@ static void DrawVertexLitGeneric_DX11_Internal( CBaseVSShader *pShader, IMateria
 			pContextData->m_Constants.cEnvMapSaturation_SelfIllumMask[3] = bHasSelfIllumMask ? 1.0f : 0.0f;
 			if ( bHasEnvmap )
 			{
-				pShader->SetEnvmapTintGammaToLinear( pContextData->m_Constants.cEnvMapTint, info.m_nEnvmapTint );
+				pShader->StoreEnvmapTintGammaToLinear( pContextData->m_Constants.cEnvMapTint, info.m_nEnvmapTint );
 			}
 			bool bHasEnvmapMask = ( !bHasFlashlight ) && info.m_nEnvmapMask != -1 && params[info.m_nEnvmapMask]->IsTexture();
 
@@ -1150,12 +1150,12 @@ static void DrawVertexLitGeneric_DX11_Internal( CBaseVSShader *pShader, IMateria
 
 		if ( ( info.m_nHDRColorScale != -1 ) && pShader->IsHDREnabled() )
 		{
-			pShader->SetModulationDynamicState_LinearColorSpace_LinearScale( pContextData->m_Constants.cModulationColor,
+			pShader->StoreModulationDynamicState_LinearColorSpace_LinearScale( pContextData->m_Constants.cModulationColor,
 											 params[info.m_nHDRColorScale]->GetFloatValue() );
 		}
 		else
 		{
-			pShader->SetModulationDynamicState_LinearColorSpace( pContextData->m_Constants.cModulationColor );
+			pShader->StoreModulationDynamicState_LinearColorSpace( pContextData->m_Constants.cModulationColor );
 		}
 
 		//float eyePos[4];

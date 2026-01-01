@@ -224,10 +224,10 @@ BEGIN_VS_SHADER( UnlitTwoTexture_DX11, "Help for UnlitTwoTexture_DX11" )
 
 				GetFogParamsAndColor( consts.FogParams.Base(), consts.FogColor.Base() );
 
-				SetVertexShaderTextureTransform( consts.BaseTextureTransform, BASETEXTURETRANSFORM );
-				SetVertexShaderTextureTransform( consts.BaseTexture2Transform, TEXTURE2TRANSFORM );
+				StoreShaderTextureTransform( consts.BaseTextureTransform, BASETEXTURETRANSFORM );
+				StoreShaderTextureTransform( consts.BaseTexture2Transform, TEXTURE2TRANSFORM );
 
-				SetModulationDynamicState_LinearColorSpace( consts.ModulationColor );
+				StoreModulationDynamicState_LinearColorSpace( consts.ModulationColor );
 
 				UPDATE_CONSTANT_BUFFER( UnlitTwoTexture, consts );
 

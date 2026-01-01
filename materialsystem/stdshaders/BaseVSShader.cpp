@@ -287,7 +287,7 @@ void CBaseVSShader::SetVertexShaderTextureTranslation( int vertexReg, int transl
 
 void CBaseVSShader::SetVertexShaderTextureScale( int vertexReg, int scaleVar )
 {
-	float scale[2] = {1, 1};
+	float scale[2] = {1.0f, 1.0f};
 
 	IMaterialVar* pScaleVar = s_ppParams[scaleVar];
 	if (pScaleVar)

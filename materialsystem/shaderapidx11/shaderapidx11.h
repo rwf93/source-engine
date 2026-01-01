@@ -30,6 +30,10 @@
 #include "materialsystem/imesh.h"
 #include "utlstack.h"
 
+#if defined(RENDERDOC)
+#include "renderdoc_app.h"
+#endif
+
 //-----------------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------------
@@ -960,6 +964,9 @@ private:
 	friend class CShaderDeviceDx11;
 	friend class CShaderShadowDx11;
 
+#if defined(RENDERDOC)
+	RENDERDOC_API_1_1_2 *m_pRenderDoc;
+#endif
 };
 
 //-----------------------------------------------------------------------------

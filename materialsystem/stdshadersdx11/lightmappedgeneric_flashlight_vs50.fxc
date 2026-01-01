@@ -52,6 +52,14 @@ struct VS_OUTPUT
 	float4 fogFactorW				: TEXCOORD7;
 };
 
+float RemapValClamped( float val, float A, float B, float C, float D)
+{
+	float cVal = (val - A) / (B - A);
+	cVal = saturate( cVal );
+
+	return C + (D - C) * cVal;
+}
+
 VS_OUTPUT main( const VS_INPUT v )
 {
 	VS_OUTPUT o = (VS_OUTPUT)0;
@@ -68,6 +76,11 @@ VS_OUTPUT main( const VS_INPUT v )
 	o.projPos = projPos;
 	o.vProjPos.xyz = projPos.xyw;
 	o.worldPos_worldTransition = float4( worldPos.xyz, 1.0f );
+
+#if NORMALMAP
+	float3 worldTangentS = mul( v.vTangentS, cModel[0] );
+	float3 worldTangentT = mul( v.vTangentT, cModel[0] );
+#endif
 
 	return o;
 }

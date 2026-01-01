@@ -33,6 +33,13 @@
 // NOTE: This has to be the last file included!
 #include "tier0/memdbgon.h"
 
+#if defined(RENDERDOC)
+#define RenderDoc() if(m_pRenderDoc) m_pRenderDoc
+#else
+#define RenderDoc()
+#endif
+
+
 template<typename T>
 FORCEINLINE static void XMSetComponent4( T &vec, int comp, float val )
 {
@@ -1418,6 +1425,17 @@ bool CShaderAPIDx11::OnDeviceInit()
 
 	ResetRenderState( true );
 
+#if defined(RENDERDOC)
+	CSysModule *module = Sys_LoadModule( "renderdoc" );
+	if(module)
+	{
+		pRENDERDOC_GetAPI RENDERDOC_GetAPI = (pRENDERDOC_GetAPI)GetProcAddress((HMODULE)module, "RENDERDOC_GetAPI");
+		int ret = RENDERDOC_GetAPI(eRENDERDOC_API_Version_1_6_0, (void **)&m_pRenderDoc);
+		if(ret != 1)
+			Warning("Could not load RenderDoc, GetAPI returned %i\n", ret);
+	}
+#endif
+
 	return true;
 }
 
@@ -1710,6 +1728,10 @@ void CShaderAPIDx11::GetStandardTextureDimensions( int *pWidth, int *pHeight, St
 void CShaderAPIDx11::Bind( IMaterial *pMaterial )
 {
 	LOCK_SHADERAPI();
+
+	wchar_t *shader = reinterpret_cast<wchar_t*>(alloca(V_strlen(pMaterial->GetShaderName()) * sizeof(wchar_t) + 1));
+	MultiByteToWideChar(0, 0, pMaterial->GetShaderName(), V_strlen(pMaterial->GetShaderName()), shader, V_strlen(pMaterial->GetShaderName()));
+	//D3DPERF_SetMarker(D3DCOLOR_RGBA(255, 255, 255, 255), shader);
 
 	IMaterialInternal *pMatInt = static_cast<IMaterialInternal *>( pMaterial );
 

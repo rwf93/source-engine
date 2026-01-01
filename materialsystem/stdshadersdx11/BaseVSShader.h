@@ -51,19 +51,19 @@ public:
 	void SetEnvMapTintPixelShaderDynamicState( int pixelReg, int tintVar, int alphaVar, bool bConvertFromGammaToLinear = false );
 
 	// Helpers for shader transforms
-	void SetVertexShaderTextureTransform( Vector4D *transform, int transformVar );
-	void SetVertexShaderTextureScaledTransform( Vector4D *transform, int transformVar, int scaleVar );
-	void SetConstantGammaToLinear( vec_t *transform, int transformVar );
-	void SetEnvmapTint( Vector4D &transform, int transformVar );
-	void SetEnvmapTintGammaToLinear( Vector4D &transform, int transformVar );
+	void StoreShaderTextureTransform( Vector4D *transform, int transformVar );
+	void StoreShaderTextureScaledTransform( Vector4D *transform, int transformVar, int scaleVar );
+	void StoreConstantGammaToLinear( vec_t *transform, int transformVar );
+	void StoreEnvmapTint( Vector4D &transform, int transformVar );
+	void StoreEnvmapTintGammaToLinear( Vector4D &transform, int transformVar );
 
 	// Helper methods for pixel shader overbrighting
 	void EnablePixelShaderOverbright( int reg, bool bEnable, bool bDivideByTwo );
 
 	// Helper for dealing with modulation
-	void SetModulationDynamicState( Vector4D &output );
-	void SetModulationDynamicState_LinearColorSpace( Vector4D &output );
-	void SetModulationDynamicState_LinearColorSpace_LinearScale( Vector4D &output, float flScale );
+	void StoreModulationDynamicState( Vector4D &output );
+	void StoreModulationDynamicState_LinearColorSpace( Vector4D &output );
+	void StoreModulationDynamicState_LinearColorSpace_LinearScale( Vector4D &output, float flScale );
 
 	//
 	// Standard shader passes!

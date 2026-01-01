@@ -1,14 +1,20 @@
-// STATIC "ALPHATEST"	"0..1"
+// STATIC: "ALPHATEST"	"0..1"
 #include "common_ps_fxc.h"
 #include "common_cbuffers_fxc.h"
 
 CBUFFER_PERFRAME(register(b0))
 CBUFFER_PERSCENE(register(b1))
 
-/*cbuffer UnlitTwoTexture_CBuffer : register(b2)
+struct UnlitGeneric_t
 {
-	UnlitTwoTexture_t c;
-};*/
+	float4 useless[2];
+	float AlphaTestReference;
+};
+
+cbuffer UnlitGeneric_CBuffer : register(b2)
+{
+	UnlitGeneric_t c;
+};
 
 //#define g_DiffuseModulation	c.cModulationColor
 
@@ -29,6 +35,11 @@ float4 main( PS_INPUT i ) : SV_TARGET
 	HALF4 baseColor = BaseTexture.Sample( BaseTextureSampler, i.baseTexCoord );
 	HALF4 result = baseColor.xyzw * i.vertexColor;
 	float alpha = baseColor.a * i.vertexColor.a;
+
+#if ALPHATEST
+	if ( !GreaterEqualAlphaTest( alpha, 0.5 ) ) 
+		discard;
+#endif
 
 	return FinalOutput( float4( result.xyz, alpha ), 0, PIXEL_FOG_TYPE_NONE, TONEMAP_SCALE_NONE, 0 );
 }

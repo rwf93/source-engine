@@ -18,7 +18,7 @@
 //DEFINE_FALLBACK_SHADER(Lightmappedgeneric, UnlitGeneric)
 //DEFINE_FALLBACK_SHADER(WorldVertexTransition, UnlitGeneric)
 //DEFINE_FALLBACK_SHADER(Shadow, UnlitGeneric)
-DEFINE_FALLBACK_SHADER(ShadowModel, UnlitGeneric)
+//DEFINE_FALLBACK_SHADER(ShadowModel, UnlitGeneric)
 DEFINE_FALLBACK_SHADER(Cable, UnlitGeneric)
 //DEFINE_FALLBACK_SHADER(Sky, UnlitGeneric)
 DEFINE_FALLBACK_SHADER(Eyes, UnlitGeneric)
@@ -28,6 +28,7 @@ DEFINE_FALLBACK_SHADER(Water, UnlitGeneric)
 CREATE_CONSTANT_BUFFER( UnlitGeneric )
 {
 	Vector4D BaseTextureTransform[2];
+	float AlphaTestReference;
 };
 
 BEGIN_VS_SHADER( UnlitGeneric, "Help for UnlitGeneric" )
@@ -95,7 +96,7 @@ BEGIN_VS_SHADER( UnlitGeneric, "Help for UnlitGeneric" )
 		SHADER_PARAM( DEPTHBLEND, SHADER_PARAM_TYPE_INTEGER, "0", "fade at intersection boundaries" )
 		SHADER_PARAM( DEPTHBLENDSCALE, SHADER_PARAM_TYPE_FLOAT, "50.0", "Amplify or reduce DEPTHBLEND fading. Lower values make harder edges." )
 		SHADER_PARAM( RECEIVEFLASHLIGHT, SHADER_PARAM_TYPE_INTEGER, "0", "Forces this material to receive flashlights." )
-
+		SHADER_PARAM( ALPHATEST, SHADER_PARAM_TYPE_BOOL, "0", "Forces AlphaTest" )
 	END_SHADER_PARAMS
 
 	SHADER_INIT_PARAMS()
@@ -189,6 +190,7 @@ BEGIN_VS_SHADER( UnlitGeneric, "Help for UnlitGeneric" )
 
 				SetPixelShaderConstantBuffer( 0, SHADER_CONSTANTBUFFER_PERFRAME );
 				SetPixelShaderConstantBuffer( 1, SHADER_CONSTANTBUFFER_PERSCENE );
+				SetPixelShaderConstantBuffer( 2, CONSTANT_BUFFER( UnlitGeneric ) );
 
 				DECLARE_STATIC_VERTEX_SHADER( unlitgeneric_vs50 );
 				SET_STATIC_VERTEX_SHADER_COMBO( VERTEXCOLOR, bHasVertexColor || bHasVertexAlpha );
@@ -196,6 +198,7 @@ BEGIN_VS_SHADER( UnlitGeneric, "Help for UnlitGeneric" )
 				SET_STATIC_VERTEX_SHADER( unlitgeneric_vs50 );
 
 				DECLARE_STATIC_PIXEL_SHADER( unlitgeneric_ps50 );
+				SET_STATIC_PIXEL_SHADER_COMBO( ALPHATEST, bHasVertexAlpha );
 				SET_STATIC_PIXEL_SHADER( unlitgeneric_ps50 );
 
 				DefaultFog();
@@ -212,7 +215,8 @@ BEGIN_VS_SHADER( UnlitGeneric, "Help for UnlitGeneric" )
                 pShaderAPI->BindStandardTexture( SHADER_SAMPLER0, TEXTURE_GREY );
 
 			ALIGN16 UnlitGeneric_CBuffer_t constants;
-			SetVertexShaderTextureTransform( constants.BaseTextureTransform, BASETEXTURETRANSFORM );
+			StoreShaderTextureTransform( constants.BaseTextureTransform, BASETEXTURETRANSFORM );
+			constants.AlphaTestReference = params[ALPHATESTREFERENCE]->GetFloatValue();
 			UPDATE_CONSTANT_BUFFER( UnlitGeneric, constants );
 
 			DECLARE_DYNAMIC_VERTEX_SHADER( unlitgeneric_vs50 );

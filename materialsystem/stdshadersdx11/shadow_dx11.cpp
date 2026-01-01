@@ -67,8 +67,8 @@ BEGIN_VS_SHADER_FLAGS( Shadow, "Help for Shadow", SHADER_NOT_EDITABLE )
             ALIGN16 Shadow_CBuffer_t shadow;
             memset( &shadow, 0, sizeof( Shadow_CBuffer_t ) );
 
-            SetVertexShaderTextureTransform( shadow.BaseTexCoordTransform, BASETEXTURETRANSFORM );
-            SetConstantGammaToLinear( shadow.Color, COLOR );
+            StoreShaderTextureTransform( shadow.BaseTexCoordTransform, BASETEXTURETRANSFORM );
+            StoreConstantGammaToLinear( shadow.Color, COLOR );
 
             int nWidth = 16;
 			int nHeight = 16;

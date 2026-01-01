@@ -47,6 +47,10 @@ ID3D11Device *g_pD3DDevice = NULL;
 ID3D11DeviceContext *g_pD3DDeviceContext = NULL;
 IDXGISwapChain *g_pD3DSwapChain = NULL;
 
+#if defined(RENDERDOC)
+ID3DUserDefinedAnnotation *g_pD3DUserDefinedAnnotation = NULL;
+#endif
+
 //-----------------------------------------------------------------------------
 //
 // Device manager
@@ -600,7 +604,7 @@ bool CShaderDeviceDx11::InitDevice( void *hWnd, int nAdapter, const ShaderDevice
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
 
-	const D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
+	const D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_1 };
 	UINT nDeviceFlags = 0;
 	HRESULT hr = D3D11CreateDeviceAndSwapChain( pAdapter, D3D_DRIVER_TYPE_UNKNOWN,
 						    NULL, nDeviceFlags, featureLevels, ARRAYSIZE( featureLevels ), D3D11_SDK_VERSION, &sd, &m_pSwapChain,
@@ -612,6 +616,7 @@ bool CShaderDeviceDx11::InitDevice( void *hWnd, int nAdapter, const ShaderDevice
 	g_pD3DDevice = m_pDevice;
 	g_pD3DDeviceContext = m_pDeviceContext;
 	g_pD3DSwapChain = m_pSwapChain;
+	g_pD3DDeviceContext->QueryInterface( __uuidof(ID3DUserDefinedAnnotation), reinterpret_cast<void**>(&g_pD3DUserDefinedAnnotation) );
 
 	m_hWnd = hWnd;
 	m_nAdapter = nAdapter;

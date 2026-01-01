@@ -1,6 +1,6 @@
 //===== Copyright � 1996-2005, Valve Corporation, All rights reserved. ======//
 //
-// Purpose: 
+// Purpose:
 //
 // $Header: $
 // $NoKeywords: $
@@ -16,12 +16,8 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-DEFINE_FALLBACK_SHADER( DecalModulate, DecalModulate_DX11 )
-
-//extern ConVar r_flashlight_version2;
-
-BEGIN_VS_SHADER( DecalModulate_dx11,
-		 "Help for DecalModulate_dx11" )
+BEGIN_VS_SHADER( DecalModulate,
+		 "Help for DecalModulate" )
 
 	BEGIN_SHADER_PARAMS
 	END_SHADER_PARAMS

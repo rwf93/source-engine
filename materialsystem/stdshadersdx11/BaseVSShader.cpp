@@ -40,12 +40,12 @@ void CBaseVSShader::EnablePixelShaderOverbright( int reg, bool bEnable, bool bDi
 //-----------------------------------------------------------------------------
 // Helper for dealing with modulation
 //-----------------------------------------------------------------------------
-void CBaseVSShader::SetModulationDynamicState( Vector4D &output )
+void CBaseVSShader::StoreModulationDynamicState( Vector4D &output )
 {
 	ComputeModulationColor( output.Base() );
 }
 
-void CBaseVSShader::SetModulationDynamicState_LinearColorSpace( Vector4D &output )
+void CBaseVSShader::StoreModulationDynamicState_LinearColorSpace( Vector4D &output )
 {
 	float color[4] = { 1.0, 1.0, 1.0, 1.0 };
 	ComputeModulationColor( color );
@@ -56,7 +56,7 @@ void CBaseVSShader::SetModulationDynamicState_LinearColorSpace( Vector4D &output
 	output.Init( color[0], color[1], color[2], color[3] );
 }
 
-void CBaseVSShader::SetModulationDynamicState_LinearColorSpace_LinearScale( Vector4D &output, float flScale )
+void CBaseVSShader::StoreModulationDynamicState_LinearColorSpace_LinearScale( Vector4D &output, float flScale )
 {
 	float color[4] = { 1.0, 1.0, 1.0, 1.0 };
 	ComputeModulationColor( color );
@@ -159,7 +159,7 @@ void CBaseVSShader::SetEnvMapTintPixelShaderDynamicState( int pixelReg, int tint
 	s_pShaderAPI->SetPixelShaderConstant( pixelReg, color, 1 );
 }
 
-void CBaseVSShader::SetVertexShaderTextureTransform( Vector4D *transform, int transformVar )
+void CBaseVSShader::StoreShaderTextureTransform( Vector4D *transform, int transformVar )
 {
 	IMaterialVar* pTransformationVar = s_ppParams[transformVar];
 	if( pTransformationVar && (pTransformationVar->GetType() == MATERIAL_VAR_TYPE_MATRIX) )
@@ -175,7 +175,7 @@ void CBaseVSShader::SetVertexShaderTextureTransform( Vector4D *transform, int tr
 	}
 }
 
-void CBaseVSShader::SetVertexShaderTextureScaledTransform( Vector4D *transform, int transformVar, int scaleVar )
+void CBaseVSShader::StoreShaderTextureScaledTransform( Vector4D *transform, int transformVar, int scaleVar )
 {
 	IMaterialVar* pTransformationVar = s_ppParams[transformVar];
 	if( pTransformationVar && (pTransformationVar->GetType() == MATERIAL_VAR_TYPE_MATRIX) )
@@ -209,7 +209,7 @@ void CBaseVSShader::SetVertexShaderTextureScaledTransform( Vector4D *transform, 
     transform[1][3] *= scale[1];
 }
 
-void CBaseVSShader::SetConstantGammaToLinear( vec_t *transform, int transformVar )
+void CBaseVSShader::StoreConstantGammaToLinear( vec_t *transform, int transformVar )
 {
 	IMaterialVar* pTransformationVar = s_ppParams[transformVar];
 
@@ -231,7 +231,7 @@ void CBaseVSShader::SetConstantGammaToLinear( vec_t *transform, int transformVar
 	}
 }
 
-void CBaseVSShader::SetEnvmapTint( Vector4D &transform, int transformVar )
+void CBaseVSShader::StoreEnvmapTint( Vector4D &transform, int transformVar )
 {
 	IMaterialVar* pTransformationVar = s_ppParams[transformVar];
 	if( pTransformationVar && (pTransformationVar->GetType() == MATERIAL_VAR_TYPE_VECTOR) )
@@ -244,7 +244,7 @@ void CBaseVSShader::SetEnvmapTint( Vector4D &transform, int transformVar )
 	}
 }
 
-void CBaseVSShader::SetEnvmapTintGammaToLinear( Vector4D &transform, int transformVar )
+void CBaseVSShader::StoreEnvmapTintGammaToLinear( Vector4D &transform, int transformVar )
 {
 	IMaterialVar* pTransformationVar = s_ppParams[transformVar];
 	if( pTransformationVar && (pTransformationVar->GetType() == MATERIAL_VAR_TYPE_VECTOR) )

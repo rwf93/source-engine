@@ -523,7 +523,7 @@ void CTextureDx11::SetupTexture2D( int width, int height, int depth, int count, 
 	m_MinFilter = m_MagFilter = D3D11_FILTER_TYPE_LINEAR;
 
 	m_SwitchNeeded = false;
-	
+
 	AdjustD3DFilter();
 	MakeView();
 }
@@ -555,7 +555,7 @@ void CTextureDx11::SetupDepthTexture( ImageFormat depthFormat, int width, int he
 	m_pTexture = CreateD3DTexture(
 		width, height, m_Depth, depthFormat, m_NumLevels, m_CreationFlags );
 	AdjustD3DFilter();
-	MakeDepthStencilView();	
+	MakeDepthStencilView();
 	if ( bTexture )
 	{
 		MakeView();
@@ -784,7 +784,7 @@ void CTextureDx11::MakeDepthStencilView()
 }
 
 void CTextureDx11::MakeView()
-{	
+{
 	DXGI_FORMAT format;
 	if ( m_iTextureType == TEXTURE_DEPTHSTENCIL )
 	{
@@ -843,7 +843,7 @@ void CTextureDx11::MakeView()
 			Warning( "Unable to create D3D11 Texture view!\n" );
 		}
 	}
-	
+
 }
 
 static int s_CubemapBlits = 0;
@@ -1031,7 +1031,7 @@ void CTextureDx11::Delete()
 			m_pDepthStencilView = 0;
 			nDeallocated++;
 		}
-	}	
+	}
 
 	if ( m_pSamplerState )
 	{
@@ -1053,7 +1053,7 @@ bool CTextureDx11::Lock( int copy, int level, int cubeFaceID, int xOffset, int y
 	if ( m_bLocked )
 	{
 		return false;
-	}	
+	}
 
 	if ( m_NumCopies == 1 )
 	{

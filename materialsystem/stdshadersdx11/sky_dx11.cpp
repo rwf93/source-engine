@@ -84,7 +84,7 @@ BEGIN_VS_SHADER( Sky_DX11, "Help for Sky_DX11 shader" )
 			memset( &constants, 0, sizeof( Sky_CBuffer_t ) );
 
 			// Texture coord transform
-			SetVertexShaderTextureTransform( constants.mBaseTexCoordTransform, BASETEXTURETRANSFORM );
+			StoreShaderTextureTransform( constants.mBaseTexCoordTransform, BASETEXTURETRANSFORM );
 
 			if (params[COLOR]->IsDefined())
 			{

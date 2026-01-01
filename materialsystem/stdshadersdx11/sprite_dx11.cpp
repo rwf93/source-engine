@@ -179,7 +179,7 @@ BEGIN_VS_SHADER( Sprite_DX11,
 		if ( IsHDREnabled() )
 		{
 			if ( bSRGB )
-				SetConstantGammaToLinear( psConsts.cHDRColorScale.Base(), HDRCOLORSCALE );
+				StoreConstantGammaToLinear( psConsts.cHDRColorScale.Base(), HDRCOLORSCALE );
 			else
 				s_ppParams[HDRCOLORSCALE]->GetVecValueFast( psConsts.cHDRColorScale.Base(), 4 );
 		}
@@ -379,7 +379,7 @@ BEGIN_VS_SHADER( Sprite_DX11,
 					if ( IsHDREnabled() )
 					{
 						if ( bSRGB )
-							SetConstantGammaToLinear( psConsts.cHDRColorScale.Base(), HDRCOLORSCALE );
+							StoreConstantGammaToLinear( psConsts.cHDRColorScale.Base(), HDRCOLORSCALE );
 						else
 							s_ppParams[HDRCOLORSCALE]->GetVecValueFast( psConsts.cHDRColorScale.Base(), 4 );
 					}
@@ -428,7 +428,7 @@ BEGIN_VS_SHADER( Sprite_DX11,
 					if ( IsHDREnabled() )
 					{
 						if ( bSRGB )
-							SetConstantGammaToLinear( psConsts.cHDRColorScale.Base(), HDRCOLORSCALE );
+							StoreConstantGammaToLinear( psConsts.cHDRColorScale.Base(), HDRCOLORSCALE );
 						else
 							s_ppParams[HDRCOLORSCALE]->GetVecValueFast( psConsts.cHDRColorScale.Base(), 4 );
 					}

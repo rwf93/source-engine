@@ -185,6 +185,8 @@ protected:
 	int	m_nWindowWidth;
 	int m_nWindowHeight;
 	uintp m_dwThreadId;
+
+	friend class CShaderAPIDx11;
 };
 
 

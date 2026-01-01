@@ -1200,41 +1200,6 @@ retry_compile:
 	}
 	else
 	{
-#ifdef DYNAMIC_SHADER_COMPILE_WRITE_ASSEMBLY
-		// enable to dump the disassembly for shader validation
-		char exampleCommandLine[2048];
-		Q_strncpy( exampleCommandLine, "// Run from stdshaders\n// ..\\..\\dx9sdk\\utilities\\fxc.exe ", sizeof( exampleCommandLine ) );
-		int i;
-		for( i = 0; macros[i].Name; i++ )
-		{
-			Q_strncat( exampleCommandLine, "/D", sizeof( exampleCommandLine ) );
-			Q_strncat( exampleCommandLine, macros[i].Name, sizeof( exampleCommandLine ) );
-			Q_strncat( exampleCommandLine, "=", sizeof( exampleCommandLine ) );
-			Q_strncat( exampleCommandLine, macros[i].Definition, sizeof( exampleCommandLine ) );
-			Q_strncat( exampleCommandLine, " ", sizeof( exampleCommandLine ) );
-		}
-
-		Q_strncat( exampleCommandLine, "/T", sizeof( exampleCommandLine ) );
-		Q_strncat( exampleCommandLine, pShaderModel, sizeof( exampleCommandLine ) );
-		Q_strncat( exampleCommandLine, " ", sizeof( exampleCommandLine ) );
-		Q_strncat( exampleCommandLine, filename, sizeof( exampleCommandLine ) );
-		Q_strncat( exampleCommandLine, "\n", sizeof( exampleCommandLine ) );
-
-		ID3DBlob *pd3dxBuffer;
-		HRESULT hr;
-		hr = D3DDisassemble( pShader->GetBufferPointer(), pShader->GetBufferSize(), 0, NULL, &pd3dxBuffer );
-		Assert( hr == D3D_OK );
-		CUtlBuffer tempBuffer;
-		tempBuffer.SetBufferType( true, false );
-		int exampleCommandLineLength = strlen( exampleCommandLine );
-		tempBuffer.EnsureCapacity( pd3dxBuffer->GetBufferSize() + exampleCommandLineLength );
-		memcpy( tempBuffer.Base(), exampleCommandLine, exampleCommandLineLength );
-		memcpy( ( char * )tempBuffer.Base() + exampleCommandLineLength, pd3dxBuffer->GetBufferPointer(), pd3dxBuffer->GetBufferSize() );
-		tempBuffer.SeekPut( CUtlBuffer::SEEK_CURRENT, pd3dxBuffer->GetBufferSize() + exampleCommandLineLength );
-		char filename[MAX_PATH];
-		sprintf( filename, "%s_%d_%d.asm", pShaderName, nStaticIndex, nDynamicIndex );
-		g_pFullFileSystem->WriteFile( filename, "DEFAULT_WRITE_PATH", tempBuffer );
-#endif
 		if ( bVertexShader )
 		{
 			return g_pShaderDeviceDx11->CreateVertexShader( pShader->GetBufferPointer(), pShader->GetBufferSize() );

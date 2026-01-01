@@ -1,6 +1,7 @@
 #pragma once
 
 #include <d3d11.h>
+#include <d3d11_1.h>
 #include <d3dcompiler.h>
 #include <xmmintrin.h>
 #include <nmmintrin.h>
@@ -36,6 +37,13 @@ inline IDXGISwapChain *D3D11SwapChain()
 {
 	return g_pD3DSwapChain;
 }
+
+#if defined(RENDERDOC)
+extern ID3DUserDefinedAnnotation *g_pD3DUserDefinedAnnotation;
+#define D3D11Debug() g_pD3DUserDefinedAnnotation
+#else
+#define D3D11Debug()
+#endif
 
 FORCEINLINE static void memcpy_SSE( void *dest, const void *src, size_t count )
 {

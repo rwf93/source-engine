@@ -683,7 +683,7 @@ void DrawLightmappedGeneric_DX11_Internal( CBaseVSShader *pShader, IMaterialVar 
 			}
 			if ( pContextData->m_bHasBlendMaskTransform )
 			{
-				pShader->SetVertexShaderTextureTransform( pContextData->m_Constants.cBlendMaskTexCoordTransform,
+				pShader->StoreShaderTextureTransform( pContextData->m_Constants.cBlendMaskTexCoordTransform,
 									    info.m_nBlendMaskTransform );
 			}
 
@@ -691,25 +691,25 @@ void DrawLightmappedGeneric_DX11_Internal( CBaseVSShader *pShader, IMaterialVar 
 			{
 				pContextData->m_bHasEnvmapMask = params[info.m_nEnvmapMask]->IsTexture();
 				if ( !pContextData->m_bSeamlessMapping )
-					pShader->SetVertexShaderTextureTransform( pContextData->m_Constants.cBaseTexCoordTransform, info.m_nBaseTextureTransform );
+					pShader->StoreShaderTextureTransform( pContextData->m_Constants.cBaseTexCoordTransform, info.m_nBaseTextureTransform );
 
 				// If we have a detail texture, then the bump texcoords are the same as the base texcoords.
 				if ( pContextData->m_bHasBump && !pContextData->m_bHasDetailTexture )
 				{
-					pShader->SetVertexShaderTextureTransform( pContextData->m_Constants.cDetailOrBumpTexCoordTransform, info.m_nBumpTransform );
+					pShader->StoreShaderTextureTransform( pContextData->m_Constants.cDetailOrBumpTexCoordTransform, info.m_nBumpTransform );
 				}
 				if ( pContextData->m_bHasEnvmapMask )
 				{
-					pShader->SetVertexShaderTextureTransform( pContextData->m_Constants.cEnvmapMaskOrBump2TexCoordTransform, info.m_nEnvmapMaskTransform );
+					pShader->StoreShaderTextureTransform( pContextData->m_Constants.cEnvmapMaskOrBump2TexCoordTransform, info.m_nEnvmapMaskTransform );
 				}
 				else if ( pContextData->m_bHasBump2 )
 				{
-					pShader->SetVertexShaderTextureTransform( pContextData->m_Constants.cEnvmapMaskOrBump2TexCoordTransform, info.m_nBumpTransform2 );
+					pShader->StoreShaderTextureTransform( pContextData->m_Constants.cEnvmapMaskOrBump2TexCoordTransform, info.m_nBumpTransform2 );
 
 				}
 			}
 
-			pShader->SetEnvmapTint( pContextData->m_Constants.g_EnvmapTint, info.m_nEnvmapTint );
+			pShader->StoreEnvmapTint( pContextData->m_Constants.g_EnvmapTint, info.m_nEnvmapTint );
 
 			// set up shader modulation color
 			pContextData->m_Constants.cModulationColor.Init( 1, 1, 1, 1 );
@@ -842,7 +842,7 @@ void DrawLightmappedGeneric_DX11_Internal( CBaseVSShader *pShader, IMaterialVar 
 			// always have a detailscale.
 			if ( hasDetailTexture )
 			{
-				pShader->SetVertexShaderTextureScaledTransform( pContextData->m_Constants.cDetailOrBumpTexCoordTransform, info.m_nBaseTextureTransform, info.m_nDetailScale );
+				pShader->StoreShaderTextureScaledTransform( pContextData->m_Constants.cDetailOrBumpTexCoordTransform, info.m_nBaseTextureTransform, info.m_nDetailScale );
 			}
 
 			if ( hasBaseTexture2 )
